@@ -1,0 +1,42 @@
+import assert from 'node:assert/strict';
+import {JSDOM} from 'jsdom';
+import {createRouteLoading} from '../static/js/features/route-loading.js';
+const dom = new JSDOM('<main id="content"><div class="crm-compact-loading">Initial load</div></main>');
+globalThis.document = dom.window.document;
+const content = document.querySelector('#content');
+let next = 0;
+const timers = new Map();
+const loader = createRouteLoading({content, setTimer:fn => {timers.set(++next,fn);return next;}, cancelTimer:id => timers.delete(id)});
+const tick = () => {const callbacks=[...timers.values()];timers.clear();callbacks.forEach(fn=>fn());};
+
+let finish = loader.start('/leads');
+assert.equal(content.getAttribute('aria-busy'),'true');
+assert.equal(content.children.length,0);
+content.innerHTML='<section>Leads ready</section>'; finish(); tick();
+assert.equal(content.querySelector('[role=status]'),null,'fast work never flashes a loader');
+assert.equal(content.getAttribute('aria-busy'),null);
+
+const existing = content.firstElementChild;
+finish=loader.start('/leads');
+assert.equal(content.firstElementChild,existing,'same-page refresh preserves the visible list');
+tick();
+assert.equal(content.querySelector('.crm-route-updating').textContent,'Updating…');
+assert.equal(content.querySelectorAll('.crm-route-updating .yash-loader-spokes i').length,12,'refresh uses the original branded radial animation');
+assert.ok(content.contains(existing)); finish();
+assert.equal(content.querySelector('[role=status]'),null);
+
+finish=loader.start('/contacts'); tick();
+assert.equal(content.querySelector('.crm-route-loading').textContent,'Loading…');
+assert.equal(content.querySelectorAll('.crm-route-loading .yash-loader-spokes i').length,12);
+assert.ok(content.querySelector('.crm-route-loading img.uploaded-loader-logo').getAttribute('src').includes('convosis-brand.png'));
+assert.equal(content.querySelector('.apex-boot-screen'),null,'no full-screen AI overlay');
+const staleFinish=finish;
+finish=loader.start('/accounts'); staleFinish();
+assert.equal(content.getAttribute('aria-busy'),'true','old requests cannot clear a newer request state');
+tick(); assert.equal(content.querySelectorAll('[role=status]').length,1);
+content.innerHTML='<section role="alert">Could not load. Try again.</section>'; finish(); tick();
+assert.equal(content.getAttribute('aria-busy'),null);
+assert.equal(content.querySelector('[role=status]'),null,'failures cannot leave a stuck loader');
+assert.ok(content.textContent.includes('Try again'));
+dom.window.close();
+console.log('Route loading checks passed: fast, slow, refresh, navigation races and error cleanup.');

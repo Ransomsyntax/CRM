@@ -1,0 +1,549 @@
+/* Shared spatial rhythm and alignment: applicable to all authenticated CRM modules. */
+:root { --ui-space-1: 4px; --ui-space-2: 8px; --ui-space-3: 12px; --ui-space-4: 16px; --ui-space-5: 20px; --ui-space-6: 24px; --ui-space-8: 32px; }
+:is(.content-area,.main-area,.card,.settings-section,.modal,.wf-rule-dialog,.detail-record-main,.detail-record-layout,.setup-page-shell) { min-width: 0; }
+.content-area { padding: 28px clamp(18px,2.5vw,36px) 48px; }
+.content-area > * { min-width: 0; }
+/* Existing modules own vertical section margins; avoid global sibling margins. */
+.page-heading, .settings-heading-row, .card-head { display: flex; gap: var(--ui-space-4); align-items: center; justify-content: space-between; flex-wrap: wrap; }
+.page-heading { margin-bottom: var(--ui-space-6); }
+.page-heading :is(h1,.subheading) { overflow-wrap: anywhere; }
+.page-heading > :first-child, .card-head > :first-child, .settings-heading-row > :first-child { flex: 1 1 220px; min-width: 0; }
+.heading-actions, .module-toolbar-actions, .settings-actions, .card-actions { display:flex; align-items:center; justify-content:flex-end; flex-wrap:wrap; gap:var(--ui-space-2); min-width:0; }
+:is(.heading-actions,.module-toolbar-actions,.settings-actions,.card-actions) > * { max-width:100%; }
+:is(.module-toolbar,.setup-toolbar,.wf-list-actions) { gap:var(--ui-space-3); align-items:center; }
+:is(.card,.settings-section,.table-card,.setup-hub-card) { min-width:0; }
+:is(.card-head,.settings-section-head,.setup-hub-head) { gap:var(--ui-space-3); }
+:is(.form-grid,.settings-form) { column-gap:var(--ui-space-5); row-gap:var(--ui-space-4); }
+.form-grid > *, .settings-form > * { min-width:0; }
+.field { min-width:0; gap:var(--ui-space-2); }
+.field label { line-height:1.45; overflow-wrap:anywhere; }
+:is(.field-input,.field-select,.field-textarea) { max-width:100%; min-width:0; box-sizing:border-box; }
+:is(.form-actions,.modal-actions,.wf-editor-footer) { display:flex; gap:var(--ui-space-3); align-items:center; justify-content:flex-end; flex-wrap:wrap; }
+.modal-head { gap:var(--ui-space-4); align-items:center; }
+.modal-body { min-width:0; overflow-x:hidden; }
+.modal-body .form-grid { width:100%; }
+:is(.data-table,.table) th, :is(.data-table,.table) td { vertical-align:middle; }
+:is(.data-table,.table) th { white-space:normal; line-height:1.4; }
+:is(.data-table,.table) td { overflow-wrap:anywhere; }
+:is(.table-wrap,.data-table-wrap,.metadata-field-table) { min-width:0; max-width:100%; overflow-x:auto; }
+.detail-record-layout { gap:var(--ui-space-6); align-items:start; }
+.detail-record-main { min-width:0; }
+.detail-related-links { gap:var(--ui-space-1); }
+.detail-related-link { min-width:0; display:flex; align-items:center; justify-content:space-between; gap:var(--ui-space-3); }
+.detail-related-link span { min-width:0; overflow-wrap:anywhere; text-align:left; }
+.detail-related-link small { flex:0 0 auto; }
+.detail-plain-head { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:var(--ui-space-3); }
+.detail-related-row { display:flex; align-items:center; justify-content:space-between; gap:var(--ui-space-3); min-width:0; }
+.detail-related-row-copy { min-width:0; overflow-wrap:anywhere; }
+.wf-rule-overlay:not([style*="padding:0"]) > .wf-rule-dialog { max-width:calc(100vw - 24px); }
+.wf-rule-dialog .wf-details-card { min-width:0; }
+.wf-rule-dialog .wf-editor-footer { gap:var(--ui-space-3); }
+.wf-rule-dialog .wf-list-actions > * { min-width:0; }
+.wf-rule-dialog .field-input { max-width:100%; }
+.setup-workspace, .setup-console-grid, .dashboard-grid, .stats-grid { min-width:0; }
+@media (max-width: 900px) {
+  .content-area { padding:24px 18px 40px; }
+  .detail-record-layout { gap:var(--ui-space-4); }
+  .form-grid.three { grid-template-columns:repeat(2,minmax(0,1fr)); }
+}
+@media (max-width: 760px) {
+  .page-heading > :first-child, .settings-heading-row > :first-child { flex: 0 1 auto; }
+}
+@media (max-width: 700px) {
+  .content-area { padding:18px 14px 32px; }
+  .page-heading, .settings-heading-row, .card-head { align-items:stretch; flex-direction:column; gap:var(--ui-space-3); }
+  .page-heading { margin-bottom:var(--ui-space-4); }
+  .page-heading > :first-child, .card-head > :first-child, .settings-heading-row > :first-child { flex: 0 1 auto; }
+  .heading-actions, .module-toolbar-actions { width:100%; justify-content:flex-start; }
+  .form-grid, .form-grid.three { grid-template-columns:minmax(0,1fr); }
+  .form-actions, .modal-actions { justify-content:stretch; }
+  .form-actions > .button, .modal-actions > .button { flex:1 1 120px; }
+  .modal-head { padding:16px; }
+  .modal-body { padding:16px; }
+  .detail-plain-head { align-items:flex-start; }
+}
+
+/* Record pages: consistent header/actions and two-column relationship layout. */
+.detail-summary { margin-bottom:20px; }
+.detail-summary .detail-title-row { display:flex; flex-wrap:wrap; align-items:center; gap:14px; justify-content:flex-start; }
+.detail-summary .detail-title-copy { flex:1 1 220px; min-width:0; }
+.detail-summary .detail-actions { margin-left:auto; display:flex; align-items:center; justify-content:flex-end; gap:8px; flex-wrap:wrap; }
+.detail-summary .detail-meta-grid { grid-template-columns:repeat(3,minmax(0,1fr)); column-gap:24px; row-gap:20px; }
+.detail-summary .detail-meta-grid > div { min-width:0; overflow-wrap:anywhere; }
+.detail-summary .meta-value { display:block; line-height:1.5; overflow-wrap:anywhere; }
+.detail-record-layout { grid-template-columns:minmax(210px,240px) minmax(0,1fr); gap:20px; }
+.detail-related-nav { min-width:0; }
+.detail-related-nav-head { padding:16px 20px; }
+.detail-related-links { padding:6px 0; gap:0; }
+.detail-related-link { min-height:44px; padding:10px 18px; }
+.detail-record-main { min-width:0; }
+.detail-tab-strip { display:inline-flex; gap:4px; max-width:100%; margin-bottom:18px; }
+.detail-tab { flex:1 1 auto; min-width:120px; }
+.detail-plain-section { margin-bottom:16px; }
+.detail-plain-head { padding:16px 20px; }
+.detail-plain-body { min-width:0; }
+.detail-related-row-copy strong, .detail-related-row-copy small { overflow-wrap:anywhere; }
+/* Maintain deliberate section rhythm without changing nested module layouts. */
+.module-toolbar { align-items:center; }
+.module-toolbar > * { min-width:0; }
+.settings-layout > *, .setup-workspace > *, .dashboard-grid > *, .stats-grid > * { min-width:0; }
+@media (max-width: 1000px) {
+  .detail-record-layout { grid-template-columns:minmax(190px,220px) minmax(0,1fr); gap:16px; }
+  .detail-summary .detail-meta-grid { column-gap:16px; }
+}
+@media (max-width: 760px) {
+  .detail-record-layout { grid-template-columns:minmax(0,1fr); }
+  .detail-related-nav { position:static; }
+  .detail-related-links { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .detail-related-link { padding:10px 14px; }
+  .detail-summary .detail-meta-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .detail-summary .detail-actions { margin-left:0; justify-content:flex-start; width:100%; }
+}
+@media (max-width: 520px) {
+  .detail-related-links { grid-template-columns:minmax(0,1fr); }
+  .detail-summary .detail-meta-grid { grid-template-columns:minmax(0,1fr); }
+  .detail-tab-strip { width:100%; }
+  .detail-tab { min-width:0; }
+}
+
+/* Critical form usability: modal header/actions stay visible while fields scroll. */
+#modal-backdrop { align-items:center; overflow:hidden; }
+#modal-backdrop > #modal { display:flex; flex-direction:column; width:min(680px,100%); max-height:calc(100dvh - 32px); min-height:0; overflow:hidden; }
+#modal-backdrop #modal .modal-head { flex:0 0 auto; }
+#modal-backdrop #record-form { display:flex; flex:1 1 auto; flex-direction:column; min-height:0; overflow:hidden; }
+#modal-backdrop #modal-body { flex:1 1 auto; min-height:0; overflow-y:auto; overscroll-behavior:contain; }
+#modal-backdrop #record-form > .modal-foot { display:flex; flex:0 0 auto; position:relative; z-index:1; gap:12px; align-items:center; justify-content:flex-end; padding:14px 22px max(14px,env(safe-area-inset-bottom)); background:#fff; border-top:1px solid var(--border); }
+#modal-backdrop #modal-submit { min-width:130px; }
+@media (max-width:700px) {
+  #modal-backdrop { padding:8px; }
+  #modal-backdrop > #modal { max-height:calc(100dvh - 16px); width:100%; }
+  #modal-backdrop #record-form > .modal-foot { padding:12px 16px max(12px,env(safe-area-inset-bottom)); }
+  #modal-backdrop #record-form > .modal-foot .button { flex:1 1 0; min-width:0; }
+}
+
+
+/* Unified CRM dashboard mapping and record-detail rhythm. */
+.dashboard-grid { display:grid; grid-template-columns:minmax(0,1.4fr) minmax(300px,1fr); align-items:start; gap:20px; margin-bottom:20px; }
+.dashboard-grid > *, .dashboard-column > * { min-width:0; }
+.dashboard-column { display:flex; flex-direction:column; gap:20px; }
+.dashboard-grid .card { min-width:0; width:100%; }
+.dashboard-grid .card-head { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+.dashboard-grid .card-head-copy { flex:1 1 180px; min-width:0; }
+.dashboard-grid .card-head-link { flex:0 0 auto; white-space:normal; text-align:right; }
+.dashboard-grid .card-body { min-width:0; }
+.dashboard-grid .pipeline-row { min-width:0; }
+.dashboard-grid .pipeline-label, .dashboard-grid .pipeline-meta { overflow-wrap:anywhere; }
+.stats-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:16px; margin-bottom:20px; }
+.stats-grid > .stat-card { min-width:0; min-height:128px; display:flex; flex-direction:column; justify-content:space-between; }
+.stat-card .stat-top { align-items:center; gap:10px; }
+.stat-card .stat-value { overflow-wrap:anywhere; }
+.stat-card .stat-foot { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+.detail-summary, .detail-record-layout { width:100%; min-width:0; }
+.detail-record-layout { align-items:start; }
+.detail-record-layout > .detail-related-nav, .detail-record-layout > .detail-record-main { min-width:0; }
+.detail-record-main .detail-tab-panel { min-width:0; }
+.detail-record-main .detail-plain-section { width:100%; }
+.detail-record-main .detail-plain-head { min-height:54px; align-items:center; }
+.detail-record-main .detail-plain-body { width:100%; }
+.detail-record-main .detail-tab-strip { margin-top:0; }
+.detail-record-main .detail-tab { text-align:center; }
+.detail-summary .detail-title-copy p { overflow-wrap:anywhere; }
+@media (max-width:1180px) {
+ .stats-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+ .dashboard-grid { grid-template-columns:minmax(0,1fr); }
+}
+@media (max-width:700px) {
+ .dashboard-grid, .dashboard-column { gap:14px; margin-bottom:14px; }
+ .stats-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+ .dashboard-grid .card-head-link { text-align:left; }
+}
+@media (max-width:420px) { .stats-grid { grid-template-columns:minmax(0,1fr); } }
+
+
+/* Clickable dashboard KPIs retain the appearance and spacing of stat cards. */
+button.dashboard-metric-link { appearance:none; display:flex; width:100%; font:inherit; color:inherit; text-align:left; cursor:pointer; }
+button.dashboard-metric-link:hover { border-color:var(--primary, #2463de); transform:translateY(-1px); }
+button.dashboard-metric-link:focus-visible { outline:3px solid var(--primary, #2463de); outline-offset:3px; }
+.dashboard-report { width:100%; min-width:0; }
+.dashboard-report .card-body { min-width:0; }
+.dashboard-report-table { width:100%; }
+.dashboard-report-table .sub-cell { display:block; margin-top:4px; }
+.dashboard-report-table td:last-child { text-align:right; white-space:nowrap; }
+.dashboard-report-footer { display:flex; align-items:center; justify-content:space-between; padding:12px 20px; gap:12px; flex-wrap:wrap; border-top:1px solid var(--border, #e4eaf3); }
+.dashboard-report-pages { display:flex; gap:8px; }
+@media (max-width:700px) { .dashboard-report-footer { padding:12px; } }
+
+
+/* Core CRM advanced filters: compact Zoho-inspired sidebar and responsive list. */
+.advanced-filter-toggle { flex:0 0 auto; font-weight:650; }
+.advanced-filter-layout { min-width:0; }
+.advanced-filter-layout.filters-visible { display:grid; grid-template-columns:minmax(210px,244px) minmax(0,1fr); align-items:start; gap:14px; }
+.advanced-filter-results { min-width:0; }
+.advanced-filter-sidebar { min-width:0; overflow:hidden; background:#fff; border:1px solid var(--border,#dce3ef); border-radius:12px; display:flex; flex-direction:column; max-height:calc(100dvh - 210px); position:sticky; top:16px; }
+.advanced-filter-sidebar[hidden], .advanced-filter-condition[hidden], .advanced-filter-option[hidden] { display:none!important; }
+.advanced-filter-head { display:flex; justify-content:space-between; align-items:center; padding:16px 14px 10px; gap:8px; color:var(--text,#1a2745); font-size:14px; }
+.advanced-filter-close { background:transparent; border:0; color:var(--text-muted,#65758d); font-size:24px; cursor:pointer; width:28px; height:28px; display:grid; place-items:center; border-radius:6px; }
+.advanced-filter-close:hover { background:#edf2fa; }
+.advanced-filter-search-label { margin:4px 12px 12px; display:flex; align-items:center; gap:7px; min-height:36px; border:1px solid var(--border,#dce3ef); border-radius:8px; padding:0 10px; color:#66758c; }
+.advanced-filter-search-label input { width:100%; min-width:0; outline:none; border:0; font:inherit; font-size:13px; background:transparent; color:var(--text,#1a2745); }
+.advanced-filter-scroll { overflow-y:auto; overscroll-behavior:contain; padding:0 12px 14px; flex:1 1 auto; min-height:0; scrollbar-width:thin; }
+.advanced-filter-group { padding:8px 0 10px; border-top:1px solid #e9eef6; }
+.advanced-filter-group summary { list-style:none; display:flex; justify-content:space-between; gap:6px; font-weight:700; color:var(--text,#1a2745); font-size:12px; padding:7px 2px; cursor:pointer; }
+.advanced-filter-group summary::before { content:"▾"; margin-right:3px; }
+.advanced-filter-group:not([open]) summary::before { content:"▸"; }
+.advanced-filter-group summary::-webkit-details-marker { display:none; }
+.advanced-filter-group summary span { font-weight:500; color:#8190a8; margin-left:auto; }
+.advanced-filter-options { display:flex; flex-direction:column; gap:3px; padding:4px 0; }
+.advanced-filter-option { padding:3px 2px; border-radius:6px; }
+.advanced-filter-option > label { display:flex; align-items:flex-start; gap:8px; font-size:12px; line-height:1.5; cursor:pointer; color:var(--text,#1a2745); }
+.advanced-filter-option > label input { margin:3px 0 0; flex:0 0 auto; width:15px; height:15px; accent-color:#2b64d7; }
+.advanced-filter-option > label span { min-width:0; overflow-wrap:anywhere; }
+.advanced-filter-option:hover { background:#f7f9fd; }
+.advanced-filter-condition { padding:8px 0 6px 23px; display:flex; gap:6px; flex-direction:column; }
+.advanced-filter-condition select,.advanced-filter-condition input { min-width:0; width:100%; padding:8px 7px; border:1px solid var(--border,#dce3ef); border-radius:6px; font-size:12px; color:var(--text,#1a2745); background:#fff; }
+.advanced-filter-hint { font-size:11px; color:var(--text-muted,#65758d); }
+.advanced-filter-actions { padding:12px; border-top:1px solid var(--border,#dce3ef); background:#fbfcff; flex:0 0 auto; display:flex; flex-direction:column; gap:9px; }
+.advanced-filter-actions > label { display:flex; justify-content:space-between; align-items:center; gap:8px; font-size:12px; }
+.advanced-filter-actions > label select { border:1px solid var(--border,#dce3ef); border-radius:6px; background:#fff; padding:6px; min-width:0; }
+.advanced-filter-buttons { display:flex; gap:8px; }
+.advanced-filter-buttons > button { flex:1 1 0; min-width:0; }
+.advanced-filter-actions small { color:var(--text-muted,#65758d); font-size:11px; }
+.advanced-filter-sidebar :is(button, input, select, summary):focus-visible { outline:2px solid #2563eb; outline-offset:2px; }
+@media(max-width:950px) {
+  .advanced-filter-layout.filters-visible { grid-template-columns:minmax(0,1fr); }
+  .advanced-filter-sidebar { position:static; max-height:440px; }
+  .advanced-filter-results { width:100%; }
+}
+
+/* Quote creation/editing needs a full workspace, not the compact generic dialog. */
+@media (min-width: 901px) {
+  #modal-backdrop > #modal.quote-form-active {
+    width: min(1120px, calc(100vw - 64px));
+    max-width: none;
+    max-height: calc(100dvh - 48px);
+  }
+  #modal.quote-form-active #modal-body { padding: 24px 30px; }
+}
+@media (min-width: 701px) and (max-width: 900px) {
+  #modal-backdrop > #modal.quote-form-active {
+    width: calc(100vw - 32px);
+    max-width: none;
+    max-height: calc(100dvh - 32px);
+  }
+}
+@media (max-width: 700px) {
+  #modal-backdrop > #modal.quote-form-active { width: 100%; max-width: none; }
+}
+
+
+/* Shared module list toolbar: prevent search/input collision and awkward wrapping. */
+.module-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+.module-toolbar .toolbar-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1 1 240px;
+  min-width: min(100%, 220px);
+  max-width: 100%;
+  min-height: 44px;
+  height: 44px;
+  box-sizing: border-box;
+}
+.module-toolbar .toolbar-search > span { flex: 0 0 auto; }
+.module-toolbar .toolbar-search input,
+.module-toolbar .toolbar-search input:focus {
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  flex: 1 1 auto;
+  box-sizing: border-box;
+}
+.module-toolbar .filter-select {
+  flex: 1 1 142px;
+  width: auto;
+  min-width: 128px;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+.module-toolbar > input:not([type="checkbox"]),
+.module-toolbar > button,
+.module-toolbar > .button { flex-shrink: 0; max-width: 100%; }
+.module-toolbar input[type="date"],
+.module-toolbar input[type="number"] { min-width: 0; box-sizing: border-box; }
+.page-heading .heading-actions { min-width: 0; max-width: 100%; }
+.page-heading .heading-actions > * { min-width: 0; }
+:is(.card,.table-card,.settings-section,.detail-summary) {
+  overflow-wrap: break-word;
+}
+@media (max-width: 760px) {
+  .module-toolbar .toolbar-search { flex-basis: 100%; min-width: 0; }
+  .module-toolbar .filter-select { flex: 1 1 150px; }
+  .module-toolbar > input:not([type="checkbox"]) { flex: 1 1 145px; }
+}
+@media (max-width: 480px) {
+  .module-toolbar { gap: 10px; }
+  .module-toolbar .filter-select,
+  .module-toolbar > input:not([type="checkbox"]) { flex-basis: 100%; }
+}
+
+
+/* Setup landing cards: content-driven height and distinct action line. */
+.setup-hub-grid.modules-fields-options {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+  align-items: stretch;
+}
+.setup-hub-grid.modules-fields-options > .modules-fields-option {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  gap: 12px;
+  height: auto;
+  min-height: 190px;
+  padding: 22px;
+  box-sizing: border-box;
+  text-decoration: none;
+  overflow: visible;
+}
+.modules-fields-option .setup-hub-head { padding: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
+.modules-fields-option .setup-hub-head h2 { margin: 0; line-height: 1.45; overflow-wrap: anywhere; }
+.modules-fields-option > p { margin: 0; line-height: 1.6; flex: 1 0 auto; overflow-wrap: anywhere; }
+.modules-fields-option > strong { display: block; margin-top: auto; line-height: 1.5; overflow-wrap: anywhere; }
+@media (max-width: 680px) {
+  .setup-hub-grid.modules-fields-options { grid-template-columns: minmax(0, 1fr); }
+  .setup-hub-grid.modules-fields-options > .modules-fields-option { min-height: 0; padding: 18px; }
+}
+
+
+/* Scrollport consistency — scoped fixes for Setup, detail pages and overflow panels.
+   Preserve natural document scrolling everywhere else. */
+@media (min-width:1101px) {
+  /* Setup workspaces already have two independent scrollports; do not let
+     their outer page become a third scrollport. */
+  .app-shell:has(#app-content .setup-page-shell) > .main-area {
+    overflow-y: hidden !important;
+    height: 100dvh;
+    min-height: 0;
+  }
+  .app-shell:has(#app-content .setup-page-shell) #app-content {
+    height: calc(100dvh - var(--topbar-height));
+    min-height: 0;
+    padding-bottom: 0;
+    overflow: hidden;
+  }
+  .app-shell:has(#app-content .setup-page-shell) .content-area:has(> .setup-page-shell) {
+    height: 100%;
+    min-height: 0;
+    padding-bottom: 12px;
+  }
+  .setup-workspace > .settings-nav,
+  .setup-workspace > .settings-content {
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    overscroll-behavior-y: contain;
+  }
+  /* Never render the legacy document scrollbar indicator on a split-scroll page. */
+  html:has(#app-content .setup-page-shell) .setup-compact-scroll-track {
+    display: none !important;
+  }
+}
+@media (min-width:769px) and (max-width:1100px) {
+  /* Narrow layouts use normal page scrolling instead of nested settings rails. */
+  .app-shell:has(#app-content .setup-page-shell) > .main-area {
+    overflow-y: auto;
+  }
+  .app-shell:has(#app-content .setup-page-shell) .setup-compact-scroll-track {
+    display: none !important;
+  }
+}
+/* Unified narrow, visible thumbs; do not force scrollbars on non-scrollable cards. */
+:is(#sidebar,.sidebar .primary-nav,.sidebar .expanded-nav,
+    .setup-workspace > .settings-nav,.setup-workspace > .settings-content,
+    .detail-body-scroll,.detail-related-links,#modal-body,.modal-body,
+    .table-wrap,.data-table-wrap,.advanced-filter-scroll,
+    .bp-canvas-scroll,.bp-inspector-content,.import-scroll-table) {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(127,146,173,.7) transparent;
+}
+:is(#sidebar,.sidebar .primary-nav,.sidebar .expanded-nav,
+    .setup-workspace > .settings-nav,.setup-workspace > .settings-content,
+    .detail-body-scroll,.detail-related-links,#modal-body,.modal-body,
+    .table-wrap,.data-table-wrap,.advanced-filter-scroll,
+    .bp-canvas-scroll,.bp-inspector-content,.import-scroll-table)::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+:is(#sidebar,.sidebar .primary-nav,.sidebar .expanded-nav,
+    .setup-workspace > .settings-nav,.setup-workspace > .settings-content,
+    .detail-body-scroll,.detail-related-links,#modal-body,.modal-body,
+    .table-wrap,.data-table-wrap,.advanced-filter-scroll,
+    .bp-canvas-scroll,.bp-inspector-content,.import-scroll-table)::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: rgba(127,146,173,.7);
+}
+:is(#sidebar,.sidebar .primary-nav,.sidebar .expanded-nav,
+    .setup-workspace > .settings-nav,.setup-workspace > .settings-content,
+    .detail-body-scroll,.detail-related-links,#modal-body,.modal-body,
+    .table-wrap,.data-table-wrap,.advanced-filter-scroll,
+    .bp-canvas-scroll,.bp-inspector-content,.import-scroll-table)::-webkit-scrollbar-track {
+  background: transparent;
+}
+/* Allow horizontal tables to scroll inside their own panel instead of expanding the page. */
+:is(.table-wrap,.data-table-wrap,.import-scroll-table) {
+  min-width: 0;
+  max-width: 100%;
+  overscroll-behavior-x: contain;
+}
+/* Prevent modal content from extending beyond the viewport. */
+#modal-backdrop #modal-body { min-height: 0; overflow-y: auto; }
+
+
+/* Setup scrolling repair: restore the document as the single main-content
+   scroll owner. The prior nested viewport locks left the visible thumb with
+   no scrollable parent on some desktop layouts. */
+@media (min-width: 769px) {
+  html:has(#app-content .setup-page-shell),
+  body:has(#app-content .setup-page-shell) {
+    height: auto !important;
+    max-height: none !important;
+    overflow-y: auto !important;
+  }
+  .app-shell:has(#app-content .setup-page-shell) {
+    height: auto !important;
+    min-height: 100dvh !important;
+    overflow: visible !important;
+  }
+  .app-shell:has(#app-content .setup-page-shell) > .main-area {
+    height: auto !important;
+    min-height: 100dvh !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+  .app-shell:has(#app-content .setup-page-shell) #app-content,
+  .app-shell:has(#app-content .setup-page-shell) .content-area:has(> .setup-page-shell),
+  .content-area > .setup-page-shell,
+  .setup-page-shell > .setup-workspace {
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+  .content-area > .setup-page-shell,
+  .setup-page-shell > .setup-workspace {
+    flex: none !important;
+  }
+  .setup-workspace > .settings-content {
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+  .setup-workspace > .settings-nav {
+    position: sticky !important;
+    top: calc(var(--topbar-height, 78px) + 12px) !important;
+    align-self: start !important;
+    height: auto !important;
+    max-height: calc(100dvh - var(--topbar-height, 78px) - 24px) !important;
+    overflow-y: auto !important;
+    overscroll-behavior-y: contain;
+  }
+}
+/* Small screens remain a natural single-column document, not a locked rail. */
+@media (max-width: 1100px) {
+  .setup-workspace > .settings-nav {
+    position: static !important;
+    max-height: none !important;
+    overflow-y: visible !important;
+  }
+}
+
+/* One right-edge scrollbar: use the browser document scrollbar, never
+   simultaneous html/body scrollbars or a nested Setup content rail. */
+html:has(#app-content .setup-page-shell) {
+  overflow-y: auto !important;
+}
+body:has(#app-content .setup-page-shell) {
+  overflow-y: visible !important;
+}
+body:has(#app-content .setup-page-shell) .crm-setup-scroll-handle,
+body:has(#app-content .setup-page-shell) .setup-compact-scroll-track {
+  display: none !important;
+}
+@media (min-width: 769px) {
+  .app-shell:has(#app-content .setup-page-shell) .settings-content {
+    overflow-y: visible !important;
+    scrollbar-gutter: auto !important;
+  }
+}
+
+/* Settings: only the document displays a scrollbar. The independently
+   wheel-scrollable directory must not draw a second full-height track. */
+@media (min-width: 769px) {
+  body:has(#app-content .setup-page-shell) .setup-workspace > .settings-nav {
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+    scrollbar-gutter: auto !important;
+  }
+  body:has(#app-content .setup-page-shell) .setup-workspace > .settings-nav::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+  }
+}
+
+/* Setup scroll ownership (desktop): .main-area is the ONLY page scrollbar.
+   Avoid simultaneously scrolling html/body and the content viewport. */
+@media (min-width: 769px) {
+  html:has(#app-content .setup-page-shell),
+  body:has(#app-content .setup-page-shell) {
+    height: 100dvh !important;
+    min-height: 0 !important;
+    max-height: 100dvh !important;
+    overflow: hidden !important;
+  }
+  body:has(#app-content .setup-page-shell) .app-shell {
+    height: 100dvh !important;
+    min-height: 0 !important;
+    max-height: 100dvh !important;
+    overflow: hidden !important;
+  }
+  body:has(#app-content .setup-page-shell) .app-shell > .main-area {
+    height: 100dvh !important;
+    min-height: 0 !important;
+    max-height: 100dvh !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    overscroll-behavior-y: contain;
+    scrollbar-width: thin;
+    scrollbar-gutter: auto;
+  }
+  body:has(#app-content .setup-page-shell) .app-shell > .main-area::-webkit-scrollbar {
+    width: 8px;
+  }
+  body:has(#app-content .setup-page-shell) .app-shell > .main-area::-webkit-scrollbar-thumb {
+    background: #94a3b8;
+    border-radius: 999px;
+  }
+  body:has(#app-content .setup-page-shell) #app-content,
+  body:has(#app-content .setup-page-shell) .content-area:has(> .setup-page-shell),
+  body:has(#app-content .setup-page-shell) .content-area > .setup-page-shell,
+  body:has(#app-content .setup-page-shell) .setup-page-shell > .setup-workspace,
+  body:has(#app-content .setup-page-shell) .setup-workspace > .settings-content {
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+}

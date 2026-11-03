@@ -1,0 +1,267 @@
+/* Shared visual hierarchy. Theme aliases resolve against the current palette,
+   including components that previously fell back to hard-coded dark colors. */
+:root {
+  --premium-muted: #52617a;
+  --text-faint: #667085;
+  --text-muted: var(--text-soft);
+  --card-bg: var(--premium-surface, var(--surface));
+  --surface-2: var(--surface-soft);
+  --primary: var(--indigo);
+  --crm-focus-ring: #245cb9;
+  --crm-label-size: 12px;
+  --crm-control-size: 13px;
+  --crm-meta-size: 12px;
+}
+html[data-crm-theme="light"] { color-scheme: light; }
+html:not([data-crm-theme="dark"]) .breadcrumbs b { color: #65748d; }
+html[data-crm-theme="dark"] {
+  --text-soft: #c4cfdf;
+  --text-faint: #b2c0d4;
+  --text-muted: var(--text-soft);
+  --surface-2: #243247;
+  --crm-focus-ring: #a9c9ff;
+}
+.app-shell :is(.field label,.form-label,.field-label) {
+  font-size: var(--crm-label-size);
+  font-weight: 600;
+  line-height: 1.5;
+}
+.app-shell :is(.field-input,.field-select,.field-textarea,.button,.toolbar-search input,.global-search input) {
+  font-size: var(--crm-control-size);
+  line-height: 1.5;
+}
+.app-shell :is(.button,.quick-action,.table-action,.detail-related-link,.settings-nav a,.setup-card-link,.cs-tab) {
+  font-weight: 600;
+}
+.app-shell :is(.card h2,.card h3,.settings-section-head h2,.settings-section-head h3,.cs-heading h2) {
+  font-weight: 700;
+  line-height: 1.35;
+}
+.app-shell :is(.field-hint,.rule-info small,.detail-related-row-copy small,.ai-disclaimer,.ai-composer-actions small,.ai-proposals-head small,.ai-proposal small,.ai-proposal em,.ai-setup p,.ai-sources span,.ai-journey-stage small,.ai-cockpit-stat>small,.crm-state-actions>small,.crm-pipeline-step small,.pricing-features) {
+  font-size: var(--crm-meta-size);
+  line-height: 1.55;
+}
+.app-shell :is(.meta-label,.eyebrow,.ai-cockpit-stat>span,.crm-stage-label,.crm-pipeline-header span) {
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.5;
+}
+.app-shell .data-table { font-size: 13px; }
+.app-shell .data-table th { font-size: 12px; font-weight: 700; }
+.app-shell .data-table td { line-height: 1.55; }
+#sidebar .primary-nav a[data-route] { font-weight: 600; }
+#sidebar .primary-nav a[data-route].active { font-weight: 700; }
+#sidebar .primary-nav a[data-route] .convosis-module-icon {
+  width: 20px; height: 20px; min-width: 20px; flex-basis: 20px;
+  stroke-width: 2;
+}
+.crm-sidebar-collapsed #sidebar .primary-nav a[data-route] .convosis-module-icon {
+  width: 22px; height: 22px; min-width: 22px; flex-basis: 22px;
+}
+.app-shell :is(.button-icon,.table-action,.setup-card-icon) { font-weight: 700; }
+.app-shell :is(.table-action,.icon-button) svg { width: 18px; height: 18px; flex-shrink: 0; }
+.app-shell :is(.card-head-copy small,.settings-section-head p,.field-hint,.related-empty) {
+  color: var(--text-soft);
+}
+html[data-crm-theme="dark"] .cs-workspace { background: var(--surface); }
+.cs-company-icon { background: var(--surface-2); }
+.cs-facts :is(dt,dd) { line-height: 1.6; }
+.cs-facts dt { font-weight: 600; }
+/* Surface-only text must not acquire a separate box during a theme change. */
+.app-shell :is(.settings-section-head,.card-head-copy,.rule-info,.audit-row>div) {
+  background: transparent;
+}
+.app-shell :is(.toolbar-search,.global-search,.setup-toolbar-search,.bp-search):focus-within {
+  outline: 2px solid var(--crm-focus-ring);
+  outline-offset: 2px;
+}
+/* Keep multiline metadata inside its column after increasing readability. */
+.app-shell :is(.rule-info,.detail-related-row-copy,.card-head-copy,.meta-value) { min-width: 0; }
+.app-shell :is(.field-hint,.rule-info small,.meta-value,.pricing-features li) { overflow-wrap: anywhere; }
+@media(max-width:700px) {
+  .app-shell .heading-actions { gap: 8px; }
+  .app-shell :is(.field-input,.field-select,.field-textarea) { min-height: 42px; }
+}
+/* The navy sidebar stays navy in Day mode, so its toggle must stay light. */
+html[data-crm-theme] #sidebar :is(.sidebar-visibility-toggle,.sidebar-close) {
+  color: #cbd3df !important;
+}
+.cs-company-icon { color: var(--primary); }
+html[data-crm-theme="dark"] .app-shell :is(.ai-view-tab.active,.ai-exception-row.selected) {
+  background: #263b58;
+  color: #d7e6ff;
+}
+html[data-crm-theme="dark"] .app-shell :is(.ai-trigger strong,.ai-readiness li.blocked b) { color: #f0c374; }
+html[data-crm-theme="dark"] .app-shell :is(.ai-readiness li b,.ai-approved) { color: #72d6a8; }
+/* One reading order and two aligned columns across record and setup forms.
+   Field semantics must not change grid spans: mixed spans leave ragged gaps. */
+:is(.app-shell,#modal-backdrop,.crm-page-backdrop) form :is(.form-grid:not(.quote-editor-layout),.qform-grid,.lead-page-grid) {
+  display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:18px 24px; align-items:start;
+}
+:is(.app-shell,#modal-backdrop,.crm-page-backdrop) form :is(.form-grid,.qform-grid,.lead-page-grid) > .field {
+  grid-column:auto; min-width:0; width:100%; margin:0;
+}
+:is(.app-shell,#modal-backdrop,.crm-page-backdrop) form :is(.form-grid,.qform-grid,.lead-page-grid) > :is(.field.full,.field-full,.form-actions,.field[data-field-size="wide"]) {
+  grid-column:1/-1;
+}
+:is(.app-shell,#modal-backdrop,.crm-page-backdrop) form .field {
+  min-width:0; box-sizing:border-box; gap:6px;
+}
+:is(.app-shell,#modal-backdrop,.crm-page-backdrop) form .field > label {
+  display:block; margin:0; color:var(--text); font-size:13px; font-weight:600;
+  line-height:1.5; white-space:normal; overflow-wrap:anywhere;
+}
+:is(.app-shell,#modal-backdrop,.crm-page-backdrop) form .field :is(input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]),select,textarea),
+.crm-product-toggle {
+  box-sizing:border-box; width:100%; min-width:0; max-width:100%;
+  padding:10px 12px; border-radius:8px; font:inherit; font-size:14px;
+  line-height:1.4; color:var(--text); background-color:var(--surface);
+}
+:is(.app-shell,#modal-backdrop,.crm-page-backdrop) form .field :is(input,select),
+.crm-product-toggle { min-height:42px; }
+:is(.app-shell,#modal-backdrop,.crm-page-backdrop) form .field :is(input[type="checkbox"],input[type="radio"]) {
+  width:auto; min-height:0; flex:none; align-self:start;
+}
+:is(.app-shell,#modal-backdrop,.crm-page-backdrop) form .field textarea:is(.field-input,.field-textarea) {
+  min-height:100px; resize:vertical;
+}
+:is(.app-shell,#modal-backdrop,.crm-page-backdrop) form .field :is(small,.field-help,.field-error) {
+  line-height:1.5; white-space:normal; overflow-wrap:anywhere;
+}
+:is(.app-shell,#modal-backdrop,.crm-page-backdrop) form :is(.form-actions,.modal-foot) {
+  display:flex; flex-wrap:wrap; align-items:center; gap:10px;
+}
+:is(.app-shell,#modal-backdrop,.crm-page-backdrop) form .field[hidden] { display:none; }
+.crm-number-row { display:flex; justify-content:flex-end; flex-wrap:wrap; gap:12px; margin-bottom:20px; }
+.crm-number-row .field { width:min(240px,100%); margin:0; }
+.crm-number-row input[readonly] { background:var(--surface-soft); color:var(--text); font-weight:700; cursor:default; }
+.crm-add-product { margin-top:6px; white-space:normal; }
+.crm-inline-product { display:grid; gap:12px; min-width:220px; max-width:100%; padding:16px; margin-top:12px; border:1px solid var(--border); border-radius:10px; background:var(--surface); color:var(--text); white-space:normal; }
+.crm-inline-product label { display:grid; gap:5px; font-size:12px; font-weight:600; }
+.crm-inline-product h3,.crm-inline-product p { margin:0; }
+.crm-inline-product > div { display:flex; flex-wrap:wrap; gap:8px; }
+@media(max-width:700px) {
+ :is(.app-shell,#modal-backdrop,.crm-page-backdrop) form :is(.form-grid:not(.quote-editor-layout),.qform-grid,.lead-page-grid) { grid-template-columns:minmax(0,1fr); }
+ .crm-number-row .field { width:100%; }
+}
+
+/* Editors must pair their canvas and controls with the active text palette. */
+html[data-crm-theme="dark"] :is(.module-builder-shell,.crm-layout-studio,.crm-layout-canvas,.builder-canvas) {
+ background:var(--bg); color:var(--text); border-color:var(--border);
+}
+html[data-crm-theme="dark"] :is(.crm-layout-section,.crm-layout-studio .crm-layout-tabs,.crm-layout-studio .crm-layout-field,.crm-layout-inline-editor,.crm-layout-action-menu,.crm-layout-action-menu button) {
+ background:var(--surface); color:var(--text); border-color:var(--border);
+}
+html[data-crm-theme="dark"] :is(.crm-layout-inline-name,.crm-layout-section-head input,.crm-layout-section-head button,.crm-layout-action summary) { color:var(--text); }
+html[data-crm-theme="dark"] :is(.crm-layout-canvas p,.crm-layout-field-type,.crm-layout-grip) { color:var(--text-soft); }
+html[data-crm-theme="dark"] :is(.crm-layout-action-menu button:hover,.crm-layout-inline-name:focus,.crm-layout-section-head input:focus) { background:var(--surface-soft); color:var(--text); }
+/* Company Settings remains self-contained even while shared CSS is loading. */
+.cs-workspace :is(h2,h3,dd,.cs-tab) { color:var(--text); }
+.cs-tabs { scrollbar-color:var(--text-faint) var(--surface); }
+
+/* Commercial-document forms: two aligned fields per row. */
+.crm-page-backdrop .qform-grid,
+.crm-page-backdrop .form-grid:not(.quote-editor-layout) {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 22px}
+.crm-page-backdrop .qform-grid > .field,
+.crm-page-backdrop .form-grid:not(.quote-editor-layout) > .field {grid-column:auto;min-width:0}
+.crm-page-backdrop .qform-grid > .field.full,
+.crm-page-backdrop .form-grid:not(.quote-editor-layout) > .field.full {grid-column:1/-1}
+.crm-page-backdrop .qform-section .crm-copy-address{display:block;margin:0 0 12px auto}
+.crm-page-backdrop .qrow-table table{min-width:1120px}
+.crm-page-backdrop .qrow-table th:nth-child(4),
+.crm-page-backdrop .qrow-table td:nth-child(4),
+.crm-page-backdrop .qrow-table th:nth-child(5),
+.crm-page-backdrop .qrow-table td:nth-child(5),
+.crm-page-backdrop .qrow-table th:nth-child(8),
+.crm-page-backdrop .qrow-table td:nth-child(8){min-width:135px}
+.crm-page-backdrop .crm-platform-layout-label {display:none}
+.crm-product-picker{position:relative;width:100%;min-width:0}
+.crm-product-native{position:absolute!important;opacity:0!important;pointer-events:none!important;width:1px!important;height:1px!important;overflow:hidden}
+.crm-product-toggle{display:block;width:100%;text-align:left;cursor:pointer;min-height:39px}
+.crm-product-dropdown{position:absolute;z-index:3000;top:100%;left:0;width:max(100%,190px);max-height:250px;overflow:auto;background:var(--surface);color:var(--text);border:1px solid var(--border);border-radius:8px;box-shadow:0 12px 25px #0002;padding:5px}
+.crm-product-dropdown[hidden]{display:none}
+.crm-product-dropdown button{display:block;width:100%;border:0;background:transparent;color:var(--text);padding:10px;text-align:left;cursor:pointer;border-radius:5px}
+.crm-product-dropdown button:hover{background:var(--surface-soft)}
+.crm-product-new,.crm-add-product{font-weight:700!important;color:var(--primary)!important;border-top:1px solid var(--border)!important}
+.crm-product-modal-backdrop{position:fixed;inset:0;z-index:20000;background:#080f1a90;display:flex;align-items:center;justify-content:center;padding:20px}
+.crm-product-modal-backdrop .crm-inline-product{margin:0;width:min(560px,100%);max-height:90vh;overflow:auto;padding:24px;box-shadow:0 20px 60px #0003;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;background:var(--surface);color:var(--text)}
+.crm-product-modal-backdrop .crm-inline-product>h3,
+.crm-product-modal-backdrop .crm-inline-product>p,
+.crm-product-modal-backdrop .crm-inline-product>div{grid-column:1/-1}
+@media(max-width:650px){.crm-page-backdrop .qform-grid,.crm-page-backdrop .form-grid:not(.quote-editor-layout){grid-template-columns:1fr}.crm-product-modal-backdrop .crm-inline-product{grid-template-columns:1fr}}
+
+.crm-page-backdrop .crm-address-group{display:grid;grid-template-columns:1fr;gap:12px;min-width:0;align-content:start}
+.crm-page-backdrop .crm-address-group h4{margin:2px 0 6px;font-size:14px;font-weight:700;color:var(--text)}
+.crm-page-backdrop .crm-address-group>.field{grid-column:auto!important;min-width:0}
+.crm-page-backdrop .crm-address-group>.field :is(input,select,textarea){width:100%}
+.crm-page-backdrop .crm-layout-header-actions>.field-select{box-sizing:border-box;width:148px!important;min-width:148px;max-width:148px;margin:0}
+.crm-page-backdrop .crm-inline-document-number{max-width:none!important;width:auto!important}
+
+/* Quote address layout: override the generic twelve-column field-size grid.
+   Address groups are direct grid children, not .field elements. */
+.app-shell form .quote-editor-layout .qform-section .qform-grid:has(> .crm-address-group) {
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  column-gap:28px;
+  row-gap:16px;
+  width:100%;
+  align-items:start;
+}
+.app-shell form .quote-editor-layout .qform-section .qform-grid > .crm-address-group {
+  grid-column:auto;
+  display:flex;
+  flex-direction:column;
+  gap:13px;
+  width:100%;
+  min-width:0;
+  box-sizing:border-box;
+}
+.app-shell form .quote-editor-layout .qform-section .crm-address-group > h4 {
+  margin:0 0 4px;
+  font-size:14px;
+  line-height:1.5;
+  white-space:normal;
+}
+.app-shell form .quote-editor-layout .qform-section .crm-address-group > .field {
+  display:block;
+  width:100%;
+  min-width:0;
+  max-width:none;
+  margin:0;
+  box-sizing:border-box;
+}
+.app-shell form .quote-editor-layout .qform-section .crm-address-group > .field :is(input,textarea,select) {
+  display:block;
+  width:100%;
+  min-width:0;
+  max-width:100%;
+  box-sizing:border-box;
+}
+.app-shell form .quote-editor-layout .qform-section .crm-address-group > .field textarea {
+  min-height:90px;
+}
+@media(max-width:700px) {
+  .app-shell form .quote-editor-layout .qform-section .qform-grid:has(> .crm-address-group) {
+    grid-template-columns:minmax(0,1fr);
+    gap:26px;
+  }
+}
+/* Keep unavailable modules discoverable while clearly indicating plan access. */
+#sidebar a.crm-plan-restricted::after {
+  content:"";
+  display:inline-block;
+  width:16px;
+  height:16px;
+  flex:0 0 16px;
+  margin-left:auto;
+  background-color:#8faee9;
+  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='m3 8 4 3 5-7 5 7 4-3-2 11H5L3 8Z' fill='none' stroke='black' stroke-width='1.8' stroke-linejoin='round' stroke-linecap='round'/%3E%3C/svg%3E") center/contain no-repeat;
+  mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='m3 8 4 3 5-7 5 7 4-3-2 11H5L3 8Z' fill='none' stroke='black' stroke-width='1.8' stroke-linejoin='round' stroke-linecap='round'/%3E%3C/svg%3E") center/contain no-repeat;
+}
+#sidebar a.crm-plan-restricted.active::after { background-color:#bed5fb; }
+
+/* Standalone related-record search has no outer search shell to round it. */
+:is(.app-shell,#modal-backdrop,.crm-page-backdrop) form input.related-record-search {
+  border-radius:8px !important;
+}
+

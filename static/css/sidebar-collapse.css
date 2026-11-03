@@ -1,0 +1,122 @@
+/* Stable navigation brand — never scale the icon or its drawn glyphs. */
+@media (min-width:1001px) {
+  #sidebar .brand-lockup {
+    position:relative;display:flex!important;align-items:center!important;
+    justify-content:space-between!important;gap:8px!important;
+    min-height:48px!important;padding:0 0 18px!important;overflow:visible!important;
+  }
+  #sidebar .brand {
+    display:flex!important;align-items:center!important;gap:10px!important;
+    flex:1 1 auto!important;width:auto!important;min-width:0!important;
+    overflow:visible!important;
+  }
+  #sidebar .brand-mark {
+    display:inline-flex!important;position:relative!important;
+    width:40px!important;height:40px!important;min-width:40px!important;min-height:40px!important;
+    max-width:40px!important;max-height:40px!important;flex:0 0 40px!important;
+    aspect-ratio:1 / 1!important;transform:none!important;scale:1!important;
+    padding:0!important;margin:0!important;box-sizing:border-box!important;
+    border-radius:11px!important;overflow:hidden!important;
+  }
+  /* Restore precise symbol coordinates independently from the outer flex layout. */
+  #sidebar .brand-mark i,#sidebar .brand-mark b {
+    position:absolute!important;display:block!important;width:11px!important;height:16px!important;
+    flex:none!important;transform:skewY(-28deg) rotate(20deg)!important;
+  }
+  #sidebar .brand-mark i {left:8px!important;top:10px!important;}
+  #sidebar .brand-mark b {right:7px!important;bottom:9px!important;}
+  #sidebar .brand-name {
+    display:block;min-width:0!important;flex:1 1 auto!important;
+    font-size:17px!important;line-height:1.22!important;font-weight:600!important;
+    white-space:normal!important;overflow-wrap:normal!important;word-break:normal!important;
+    overflow:hidden!important;text-overflow:clip!important;
+  }
+  #sidebar .sidebar-visibility-toggle {
+    display:inline-flex!important;position:relative!important;z-index:4!important;
+    flex:0 0 34px!important;width:34px!important;height:34px!important;
+    min-width:34px!important;align-items:center;justify-content:center;
+    background:rgba(255,255,255,.07);border:1px solid rgba(180,202,237,.22);
+    color:#d6e5fa;border-radius:9px;
+  }
+  #sidebar .sidebar-visibility-toggle:hover {background:rgba(100,164,255,.22);color:white;}
+  .crm-sidebar-collapsed {--sidebar-width:76px!important;}
+  .crm-sidebar-collapsed #sidebar {
+    flex:0 0 76px!important;width:76px!important;min-width:76px!important;
+    max-width:76px!important;padding:20px 10px!important;
+  }
+  .crm-sidebar-collapsed #sidebar .brand-lockup {
+    justify-content:center!important;min-height:40px!important;padding:0 0 20px!important;
+  }
+  .crm-sidebar-collapsed #sidebar .brand {
+    width:40px!important;height:40px!important;min-width:40px!important;
+    flex:0 0 40px!important;justify-content:center!important;gap:0!important;
+  }
+  .crm-sidebar-collapsed #sidebar .brand-name {display:none!important;}
+  .crm-sidebar-collapsed #sidebar .sidebar-visibility-toggle {
+    position:absolute!important;top:0!important;left:50%!important;transform:translateX(-50%)!important;
+    width:40px!important;height:40px!important;min-width:40px!important;
+    opacity:0!important;pointer-events:none!important;
+    background:#243b5b!important;border-color:#5b759d!important;border-radius:11px!important;
+  }
+  .crm-sidebar-collapsed #sidebar .brand-lockup:hover .sidebar-visibility-toggle,
+  .crm-sidebar-collapsed #sidebar .brand-lockup:focus-within .sidebar-visibility-toggle {opacity:1!important;pointer-events:auto!important;}
+  .crm-sidebar-collapsed #sidebar .brand-lockup:hover .brand-mark,
+  .crm-sidebar-collapsed #sidebar .brand-lockup:focus-within .brand-mark {opacity:0!important;}
+  .crm-sidebar-collapsed #sidebar .nav-label {font-size:0!important;line-height:0!important;height:1px!important;padding:0!important;margin:8px 0!important;overflow:hidden!important;}
+  .crm-sidebar-collapsed #sidebar .expanded-nav {gap:5px!important;}
+  .crm-sidebar-collapsed #sidebar .expanded-nav a[data-route] {
+    width:54px!important;height:46px!important;min-height:46px!important;
+    padding:0!important;margin:0 auto!important;justify-content:center!important;
+    gap:0!important;font-size:0!important;line-height:0!important;overflow:hidden!important;
+  }
+  .crm-sidebar-collapsed #sidebar .expanded-nav a[data-route] .convosis-module-icon {
+    width:22px!important;height:22px!important;min-width:22px!important;flex:0 0 22px!important;
+  }
+  .crm-sidebar-collapsed #sidebar .nav-count,
+  .crm-sidebar-collapsed #sidebar-resizer,
+  .crm-sidebar-collapsed #sidebar .sidebar-footer {display:none!important;}
+}
+@media(max-width:1000px) {
+  #sidebar .sidebar-visibility-toggle {display:none!important;}
+  #menu-toggle[hidden] {display:inline-flex!important;}
+}
+@media(prefers-reduced-motion:no-preference) {
+  @media(min-width:1001px) {
+    #sidebar .brand-mark,#sidebar .sidebar-visibility-toggle {transition:opacity .15s ease,background .15s ease;}
+  }
+}
+
+/* Unified muted silver for the permanent navy sidebar in either theme. */
+:root { --convosis-sidebar-muted-silver: #aeb9c9; }
+#sidebar .sidebar-visibility-toggle,
+#sidebar .sidebar-visibility-toggle > span {
+  color:var(--convosis-sidebar-muted-silver)!important;
+  -webkit-text-fill-color:var(--convosis-sidebar-muted-silver)!important;
+}
+#sidebar .sidebar-visibility-toggle {
+  border-color:var(--convosis-sidebar-muted-silver)!important;
+}
+#sidebar .ts-workspace-control .ts-workspace-bar > button,
+#sidebar .ts-workspace-control .ts-workspace-bar .ts-workspace-badge,
+#sidebar .ts-workspace-control .ts-workspace-bar .ts-action-dots,
+#sidebar .ts-workspace-control .ts-workspace-bar [data-ts-current],
+#sidebar .ts-workspace-control .ts-workspace-bar [data-ts-switch] span {
+  color:var(--convosis-sidebar-muted-silver)!important;
+  -webkit-text-fill-color:var(--convosis-sidebar-muted-silver)!important;
+  opacity:1!important;
+}
+#sidebar .ts-workspace-control .ts-workspace-bar > button {
+  border-color:var(--convosis-sidebar-muted-silver)!important;
+}
+
+/* Borderless Teamspace selector and overflow menu; retain spacing and faded silver glyphs. */
+#sidebar .ts-workspace-control .ts-workspace-bar > button,
+html[data-crm-theme="light"] #sidebar .ts-workspace-control .ts-workspace-bar > button,
+html[data-crm-theme="dark"] #sidebar .ts-workspace-control .ts-workspace-bar > button {
+  border:0!important;
+  box-shadow:none!important;
+  outline-offset:2px;
+}
+#sidebar .ts-workspace-control .ts-workspace-bar > button:focus-visible {
+  outline:2px solid var(--convosis-sidebar-muted-silver)!important;
+}

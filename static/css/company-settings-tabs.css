@@ -1,0 +1,14 @@
+/* Company Settings: Zoho-inspired tabbed configuration workspace. */
+.cs-workspace{min-width:0;background:var(--surface,#ffffff);border:1px solid var(--border,#e6e8ef);border-radius:14px;overflow:hidden;min-height:620px;color:var(--text,#171a26)}
+.cs-tabs{display:flex;align-items:stretch;gap:12px;padding:0 23px;border-bottom:1px solid var(--border,#e6e8ef);overflow-x:auto;scrollbar-width:thin;white-space:nowrap}
+.cs-tab{flex:none;display:flex;align-items:center;min-height:52px;padding:10px 10px;border-bottom:3px solid transparent;color:var(--text,#171a26);font-size:13px;font-weight:500;text-decoration:none!important}
+.cs-tab:hover{color:var(--primary,#6884ed)}.cs-tab.active{font-weight:700;border-bottom-color:var(--primary,#637df6);color:var(--text,#171a26)}
+.cs-body{padding:30px 32px 48px;min-height:550px}.cs-body h2{font-size:22px;margin:0 0 12px}.cs-body h3{font-size:16px;margin:0 0 16px}.cs-body p{margin:5px 0 13px}
+.cs-company-head{display:flex;gap:30px;align-items:flex-start;margin-bottom:35px}.cs-company-icon{width:86px;height:86px;flex:none;display:grid;place-items:center;font-size:43px;background:var(--surface-2,var(--surface-soft,#f5f6fa));border-radius:13px;border:1px solid var(--border,#e6e8ef)}
+.cs-company-intro{min-width:0}.cs-company-intro h2{display:flex;gap:16px;align-items:center;flex-wrap:wrap}.cs-edit{font-size:18px;text-decoration:none}
+.cs-muted{color:var(--text-faint,#667085)}.cs-section{margin-top:36px;max-width:880px}.cs-section .button{margin:8px 12px 5px 0}
+.cs-facts{display:grid;grid-template-columns:minmax(140px,235px) minmax(0,1fr);gap:16px 28px;margin:22px 0}.cs-facts dt{text-align:right;color:var(--text-faint,#667085)}.cs-facts dd{margin:0;overflow-wrap:anywhere}
+.cs-empty{text-align:center;max-width:650px;margin:115px auto 0}.cs-globe{font-size:100px;color:var(--primary,#637df6);line-height:1.2;margin-bottom:18px}.cs-choice{max-width:920px;padding:21px 26px;border:1px solid var(--border,#e6e8ef);border-radius:9px;margin:22px 0;background:var(--surface-2,rgba(128,140,160,.08))}
+.cs-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:22px}.cs-heading p{flex-basis:100%}
+.cs-body .settings-section{margin-top:20px}
+@media(max-width:750px){.cs-body{padding:20px 16px}.cs-tabs{gap:4px;padding:0 12px}.cs-tab{font-size:12px}.cs-company-head{gap:15px}.cs-company-icon{width:58px;height:58px;font-size:28px}.cs-facts{grid-template-columns:1fr;gap:3px}.cs-facts dt{text-align:left;margin-top:12px}}

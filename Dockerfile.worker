@@ -1,0 +1,14 @@
+FROM python:3.12-slim
+ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1
+WORKDIR /app
+# Apply available Debian security updates to packages inherited from the base image.
+# Rebuild and scan regularly: this does not remediate CVEs without an upstream fix.
+RUN apt-get update \
+    && apt-get upgrade -y --no-install-recommends \
+    && rm -rf /var/lib/apt/lists/*
+COPY requirements.txt ./
+RUN python -m pip install --no-cache-dir --disable-pip-version-check -r requirements.txt \
+    && useradd --create-home --uid 10001 app
+COPY --chown=app:app . .
+USER app
+CMD ["python", "-m", "app.workflow_worker"]

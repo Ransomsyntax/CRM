@@ -1,0 +1,61 @@
+/* Minimal monochrome module icon system */
+#sidebar .primary-nav a[data-route]{display:flex;align-items:center;gap:10px;}
+#sidebar .primary-nav a[data-route] .convosis-module-icon{display:block;width:19px;height:19px;min-width:19px;flex:0 0 19px;color:inherit;stroke:currentColor;overflow:visible;}
+#sidebar .primary-nav a[data-route][hidden]{display:none!important;}
+@media(max-width:600px){#sidebar .primary-nav a[data-route] .convosis-module-icon{width:18px;height:18px;min-width:18px;flex-basis:18px;}}
+
+/* Keep icons recognizable after theme switches and sidebar collapse. */
+#sidebar .primary-nav a[data-route] .convosis-module-icon {
+  opacity: 1;
+  visibility: visible;
+  fill: none;
+  stroke: currentColor;
+  vector-effect: non-scaling-stroke;
+  pointer-events: none;
+}
+#sidebar .primary-nav a[data-route]:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: -2px;
+}
+html[data-crm-theme="dark"] #sidebar .primary-nav a[data-route] {
+  color: #d7e3f6;
+}
+html[data-crm-theme="dark"] #sidebar .primary-nav a[data-route]:is(:hover,.active,[aria-current="page"]) {
+  color: #ffffff;
+}
+.crm-sidebar-collapsed #sidebar .primary-nav a[data-route] .convosis-module-icon {
+  flex-shrink: 0;
+}
+
+/* Teamspace links receive icons dynamically too. Constrain their SVG geometry. */
+#sidebar .primary-nav .ts-sidebar-members a[data-ts-module-link] {
+  display:flex;
+  align-items:center;
+  gap:9px;
+  min-height:36px;
+  min-width:0;
+  max-width:100%;
+  overflow:hidden;
+  font-size:12px;
+  line-height:1.4;
+}
+#sidebar .primary-nav .ts-sidebar-members a[data-ts-module-link] > svg.convosis-module-icon {
+  display:block!important;
+  width:19px!important;
+  height:19px!important;
+  min-width:19px!important;
+  max-width:19px!important;
+  min-height:19px!important;
+  max-height:19px!important;
+  flex:0 0 19px!important;
+  aspect-ratio:1;
+  overflow:visible;
+  pointer-events:none;
+}
+@media(max-width:600px){
+  #sidebar .primary-nav .ts-sidebar-members a[data-ts-module-link] > svg.convosis-module-icon {
+    width:18px!important;height:18px!important;min-width:18px!important;
+    max-width:18px!important;min-height:18px!important;max-height:18px!important;
+    flex-basis:18px!important;
+  }
+}

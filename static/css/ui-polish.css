@@ -1,0 +1,355 @@
+/* Consistent geometry and spacing for authenticated CRM surfaces. */
+:root { --ui-panel-radius: 12px; --ui-control-radius: 8px; }
+:is(.card,.settings-section,.table-card,.module-toolbar,.pricing-card,.setup-hub-card,.detail-summary,.deal-card,.kanban-column,.security-callout,.ai-copilot-muted,.ai-fallback-note,.notification-popup,.toast) {
+  border-radius: var(--ui-panel-radius);
+  min-width: 0;
+  box-sizing: border-box;
+}
+:is(.button,.quick-action,.field-input,.field-select,.field-textarea,.toolbar-search,.global-search,.view-toggle,.view-toggle button,.setup-home-toolbar,.crm-transition-action) { border-radius: var(--ui-control-radius); }
+:is(.icon-button,.table-action,.stat-icon,.result-icon,.related-dot) { border-radius: var(--ui-control-radius); flex-shrink: 0; }
+:is(.button,.quick-action,.table-action) { line-height: 1.4; }
+.button { white-space: normal; text-align: center; }
+.module-toolbar { row-gap: 10px; }
+.module-toolbar .toolbar-search { flex: 1 1 240px; min-width: min(100%,220px); }
+.module-toolbar > :is(input,select) { flex: 1 1 140px; width: auto; min-width: 0; }
+.module-toolbar .record-count { margin-left: auto; white-space: nowrap; }
+.card-head { padding: 18px 20px; }
+:is(.card-head,.settings-section-head,.setup-hub-head) :is(h2,h3,p) { overflow-wrap: anywhere; }
+:is(.heading-actions,.form-actions,.card-actions) .button { min-height: 38px; }
+.stat-card::after { display: none; }
+/* Let report actions wrap without crushing the record name into one-letter lines. */
+.rule-row { flex-wrap: wrap; gap: 10px; padding: 14px 0; }
+.rule-row .rule-info { flex: 1 1 180px; min-width: min(180px,100%); overflow-wrap: anywhere; }
+.rule-row > :is(.button,.table-action,.status-badge) { flex-shrink: 0; }
+.analytics-layout { grid-template-columns: minmax(0,1fr) minmax(0,1fr); }
+.analytics-layout > * { min-width: 0; }
+.setup-home-toolbar { padding: 16px; gap: 16px; }
+.security-callout { flex-wrap: wrap; line-height: 1.6; }
+.security-callout > span { flex: 1 1 280px; }
+.pricing-card { padding: 24px; }
+.pricing-card-head h2 { overflow-wrap: anywhere; line-height: 1.25; }
+.pricing-features { line-height: 1.6; }
+.pricing-limits { gap: 8px; }
+.pricing-card .button { min-height: 42px; }
+.data-table .record-link { overflow-wrap: anywhere; }
+:is(.empty-state,.related-empty) { line-height: 1.6; }
+@media(max-width:1000px) { .analytics-layout { grid-template-columns: minmax(0,1fr); } }
+@media(max-width:700px) {
+  .module-toolbar > :is(.toolbar-search,input,select) { flex-basis: 100%; width: 100%; }
+  .module-toolbar .record-count { margin-left: 0; }
+  .card-head { padding: 16px; }
+  .pricing-card { padding: 20px; }
+}
+:is(.detail-plain-section,.detail-tab-strip) { border-radius: var(--ui-panel-radius); }
+.detail-tab { border-radius: var(--ui-control-radius); min-width: 110px; }
+.detail-plain-head { gap: 12px; padding: 18px 20px; }
+.detail-related-row-copy :is(strong,small) { white-space: normal; overflow-wrap: anywhere; }
+
+/* A closed report editor must not reserve an empty second column. */
+.analytics-layout:has(> [data-report-editor][hidden]) { grid-template-columns: minmax(0,1fr); }
+
+
+/* 2026-10-15: consistent curved geometry, clean search inputs and report tables. */
+:root { --crm-radius-card:12px; --crm-radius-control:9px; }
+:is(.card,.table-card,.settings-section,.setup-hub-card,.detail-summary,.detail-plain-section,.management-grid > *, .pricing-card) {
+  border-radius:var(--crm-radius-card);
+  background-clip:padding-box;
+}
+:is(.global-search,.toolbar-search,.setup-toolbar-search,.advanced-filter-search-label) {
+  box-sizing:border-box;
+  border-radius:var(--crm-radius-control);
+  min-width:0;
+  max-width:100%;
+}
+:is(.global-search,.toolbar-search,.setup-toolbar-search,.advanced-filter-search-label) input {
+  box-sizing:border-box;
+  flex:1 1 auto;
+  width:100%;
+  min-width:0;
+  border:0 !important;
+  border-radius:0;
+  box-shadow:none !important;
+  outline:0;
+  background:transparent !important;
+}
+:is(.global-search,.toolbar-search,.setup-toolbar-search,.advanced-filter-search-label):focus-within {
+  border-color:var(--primary,#3775df);
+  box-shadow:0 0 0 3px rgba(55,117,223,.15);
+}
+:is(.global-search,.toolbar-search,.setup-toolbar-search) > :is(span,svg,i) { flex:0 0 auto; }
+.table-wrap:has(> .performance-table) {
+  border:1px solid var(--border,#344156);
+  border-radius:var(--crm-radius-card);
+  overflow-x:auto;
+  overflow-y:hidden;
+  background-clip:padding-box;
+}
+.performance-table { width:100%; border-collapse:separate; border-spacing:0; }
+.performance-table thead th { white-space:nowrap; }
+.performance-table :is(th,td) { padding:15px 18px; vertical-align:middle; }
+.performance-table td:has(.achievement-meter) { white-space:nowrap; }
+.performance-table .achievement-meter { display:inline-block; vertical-align:middle; max-width:120px; margin-right:10px; }
+:is(.card-head,.settings-section-head,.setup-hub-head) { min-width:0; }
+:is(.card-head,.settings-section-head,.setup-hub-head) > :first-child { min-width:0; }
+:is(.card-head,.settings-section-head,.setup-hub-head) :is(h1,h2,h3) { margin-top:0; overflow-wrap:anywhere; }
+:is(.card-head,.settings-section-head,.setup-hub-head) > .button { flex-shrink:0; }
+.empty-state { max-width:100%; border-radius:var(--crm-radius-card); }
+.empty-state :is(h2,h3,p) { max-width:100%; overflow-wrap:anywhere; }
+html[data-crm-theme="dark"] .table-wrap:has(> .performance-table) {
+  border-color:var(--premium-border,#344156);
+  background:var(--premium-surface,#192331);
+}
+html[data-crm-theme="dark"] :is(.global-search,.toolbar-search,.setup-toolbar-search,.advanced-filter-search-label) {
+  background:#192331 !important;
+  border-color:#40516a;
+  color:#dce7f8;
+}
+html[data-crm-theme="dark"] :is(.global-search,.toolbar-search,.setup-toolbar-search,.advanced-filter-search-label) input {
+  color:#e7edf6 !important;
+}
+@media(max-width:700px) {
+  .performance-table { min-width:720px; }
+  .performance-table :is(th,td) { padding:12px 14px; }
+  :is(.card-head,.settings-section-head,.setup-hub-head) > .button { align-self:flex-start; }
+}
+
+/* Search controls: use a single rounded outer shell, never a rectangular inner input. */
+:is(.global-search,.toolbar-search,.setup-toolbar-search,.advanced-filter-search-label,.search-field,.search-container) :is(input[type="search"],input:not([type])) {
+  border:0 !important;
+  border-radius:inherit;
+  outline:0 !important;
+  box-shadow:none !important;
+  background:transparent !important;
+  min-width:0;
+}
+html[data-crm-theme="dark"] :is(.global-search,.toolbar-search,.setup-toolbar-search,.advanced-filter-search-label,.search-field,.search-container) input {
+  border:0 !important;
+  outline:0 !important;
+  box-shadow:none !important;
+  background:transparent !important;
+}
+:is(.global-search,.toolbar-search,.setup-toolbar-search,.advanced-filter-search-label,.search-field,.search-container) :is(input,button):focus-visible {
+  outline-offset:2px;
+}
+input[type="search"]::-webkit-search-decoration,
+input[type="search"]::-webkit-search-cancel-button { -webkit-appearance:none; }
+
+
+/* Borderless search surfaces throughout the CRM; preserve parent toolbar layout. */
+:is(.global-search,.toolbar-search,.setup-toolbar-search,.advanced-filter-search-label,.search-field,.search-container) {
+  border:0 !important;
+  outline:0 !important;
+  box-shadow:none !important;
+  background:transparent !important;
+}
+:is(.global-search,.toolbar-search,.setup-toolbar-search,.advanced-filter-search-label,.search-field,.search-container):is(:hover,:focus,:focus-within,:active) {
+  border:0 !important;
+  outline:0 !important;
+  box-shadow:none !important;
+}
+:is(.global-search,.toolbar-search,.setup-toolbar-search,.advanced-filter-search-label,.search-field,.search-container) :is(input,input[type="text"],input[type="search"]) {
+  border:0 !important;
+  outline:0 !important;
+  box-shadow:none !important;
+  border-radius:0 !important;
+  background:transparent !important;
+  appearance:none;
+  -webkit-appearance:none;
+}
+:is(.global-search,.toolbar-search,.setup-toolbar-search,.advanced-filter-search-label,.search-field,.search-container) :is(input,input[type="text"],input[type="search"]):is(:hover,:focus,:focus-visible,:active) {
+  border:0 !important;
+  outline:0 !important;
+  box-shadow:none !important;
+  background:transparent !important;
+}
+html[data-crm-theme="dark"] :is(.global-search,.toolbar-search,.setup-toolbar-search,.advanced-filter-search-label,.search-field,.search-container),
+html[data-crm-theme="light"] :is(.global-search,.toolbar-search,.setup-toolbar-search,.advanced-filter-search-label,.search-field,.search-container) {
+  border:0 !important;
+  outline:0 !important;
+  box-shadow:none !important;
+  background:transparent !important;
+}
+
+
+/* Search v5: ONE visible rounded wrapper; inner input must never draw a box.
+   Keep functional icon, placeholder, and accessibility semantics. */
+:is(.global-search,.toolbar-search,.setup-toolbar-search,.advanced-filter-search-label,.search-field,.search-container) {
+  box-sizing:border-box;
+  display:flex;
+  align-items:center;
+  min-width:0;
+  border:1px solid var(--border,#344156) !important;
+  border-radius:var(--crm-radius-control,9px) !important;
+  background:var(--surface,#fff) !important;
+  background-clip:padding-box;
+  overflow:hidden;
+}
+:is(.global-search,.toolbar-search,.setup-toolbar-search,.advanced-filter-search-label,.search-field,.search-container):focus-within {
+  border-color:var(--primary,#3775df) !important;
+  box-shadow:0 0 0 2px rgba(55,117,223,.14) !important;
+}
+html[data-crm-theme="dark"] :is(.global-search,.toolbar-search,.setup-toolbar-search,.advanced-filter-search-label,.search-field,.search-container) {
+  background:#192331 !important;
+  border-color:#40516a !important;
+}
+html[data-crm-theme="dark"] :is(.global-search,.toolbar-search,.setup-toolbar-search,.advanced-filter-search-label,.search-field,.search-container):focus-within {
+  border-color:#6b97ed !important;
+}
+:is(.global-search,.toolbar-search,.setup-toolbar-search,.advanced-filter-search-label,.search-field,.search-container) > input,
+:is(.global-search,.toolbar-search,.setup-toolbar-search,.advanced-filter-search-label,.search-field,.search-container) > input[type="text"],
+:is(.global-search,.toolbar-search,.setup-toolbar-search,.advanced-filter-search-label,.search-field,.search-container) > input[type="search"],
+html[data-crm-theme="dark"] :is(.global-search,.toolbar-search,.setup-toolbar-search,.advanced-filter-search-label,.search-field,.search-container) > input,
+html[data-crm-theme="light"] :is(.global-search,.toolbar-search,.setup-toolbar-search,.advanced-filter-search-label,.search-field,.search-container) > input {
+  flex:1 1 auto;
+  min-width:0;
+  width:100%;
+  max-width:100%;
+  box-sizing:border-box;
+  border:0 !important;
+  outline:0 !important;
+  box-shadow:none !important;
+  border-radius:0 !important;
+  background:transparent !important;
+  background-image:none !important;
+  appearance:none;
+  -webkit-appearance:none;
+}
+:is(.global-search,.toolbar-search,.setup-toolbar-search,.advanced-filter-search-label,.search-field,.search-container) > input:is(:hover,:focus,:focus-visible,:active),
+html[data-crm-theme="dark"] :is(.global-search,.toolbar-search,.setup-toolbar-search,.advanced-filter-search-label,.search-field,.search-container) > input:is(:hover,:focus,:focus-visible,:active) {
+  border:0 !important;
+  outline:0 !important;
+  box-shadow:none !important;
+  background:transparent !important;
+}
+:is(.global-search,.toolbar-search,.setup-toolbar-search,.advanced-filter-search-label,.search-field,.search-container) > :is(span,svg,i) { flex-shrink:0; }
+
+
+/* Flat unified search surface matching the supplied reference. */
+:is(.global-search,.toolbar-search,.setup-toolbar-search,.advanced-filter-search-label,.search-field,.search-container) {
+ display:flex !important; align-items:center !important; gap:10px;
+ min-width:0; box-sizing:border-box; border:0 !important;
+ border-radius:12px !important; background:#1d2633 !important;
+ outline:0 !important; box-shadow:none !important; overflow:hidden;
+}
+:is(.global-search,.toolbar-search,.setup-toolbar-search,.advanced-filter-search-label,.search-field,.search-container):is(:hover,:focus-within,:active) {
+ border:0 !important; outline:0 !important; box-shadow:none !important;
+}
+:is(.global-search,.toolbar-search,.setup-toolbar-search,.advanced-filter-search-label,.search-field,.search-container) input,
+html[data-crm-theme="dark"] :is(.global-search,.toolbar-search,.setup-toolbar-search,.advanced-filter-search-label,.search-field,.search-container) input,
+html[data-crm-theme="light"] :is(.global-search,.toolbar-search,.setup-toolbar-search,.advanced-filter-search-label,.search-field,.search-container) input {
+ flex:1 1 auto; min-width:0; width:100%; max-width:100%; box-sizing:border-box;
+ border:0 !important; border-radius:0 !important; outline:0 !important;
+ box-shadow:none !important; background:transparent !important;
+ background-image:none !important; appearance:none; -webkit-appearance:none;
+}
+:is(.global-search,.toolbar-search,.setup-toolbar-search,.advanced-filter-search-label,.search-field,.search-container) input:is(:focus,:focus-visible,:hover,:active) {
+ border:0 !important; outline:0 !important; box-shadow:none !important;
+ background:transparent !important;
+}
+:is(.global-search,.toolbar-search,.setup-toolbar-search,.advanced-filter-search-label,.search-field,.search-container) > :is(svg,i,span) { flex-shrink:0; }
+html[data-crm-theme="dark"] :is(.global-search,.toolbar-search,.setup-toolbar-search,.advanced-filter-search-label,.search-field,.search-container) { background:#1d2633 !important; border:0 !important; }
+html[data-crm-theme="light"] :is(.global-search,.toolbar-search,.setup-toolbar-search,.advanced-filter-search-label,.search-field,.search-container) { background:#eef2f7 !important; border:0 !important; }
+
+
+/* Search v7: match inputs directly, including dynamically rendered module search. */
+html body input:is([type="search"],[placeholder^="Search" i],[aria-label^="Search" i]),
+html[data-crm-theme="dark"] body input:is([type="search"],[placeholder^="Search" i],[aria-label^="Search" i]),
+html[data-crm-theme="light"] body input:is([type="search"],[placeholder^="Search" i],[aria-label^="Search" i]) {
+  border:0 !important;
+  outline:0 !important;
+  box-shadow:none !important;
+  border-radius:0 !important;
+  background:transparent !important;
+  background-color:transparent !important;
+  background-image:none !important;
+  appearance:none !important;
+  -webkit-appearance:none !important;
+  min-width:0;
+}
+html body input:is([type="search"],[placeholder^="Search" i],[aria-label^="Search" i]):is(:focus,:focus-visible,:hover,:active),
+html[data-crm-theme="dark"] body input:is([type="search"],[placeholder^="Search" i],[aria-label^="Search" i]):is(:focus,:focus-visible,:hover,:active) {
+  border:0 !important;
+  outline:0 !important;
+  box-shadow:none !important;
+  background:transparent !important;
+}
+html[data-crm-theme="dark"] body :is(.global-search,.toolbar-search,.setup-toolbar-search,.advanced-filter-search-label,.search-field,.search-container) {
+  background:#1d2633 !important;
+  border:0 !important;
+  box-shadow:none !important;
+}
+
+
+/* Final search input reset: only the search wrapper paints the control. */
+:where(.global-search,.toolbar-search,.setup-toolbar-search,.advanced-filter-search-label,.search-field,.search-container,.bp-search) input,
+input:is([type="search"],[placeholder^="Search" i],[aria-label^="Search" i]) {
+  border: 0 !important;
+  outline: none !important;
+  outline-width: 0 !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  min-width: 0;
+}
+:where(.global-search,.toolbar-search,.setup-toolbar-search,.advanced-filter-search-label,.search-field,.search-container,.bp-search) input:is(:focus,:focus-visible,:hover,:active),
+input:is([type="search"],[placeholder^="Search" i],[aria-label^="Search" i]):is(:focus,:focus-visible,:hover,:active) {
+  border: 0 !important;
+  outline: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+
+
+/* Consolidate the two distinct close-date bounds into one accessible filter. */
+.crm-date-range-filter { position:relative; flex:0 0 auto; }
+.crm-date-range-filter > summary { cursor:pointer; list-style:none; display:flex; align-items:center; min-height:36px; white-space:nowrap; }
+.crm-date-range-filter > summary::-webkit-details-marker { display:none; }
+.crm-date-range-popover { position:absolute; z-index:45; top:calc(100% + 6px); left:0; display:grid; gap:10px; padding:12px; min-width:225px; border:1px solid var(--border,#344156); border-radius:10px; background:var(--surface,#fff); box-shadow:0 12px 24px #0003; }
+.crm-date-range-filter:not([open]) .crm-date-range-popover { display:none; }
+.crm-date-range-popover label { display:grid; gap:5px; font-size:12px; color:var(--text,#dce7f8); }
+.crm-date-range-popover input { width:100%; min-width:0; }
+html[data-crm-theme="dark"] .crm-date-range-popover { background:#192331; border-color:#40516a; }
+
+/* Shared administration/report geometry: independent cards do not stretch to
+   match a long neighboring list, and audit metadata starts on its own line. */
+.security-grid { align-items: start; }
+.audit-row > div { min-width: 0; overflow-wrap: anywhere; }
+.audit-row > div > :is(strong,small) { display: block; }
+.audit-row > div > small { margin-top: 4px; }
+.settings-heading-row { flex-wrap: wrap; }
+.settings-heading-row > :first-child { min-width: 0; }
+.rule-info small { white-space: normal; overflow-wrap: anywhere; }
+.ai-cockpit-stats { margin-top: 18px; }
+.ai-cockpit-stat > strong { overflow-wrap: anywhere; }
+
+
+/* October QA: preserve readable controls and contained record-detail content. */
+.module-toolbar select.filter-select {
+  appearance: none;
+  padding-inline: 12px 32px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='m1 1 5 5 5-5' fill='none' stroke='%23798699' stroke-width='1.8'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+}
+.table-card .data-table { table-layout: auto; }
+.table-card .data-table th { white-space: nowrap; word-break: normal; overflow-wrap: normal; }
+.table-card .data-table :is(th, td):not(:first-child):not(:last-child) { min-width: 144px; }
+.table-card .data-table :is(th, td):nth-child(2) { min-width: 160px; }
+.table-card .table-wrap { overflow-x: auto; }
+.detail-title-copy h2, .detail-title-copy h1, .record-link { overflow-wrap: anywhere; }
+.crm-inline-note-compose { padding: 12px; }
+.crm-inline-note-compose .form-actions { margin-top: 12px; padding: 4px 0; }
+.record-sharing-panel { margin-top: 20px; }
+.record-sharing-panel .card-body { padding: 20px; }
+.record-sharing-panel .data-table { width: 100%; table-layout: auto; }
+.record-sharing-panel .record-share-empty { padding: 18px; text-align: center; }
+.record-sharing-panel [data-share-form] { margin-top: 16px; align-items: end; gap: 16px; }
+.record-sharing-panel .field { min-width: 0; }
+.record-sharing-panel .record-share-actions { width: 100%; }
+.crm-field-error { display: block; color: var(--red, #c32d42); line-height: 1.5; margin-top: 5px; }
+.crm-field-error[hidden] { display: none; }
+.field input[aria-invalid="true"] { border-color: var(--red, #c32d42); }
+#global-search-submit { border: 0; background: transparent; color: inherit; cursor: pointer; padding: 4px; }
+#global-search-submit:focus-visible { outline: 2px solid var(--primary, #5064f2); outline-offset: 2px; }
+#search-results > p { padding: 12px; }

@@ -1,0 +1,17 @@
+.module-ai-dialog{width:min(850px,calc(100vw - 24px));max-height:90dvh;border:1px solid var(--border,#ddd);border-radius:18px;padding:26px;background:var(--surface,#fff);color:var(--text,#17212c);overflow:auto;box-shadow:0 24px 100px #0003}
+.module-ai-dialog::backdrop{background:#10182880;backdrop-filter:blur(3px)}
+.module-ai-dialog header,.module-ai-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.module-ai-dialog h2{font-size:25px;margin:4px 0}.module-ai-dialog h3{font-size:18px;margin:12px 0}.module-ai-dialog h4{margin:20px 0 8px}
+.module-ai-dialog form>label,.module-ai-schedule>label:not(.module-ai-check){display:block;font-weight:600;margin:16px 0 6px}
+.module-ai-dialog select,.module-ai-dialog textarea{box-sizing:border-box;width:100%;padding:11px 12px;border:1px solid var(--border,#d3d9e0);border-radius:9px;background:var(--surface,#fff);color:inherit;font:inherit}.module-ai-dialog textarea{resize:vertical}
+.module-ai-note,.module-ai-schedule>p{font-size:13px;line-height:1.6;opacity:.8}.module-ai-chips{display:flex;gap:7px;flex-wrap:wrap;margin:12px 0}.module-ai-chips button{border:1px solid var(--border,#ddd);border-radius:20px;padding:7px 11px;background:transparent;color:inherit;cursor:pointer;font:inherit;font-size:12px}
+.module-ai-dialog .module-ai-check{display:flex;align-items:center;gap:9px;font-size:13px;font-weight:400;margin:12px 0}.module-ai-check input{width:auto}
+.module-ai-schedule{border-top:1px solid var(--border,#ddd);border-bottom:1px solid var(--border,#ddd);margin-top:20px;padding:17px 0}.module-ai-schedule summary{cursor:pointer;font-weight:600}
+.module-ai-output{margin-top:20px;line-height:1.6}.module-ai-answer{white-space:pre-wrap}.module-ai-action,.module-ai-policy{padding:15px;border:1px solid var(--border,#ddd);border-radius:12px;margin:12px 0}.module-ai-changes{margin:12px 0;padding:12px;border-radius:8px;background:#8899aa12;overflow-wrap:anywhere}.module-ai-changes>div+div{margin-top:10px}.module-ai-changes dt{font-size:12px;font-weight:600;opacity:.75}.module-ai-changes dd{margin:2px 0 0;white-space:pre-wrap}.module-ai-changes ul{margin:0;padding-left:20px}.module-ai-error{color:var(--danger,#b42318)}
+.module-ai-history{display:flex;flex-direction:column;gap:6px;width:100%;text-align:left;padding:14px;margin:8px 0;border:1px solid var(--border,#ddd);border-radius:10px;background:transparent;color:inherit;cursor:pointer}.module-ai-policy small{display:block;margin-bottom:10px}
+html[data-crm-theme="dark"] .module-ai-dialog{--surface:#192331;--border:#344156;--text:#e7edf6;background:var(--surface);color:var(--text)}
+@media(max-width:600px){.module-ai-dialog{padding:18px;max-height:94dvh}.module-ai-dialog .module-ai-toolbar .button{width:100%}}
+
+body:has(.heading-actions [data-module-ai-open]) #apex-top-link{display:none}
+
+.module-ai-confirm{width:min(460px,calc(100vw - 24px))}.module-ai-confirm [data-delete-confirm]{background:var(--danger,#b42318);color:#fff}

@@ -1,0 +1,72 @@
+/* Route and bootstrap loader: brand only, centered in the viewport.
+   This wrapper exists only until page content is ready. */
+.crm-compact-loading {
+  position:relative!important;
+  z-index:1;
+  display:grid!important;
+  place-items:center!important;
+  width:100%!important;
+  height:auto!important;
+  min-height:0!important;
+  padding:40px 0!important;
+  margin:0!important;
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+}
+.crm-route-loading, .crm-route-updating {
+  display:flex; align-items:center; justify-content:center; gap:8px;
+  color:var(--text-soft,#65748d); font-size:12px;
+}
+.crm-route-loading { min-height:140px; padding:24px; }
+.crm-route-updating {
+  position:absolute; top:8px; right:12px; z-index:5; pointer-events:none;
+  padding:6px 10px; border-radius:8px; background:var(--surface,#fff);
+}
+.crm-route-spinner {
+  position:relative; display:block; width:88px; height:88px; flex:0 0 88px;
+}
+.crm-route-spinner > .yash-radial-loader {
+  position:absolute; top:50%; left:50%; width:132px; height:132px; margin:0;
+  transform:translate(-50%,-50%) scale(var(--crm-route-logo-scale,.6666667));
+}
+.crm-route-updating .crm-route-spinner {
+  width:24px; height:24px; flex-basis:24px; --crm-route-logo-scale:.18;
+}
+@media(prefers-reduced-motion:reduce) {
+  .crm-route-spinner .yash-loader-spokes,
+  .crm-route-spinner .uploaded-loader-logo { animation:none!important; }
+}
+.crm-compact-loading > .yash-radial-loader {
+  position:relative!important;
+  width:132px!important;
+  height:132px!important;
+  min-width:132px!important;
+  min-height:132px!important;
+  margin:0!important;
+  display:grid!important;
+  place-items:center!important;
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+}
+.crm-compact-loading .yash-loader-spokes {
+  display:block!important;
+  animation:yash-radial-spin 1.45s linear infinite!important;
+}
+.crm-compact-loading .uploaded-loader-logo {
+  display:block!important;
+  opacity:1!important;
+  visibility:visible!important;
+}
+.crm-compact-spinner { display:none!important; }
+.crm-visually-hidden {
+  position:absolute!important;width:1px!important;height:1px!important;
+  padding:0!important;margin:-1px!important;overflow:hidden!important;
+  clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important;
+}
+@media(prefers-reduced-motion:reduce){
+  .crm-compact-loading .yash-loader-spokes,
+  .crm-compact-loading .uploaded-loader-logo {animation:none!important}
+}
+

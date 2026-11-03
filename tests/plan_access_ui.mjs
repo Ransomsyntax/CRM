@@ -1,0 +1,13 @@
+import assert from 'node:assert/strict';
+import {blockedPlanRoute} from '../static/js/features/plan-access.js';
+const sub={access_active:true,features:{inventory_management:false},resource_features:{products:'inventory_management',quotes:'inventory_management'}};
+assert.equal(blockedPlanRoute('/products',sub),true);
+assert.equal(blockedPlanRoute('/app/products/14',sub),true);
+assert.equal(blockedPlanRoute('/setup/quotes',sub),true);
+assert.equal(blockedPlanRoute('/leads',sub),false);
+assert.equal(blockedPlanRoute('/products',{...sub,owner_unrestricted:true}),false);
+assert.equal(blockedPlanRoute('/leads',{...sub,access_active:false}),true);
+assert.equal(blockedPlanRoute('/subscriptions',{...sub,access_active:false}),false);
+assert.equal(blockedPlanRoute('/settings/profile',{...sub,access_active:false}),false);
+assert.equal(blockedPlanRoute('/products',{...sub,features:{inventory_management:true}}),false);
+console.log('Plan UI route checks passed');

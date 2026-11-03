@@ -1,0 +1,37 @@
+import assert from 'node:assert/strict';
+import {JSDOM} from 'jsdom';
+import {layoutQuoteForm,fillQuoteAccountAddresses,prepareQuoteAddresses} from '../static/js/features/quote-layout.js';
+const keys=['street','city','state','code','country'];
+const dom=new JSDOM('<form id="record-form"><div id="modal-body"><div class="form-grid"></div></div></form>');
+for(const key of ['document','window','Event','FormData'])globalThis[key]=dom.window[key];
+const grid=document.querySelector('.form-grid');
+const field=(name,value='')=>{const wrap=document.createElement('div');wrap.className='field';const input=document.createElement('input');input.name=name;input.value=value;wrap.append(input);grid.append(wrap);return input;};
+for(const prefix of ['billing','shipping']) {
+ for(const key of keys)field(prefix+'_'+key);
+ field(prefix+'_address',prefix==='billing'?'Old free-form address, keep intact':'');
+}
+field('line_items','[]');field('name','Unsaved quote');
+layoutQuoteForm({line_items:[]},{esc:String,formatMoney:String});
+const get=name=>document.querySelector('[name="'+name+'"]');
+assert.equal(get('billing_street').value,'Old free-form address, keep intact');
+assert.equal(get('billing_address').closest('.field').hidden,true);
+get('billing_street').value='25 Main Road';get('billing_city').value='Kochi';
+get('billing_city').dispatchEvent(new Event('input',{bubbles:true}));
+assert.equal(get('billing_address').value,'25 Main Road, Kochi');
+document.querySelector('.crm-copy-address').click();
+assert.equal(get('shipping_city').value,'Kochi');
+assert.equal(get('shipping_address').value,'25 Main Road, Kochi');
+assert.equal(new FormData(document.querySelector('form')).get('shipping_address'),'25 Main Road, Kochi','hidden compatibility field is still saved');
+fillQuoteAccountAddresses(document,{billing_street:'Do not overwrite',billing_city:'Delhi'});
+assert.equal(get('billing_city').value,'Kochi','linked account must not overwrite an address already entered');
+for(const prefix of ['billing','shipping'])for(const key of [...keys,'address'])get(prefix+'_'+key).value='';
+fillQuoteAccountAddresses(document,{billing_street:'Account road',billing_city:'Mumbai',billing_postal_code:'400001'});
+assert.equal(get('billing_code').value,'400001');
+assert.equal(get('shipping_street').value,'Account road','empty shipping defaults to billing');
+assert.equal(get('shipping_address').value,'Account road, Mumbai, 400001');
+assert.equal(get('name').value,'Unsaved quote');
+const partial=document.createElement('section');partial.innerHTML='<div class="field"><textarea name="billing_address">Custom layout address</textarea></div>';
+prepareQuoteAddresses(partial);
+assert.equal(partial.querySelector('.field').hidden,false,'custom layouts without structured fields retain their editor');
+dom.window.close();
+console.log('Quote address checks passed: one editor, legacy data, copy, account mapping and custom layouts.');

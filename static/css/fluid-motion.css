@@ -1,0 +1,89 @@
+/* CONVOSIS motion system: compositor-friendly transforms and opacity. */
+:root {
+  --motion-fast: 170ms;
+  --motion-normal: 290ms;
+  --motion-panel: 440ms;
+  --motion-ease: cubic-bezier(.22,.8,.25,1);
+  --motion-exit: cubic-bezier(.4,0,1,1);
+}
+@media (prefers-reduced-motion: no-preference) {
+  /* Interactive feedback: do not animate all properties or layout dimensions. */
+  :is(.button,button,.icon-button,.table-action,.quick-action,.crm-top-tool,
+      .zfw-btn,.zfw-rail button,.zw button,.sidebar-visibility-toggle,
+      .sidebar-close,.view-toggle button,.detail-tab,.settings-nav a,
+      .primary-nav a,.crm-transition-action) {
+    transition: background-color var(--motion-normal) ease,
+      border-color var(--motion-normal) ease,
+      color var(--motion-fast) ease,
+      box-shadow var(--motion-normal) ease,
+      opacity var(--motion-fast) ease,
+      transform var(--motion-normal) var(--motion-ease);
+  }
+  :is(.button,button,.icon-button,.table-action,.quick-action,.crm-top-tool,
+      .zfw-btn,.zfw-rail button,.zw button):not(:disabled):active {
+    transform: scale(.988);
+  }
+  :is(input,select,textarea,.field-input,.field-select,.form-control) {
+    transition: border-color var(--motion-normal) ease,
+      box-shadow var(--motion-normal) ease,
+      background-color var(--motion-normal) ease,
+      color var(--motion-fast) ease;
+  }
+  :is(.card,.deal-card,.teamspace-card,.kanban-column,.setup-hub-card,
+      .settings-section,.pricing-card,.module-toolbar,.notification-popup) {
+    transition: background-color var(--motion-normal) ease,
+      border-color var(--motion-normal) ease,
+      box-shadow var(--motion-panel) var(--motion-ease);
+  }
+  /* Sidebar retains its width controller; only soften its content. */
+  @media (min-width:1001px) {
+    #sidebar {transition:width 440ms var(--motion-ease), min-width 440ms var(--motion-ease), max-width 440ms var(--motion-ease), padding 440ms var(--motion-ease), background-color 290ms ease!important;}
+    .main-area {transition:margin-left 440ms var(--motion-ease), width 440ms var(--motion-ease)!important;}
+  }
+  #app-content {transition:background-color 290ms ease;}
+  #sidebar :is(.brand-name,.nav-label,.primary-nav a span,.sidebar-nav-label) {
+    transition: opacity 200ms ease, transform var(--motion-panel) var(--motion-ease);
+  }
+  /* Animations run only when shown; hidden elements remain hidden. */
+  :is(.modal,.zfw-dialog,.zw-dialog,.notification-popup,.toast,
+      .dropdown-menu,[role="menu"],[role="listbox"]):not([hidden]) {
+    animation: crm-motion-enter 320ms var(--motion-ease) both;
+  }
+  .zfw-preview:not([hidden]), .zw-dialog-bg:not([hidden]),
+  #modal-backdrop:not([hidden]) {
+    animation: crm-motion-overlay 260ms ease-out both;
+  }
+  :is(.spinner,.loading-spinner,.button-spinner,[aria-label="Loading"]) {
+    animation: crm-motion-spin 900ms linear infinite;
+  }
+  :is(.skeleton,.skeleton-line,.loading-skeleton) {
+    background-image: linear-gradient(100deg,transparent 18%,rgba(140,163,195,.14) 42%,transparent 65%);
+    background-size: 220% 100%;
+    animation: crm-motion-skeleton 1.6s ease-in-out infinite;
+  }
+  #app-content > :is(section,article,.module-page,.dashboard-page,.page-content):not([hidden]) {
+    animation: crm-motion-page 340ms var(--motion-ease) both;
+  }
+  @keyframes crm-motion-enter {
+    from {opacity:0;transform:translateY(3px) scale(.995)}
+    to {opacity:1;transform:translateY(0) scale(1)}
+  }
+  @keyframes crm-motion-page {
+    from {opacity:.82;transform:translateY(5px)}
+    to {opacity:1;transform:translateY(0)}
+  }
+  @keyframes crm-motion-overlay {from{opacity:0}to{opacity:1}}
+  @keyframes crm-motion-spin {to{transform:rotate(360deg)}}
+  @keyframes crm-motion-skeleton {from{background-position:200% 0}to{background-position:-100% 0}}
+}
+@media (prefers-reduced-motion: reduce) {
+  :is(.spinner,.loading-spinner,.button-spinner,.skeleton,.skeleton-line,.loading-skeleton),
+  :is(.zfw-preview,.zw-dialog-bg,#modal-backdrop),
+  #app-content > :is(section,article,.module-page,.dashboard-page,.page-content),
+  :is(.modal,.zfw-dialog,.zw-dialog,.notification-popup,.toast) {
+    animation:none!important;
+  }
+  #app-content *,#sidebar *,#modal-backdrop * {
+    scroll-behavior:auto!important;
+  }
+}

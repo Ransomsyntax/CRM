@@ -1,0 +1,821 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#071a4a" />
+  <title>CONVOSIS CRM — Sign in</title>
+  <link rel="icon" href="/static/convosis-brand.png?v=20261016-brand1" type="image/png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root{
+      --navy:#071a4a;--navy2:#0a2d73;--blue:#0f2180;--royal:#1454d9;--bright:#1f7af0;--cyan:#5fd4ff;
+      --ink:#10172a;--muted:#5f6b82;--line:#cbd6e5;--soft:#f5f8fc;--danger:#b4232d;
+      --card-shadow:0 34px 90px rgba(20,42,86,.18);
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;min-height:100%;background:#f2f5f9}
+    body{
+      min-width:320px;
+      min-height:100vh;min-height:100dvh;
+      font-family:Manrope,Segoe UI,sans-serif;color:var(--ink);
+      display:grid;place-items:center;overflow-x:hidden;
+      background:
+        radial-gradient(circle at 12% 18%,rgba(37,116,240,.14),transparent 31%),
+        radial-gradient(circle at 88% 84%,rgba(78,196,255,.11),transparent 28%),
+        linear-gradient(135deg,#eef4fb 0%,#ffffff 56%,#f6f8fb 100%);
+      padding:24px;
+    }
+    .auth-shell{
+      width:min(1320px,100%);
+      min-height:min(820px,calc(100dvh - 48px));
+      display:grid;
+      grid-template-columns:minmax(0,1.03fr) minmax(430px,.97fr);
+      border-radius:42px;
+      overflow:hidden;
+      background:#fff;
+      border:1px solid rgba(204,215,229,.88);
+      box-shadow:var(--card-shadow);
+      position:relative;
+      isolation:isolate;
+    }
+    .auth-shell::after{
+      content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.72);
+    }
+
+    .hero{
+      position:relative;isolation:isolate;overflow:hidden;min-width:0;color:#fff;
+      padding:44px 48px 42px;
+      display:flex;flex-direction:column;
+      background:
+        radial-gradient(circle at 78% 14%,rgba(55,169,255,.36),transparent 24%),
+        linear-gradient(150deg,#07112d 0%,#082765 36%,#0d46b3 68%,#1d78e8 100%);
+    }
+    .hero::before,.hero::after{
+      content:"";position:absolute;z-index:-2;border-radius:46% 54% 44% 56%/54% 39% 61% 46%;
+      filter:saturate(115%);will-change:transform;
+    }
+    .hero::before{
+      width:760px;height:420px;left:-190px;top:-145px;
+      background:linear-gradient(135deg,#164fce 0%,#2f8af8 46%,#71dcff 100%);
+      box-shadow:0 0 72px rgba(66,169,255,.18);
+      transform:rotate(12deg);
+      animation:waveTop 15s ease-in-out infinite alternate;
+    }
+    .hero::after{
+      width:760px;height:420px;left:-170px;bottom:-205px;
+      background:linear-gradient(135deg,#0b3b9d 0%,#145ee6 48%,#2d9ffc 100%);
+      box-shadow:0 -20px 70px rgba(54,142,255,.18);
+      transform:rotate(-11deg);
+      animation:waveBottom 17s ease-in-out infinite alternate;
+    }
+    .wave{
+      position:absolute;z-index:-1;border-radius:45% 55% 50% 50%/56% 42% 58% 44%;
+      pointer-events:none;will-change:transform;mix-blend-mode:screen;
+    }
+    .wave.one{
+      width:560px;height:330px;right:-210px;top:115px;
+      background:linear-gradient(145deg,rgba(15,49,145,.25),rgba(29,125,237,.84) 52%,rgba(100,218,255,.72));
+      box-shadow:inset 0 0 42px rgba(255,255,255,.07),0 18px 58px rgba(0,12,67,.28);
+      animation:waveOne 11s ease-in-out infinite;
+    }
+    .wave.two{
+      width:430px;height:270px;left:-170px;bottom:90px;
+      background:linear-gradient(140deg,rgba(10,38,110,.2),rgba(31,117,241,.65),rgba(98,214,255,.5));
+      animation:waveTwo 13s ease-in-out infinite reverse;
+    }
+    .wave.three{
+      width:640px;height:110px;left:20px;bottom:125px;
+      border-radius:999px;
+      background:linear-gradient(90deg,transparent,rgba(102,220,255,.32),rgba(255,255,255,.18),transparent);
+      filter:blur(1px);
+      animation:glide 9s ease-in-out infinite;
+    }
+    .hero-gloss{
+      position:absolute;z-index:-1;inset:-35% -55%;
+      background:linear-gradient(112deg,transparent 41%,rgba(255,255,255,.05) 47%,rgba(255,255,255,.17) 50%,rgba(255,255,255,.05) 53%,transparent 59%);
+      transform:translate3d(-28%,0,0) rotate(-8deg);
+      animation:glossSweep 10.5s cubic-bezier(.45,0,.2,1) infinite;
+      pointer-events:none;
+    }
+
+    .brand-row{display:flex;align-items:center;justify-content:space-between;gap:18px;position:relative;z-index:2}
+    .brand{display:flex;align-items:center;gap:12px;font-weight:800;font-size:24px;letter-spacing:-.035em}
+    .mark{position:relative;width:44px;height:38px}
+    .mark:before,.mark:after{content:"";position:absolute;top:2px;width:24px;height:34px;border-radius:7px 7px 11px 11px;transform:skew(-18deg)}
+    .mark:before{left:2px;background:linear-gradient(180deg,#4bdcff,#1c7bf0 62%,#1558d8)}
+    .mark:after{right:2px;background:linear-gradient(180deg,#2ba7ff,#1d62e8 64%,#1538a4)}
+    .hero-copy{position:relative;z-index:2;max-width:610px;margin:auto 0;padding:54px 0 42px}
+    .kicker{display:inline-flex;padding:8px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.24);background:rgba(255,255,255,.08);backdrop-filter:blur(8px);font-size:11px;font-weight:800;letter-spacing:.11em;text-transform:uppercase}
+    .hero h1{font-size:clamp(46px,4.8vw,72px);line-height:.98;letter-spacing:-.055em;margin:22px 0 20px;max-width:610px}
+    .hero p{max-width:520px;font-size:17px;line-height:1.65;color:rgba(255,255,255,.82);margin:0}
+    .hero-foot{position:relative;z-index:2;display:flex;align-items:center;gap:0;flex-wrap:wrap;color:rgba(255,255,255,.68);font-size:11px}
+    .hero-foot span{padding:0 18px;border-right:1px solid rgba(255,255,255,.22)}
+    .hero-foot span:first-child{padding-left:0}
+    .hero-foot span:last-child{border-right:0}
+
+    .panel-wrap{min-width:0;display:grid;place-items:center;padding:48px 54px;background:linear-gradient(180deg,#ffffff 0%,#fbfcfe 100%)}
+    .panel{width:min(100%,500px);max-height:calc(100dvh - 88px);overflow:auto;overscroll-behavior:contain;padding:8px 4px 8px 0;animation:panelEnter .52s cubic-bezier(.22,.8,.22,1) both}
+    .eyebrow{display:block;font-size:12px;font-weight:800;letter-spacing:.11em;text-transform:uppercase;color:var(--royal);margin-bottom:9px}
+    .panel h2{font-size:52px;line-height:1;letter-spacing:-.055em;margin:0 0 14px;color:#0a1024}
+    .panel .sub{color:var(--muted);font-size:16px;line-height:1.62;margin:0 0 28px;max-width:460px}
+    .field{display:grid;gap:8px;margin-bottom:17px}
+    .field label{font-size:12px;font-weight:800;color:#1d2a44}
+    .field input{
+      width:100%;height:54px;border:1px solid var(--line);border-radius:12px;
+      padding:0 15px;font:inherit;color:var(--ink);outline:0;background:#fff;
+      box-shadow:inset 0 1px 0 rgba(16,38,77,.02);transition:border .16s,box-shadow .16s,transform .16s;
+    }
+    .password-control{position:relative}
+    .password-control input{padding-right:78px}
+    .password-toggle{
+      position:absolute;right:7px;top:50%;transform:translateY(-50%);min-width:62px;min-height:44px;
+      border:0;border-radius:9px;background:transparent;color:#27446f;font:inherit;font-size:12px;font-weight:800;cursor:pointer
+    }
+    .password-toggle:hover{background:#eef4fd}
+    .password-toggle:focus-visible{outline:3px solid rgba(31,122,240,.28);outline-offset:1px}
+    .field input:focus{border-color:#2c73ed;box-shadow:0 0 0 4px rgba(31,122,240,.11),0 8px 22px rgba(30,83,180,.07)}
+    .row{display:flex;justify-content:space-between;gap:14px;align-items:center;margin:-1px 0 22px}
+    .row a,.switch a{display:inline-flex;align-items:center;min-height:44px;color:var(--royal);text-decoration:none;font-weight:800}
+    .row a:hover,.switch a:hover{text-decoration:underline}
+    .submit{
+      width:100%;height:56px;border:0;border-radius:14px;
+      background:linear-gradient(120deg,#0f2b98 0%,#1454d9 48%,#1d7af0 100%);
+      background-size:180% 180%;color:#fff;font:inherit;font-weight:800;cursor:pointer;
+      box-shadow:0 14px 28px rgba(20,84,217,.24),inset 0 1px 0 rgba(255,255,255,.2);
+      transition:.18s;animation:buttonGlow 6s ease-in-out infinite;
+    }
+    .submit:hover{transform:translateY(-1px);box-shadow:0 17px 34px rgba(20,84,217,.3),inset 0 1px 0 rgba(255,255,255,.25)}
+    .submit:disabled{opacity:.58;cursor:wait;transform:none;animation:none}
+    .switch{text-align:center;margin-top:22px;color:var(--muted);font-size:13px}
+    .secure{display:flex;align-items:center;justify-content:center;gap:7px;margin-top:18px;color:var(--muted);font-size:12px;line-height:1.5;text-align:center}
+    .secure:before{content:"✓";display:grid;place-items:center;width:18px;height:18px;border-radius:50%;background:#eaf3ff;color:#1b67df;font-weight:900}
+    .error{display:none;margin:0 0 16px;padding:11px 12px;border-radius:10px;background:#fff2f2;color:var(--danger);font-size:12px;border:1px solid #ffd7d7}
+
+    .signup-only,.forgot-only,.reset-only{display:none}
+    body.signup .signin-only,body.forgot .signin-only,body.reset .signin-only{display:none!important}
+    body.signup .field.signup-only,body.forgot .field.forgot-only,body.reset .field.reset-only{display:grid!important}
+    body.signup span.signup-only,body.forgot span.forgot-only,body.reset span.reset-only{display:inline!important}
+    body.signup h2.signup-only,body.forgot h2.forgot-only,body.reset h2.reset-only,
+    body.signup p.signup-only,body.forgot p.forgot-only,body.reset p.reset-only{display:block}
+    body.signup .switch.signup-only,body.forgot .switch.forgot-only,body.reset .switch.reset-only{display:block!important}
+    body.signup .row.signup-only,body.forgot .row.forgot-only,body.reset .row.reset-only{display:flex!important}
+    body:not(.signup):not(.forgot):not(.reset) .field.signin-only{display:grid!important}
+    body:not(.signup):not(.forgot):not(.reset) span.signin-only{display:inline!important}
+    body:not(.signup):not(.forgot):not(.reset) .row.signin-only{display:flex!important}
+    body:not(.signup):not(.forgot):not(.reset) .switch.signin-only{display:block!important}
+    body.signup .panel-wrap{align-items:flex-start;overflow-y:auto;padding-top:34px;padding-bottom:34px}
+    body.signup .panel{margin:auto 0}
+    body.forgot .panel-wrap,body.reset .panel-wrap{align-items:center}
+
+    @keyframes waveTop{0%{transform:translate3d(-24px,8px,0) rotate(10deg) scale(1)}100%{transform:translate3d(26px,-12px,0) rotate(14deg) scale(1.04)}}
+    @keyframes waveBottom{0%{transform:translate3d(-22px,8px,0) rotate(-12deg) scale(1)}100%{transform:translate3d(20px,-10px,0) rotate(-7deg) scale(1.05)}}
+    @keyframes waveOne{0%,100%{transform:translate3d(0,0,0) rotate(-7deg) scale(1)}50%{transform:translate3d(-24px,18px,0) rotate(-2deg) scale(1.035)}}
+    @keyframes waveTwo{0%,100%{transform:translate3d(0,0,0) rotate(9deg)}50%{transform:translate3d(28px,-16px,0) rotate(4deg)}}
+    @keyframes glide{0%,100%{transform:translate3d(-10%,0,0) scaleX(.95);opacity:.45}50%{transform:translate3d(10%,-8px,0) scaleX(1.05);opacity:.8}}
+    @keyframes glossSweep{0%,15%{transform:translate3d(-30%,0,0) rotate(-8deg);opacity:0}28%{opacity:.9}65%{transform:translate3d(31%,0,0) rotate(-8deg);opacity:.72}78%,100%{transform:translate3d(44%,0,0) rotate(-8deg);opacity:0}}
+    @keyframes panelEnter{from{opacity:0;transform:translate3d(0,14px,0)}to{opacity:1;transform:none}}
+    @keyframes buttonGlow{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+
+    @media(prefers-reduced-motion:reduce){
+      .hero::before,.hero::after,.wave,.hero-gloss,.panel,.submit{animation:none!important}
+      .submit{transition:none}
+    }
+    @media(max-width:1000px){
+      body{padding:0;display:block;background:#fff}
+      .auth-shell{width:100%;min-height:100dvh;border-radius:0;grid-template-columns:1fr;box-shadow:none;border:0}
+      .hero{min-height:430px;padding:34px}
+      .hero-copy{padding:42px 0 36px}
+      .hero h1{font-size:54px;max-width:580px}
+      .panel-wrap{padding:38px 24px 48px}
+      .panel{max-height:none;width:min(100%,560px);padding-right:0}
+    }
+    @media(max-width:600px){
+      .hero{min-height:270px;padding:22px}
+      .brand{font-size:20px}.mark{transform:scale(.9);transform-origin:left center}
+      .lang{font-size:12px}
+      .hero-copy{padding:24px 0 18px}
+      .kicker{font-size:9px;padding:7px 9px}
+      .hero h1{font-size:34px;line-height:1.04;margin:14px 0 12px}
+      .hero p{font-size:16px;line-height:1.55}
+      .hero-foot{display:none}
+      .wave.one{right:-300px}.wave.two{left:-240px}
+      .panel-wrap{padding:26px 18px 38px}
+      .panel h2{font-size:36px}
+      .panel .sub{font-size:16px}
+      .row{align-items:flex-start;flex-direction:column;gap:2px}
+    }
+
+    /* Blue-and-white glass slider: preserve the original animated wave artwork. */
+    .auth-shell{background:#fff;view-transition-name:none}
+    /* Stable trapezoid, no negative margins or clipping through typography. */
+    .hero{view-transition-name:none;z-index:2;margin:0;min-width:0;
+      clip-path:polygon(0 0,100% 0,88% 100%,0 100%);
+      padding:42px clamp(90px,8vw,125px) 42px 44px}
+    body.signup .hero{grid-column:2;grid-row:1;margin:0;
+      clip-path:polygon(12% 0,100% 0,100% 100%,0 100%);
+      padding:42px 42px 42px clamp(110px,9vw,145px)}
+    body.signup .panel-wrap{grid-column:1;grid-row:1}
+    .hero-copy{max-width:100%}
+    .hero h1{font-size:clamp(36px,3.5vw,58px);overflow-wrap:normal;text-wrap:balance}
+    .hero p{font-size:clamp(14px,1.1vw,17px)}
+    .hero-foot{font-size:10px;gap:8px}
+    .hero-foot span{padding:0 10px}
+    .hero-foot span:first-child{padding-left:0}
+    /* Thin frosted highlight confined to the slanted edge. */
+    /* The white form sheet extends underneath the clipped hero, eliminating the
+       blank triangular sliver without overlapping interactive content. */
+    @media(min-width:1001px){
+      .panel-wrap{margin-left:-85px;padding-left:calc(54px + 85px);z-index:1}
+      body.signup .panel-wrap{margin-left:0;margin-right:-85px;padding-left:54px;padding-right:calc(54px + 85px)}
+      .hero{z-index:2}
+    }
+    /* Real glass layer over the moving blue waves, with a bevel along the slope. */
+    .hero-glass{
+      position:absolute;inset:0;z-index:1;pointer-events:none;
+      background:linear-gradient(115deg,rgba(255,255,255,.035) 5%,rgba(197,233,255,.115) 55%,rgba(255,255,255,.30) 100%);
+      backdrop-filter:blur(7px) saturate(1.25);
+      -webkit-backdrop-filter:blur(7px) saturate(1.25);
+      box-shadow:inset 0 1px rgba(255,255,255,.34),inset -3px 0 rgba(255,255,255,.38);
+    }
+    body.signup .hero-glass{
+      background:linear-gradient(245deg,rgba(255,255,255,.035) 5%,rgba(197,233,255,.115) 55%,rgba(255,255,255,.30) 100%);
+      box-shadow:inset 0 1px rgba(255,255,255,.34),inset 3px 0 rgba(255,255,255,.38);
+    }
+    .hero .brand-row,.hero .hero-copy,.hero .hero-foot{position:relative;z-index:3}
+    @media(max-width:1200px) and (min-width:1001px){
+      .panel-wrap{padding-left:115px}
+      body.signup .panel-wrap{padding-right:115px}
+    }
+    @media(max-width:1000px){
+      .hero-glass{backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
+    }
+    .hero::selection{background:#9ed6ff;color:#091d56}
+    .hero-gloss{opacity:.75}
+    .panel-wrap{overflow:hidden}
+    body.signup .panel-wrap{overflow-y:auto}
+    .panel{width:100%}
+    @media(min-width:1001px) and (max-width:1200px){
+      .hero{padding-right:95px;padding-left:30px}
+      body.signup .hero{padding-left:115px;padding-right:26px}
+      .hero h1{font-size:clamp(34px,3.4vw,44px)}
+      .hero-foot{display:none}
+    }
+    .panel-wrap{view-transition-name:auth-form;position:relative;isolation:isolate;
+      background:linear-gradient(145deg,rgba(255,255,255,.86),rgba(239,247,255,.71));
+      backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px)}
+    .panel-wrap::before{content:"";position:absolute;inset:15px;border:1px solid rgba(255,255,255,.9);
+      border-radius:25px;background:linear-gradient(125deg,rgba(255,255,255,.34),rgba(255,255,255,.06));
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.9);pointer-events:none;z-index:-1}
+    .panel{position:relative}
+    body.signup .hero{grid-column:2;grid-row:1}
+    body.signup .panel-wrap{grid-column:1;grid-row:1}
+    .auth-shell::before{content:"";position:absolute;z-index:8;pointer-events:none;top:0;bottom:0;
+      width:22%;left:-28%;opacity:0;transform:skewX(-11deg);
+      background:linear-gradient(90deg,transparent,rgba(255,255,255,.58),rgba(179,222,255,.28),transparent);
+      filter:none;backdrop-filter:none;-webkit-backdrop-filter:none}
+    .auth-shell.switching-to-signup::before{animation:glassSwipeRight .65s ease-in-out}
+    .auth-shell.switching-to-signin::before{animation:glassSwipeLeft .65s ease-in-out}
+    @keyframes glassSwipeRight{0%{left:-28%;opacity:0}20%{opacity:1}80%{opacity:1}100%{left:110%;opacity:0}}
+    @keyframes glassSwipeLeft{0%{left:110%;opacity:0}20%{opacity:1}80%{opacity:1}100%{left:-28%;opacity:0}}
+    /* No browser view-transition snapshots: they blurred and duplicated the
+       angled hero during the cross-column swap in Chromium. */
+    .auth-shell.switching-to-signup .hero,
+    .auth-shell.switching-to-signin .hero{animation:heroSettle .45s ease-out}
+    @keyframes heroSettle{from{opacity:.86}to{opacity:1}}
+    @media(max-width:1000px){
+      body.signup .hero,body.signup .panel-wrap{grid-column:1;grid-row:auto}
+      .hero,body.signup .hero{clip-path:none;margin:0;padding:34px}
+      .hero h1{font-size:clamp(34px,5vw,54px)}
+    }
+    @media(prefers-reduced-motion:reduce){
+      .auth-shell::before{display:none}
+      ::view-transition-old(auth-hero),::view-transition-new(auth-hero),
+      ::view-transition-old(auth-form),::view-transition-new(auth-form){animation:none}
+    }
+    /* Compact raised-glass card and padded surfaces. */
+    @media(min-width:1001px){
+      .auth-shell{width:min(1180px,100%);min-height:0;height:min(610px,calc(100dvh - 80px));border-radius:32px;
+        border:1px solid rgba(255,255,255,.82);
+        box-shadow:0 28px 75px rgba(22,61,120,.19),0 9px 24px rgba(16,55,110,.1),
+          inset 0 2px 0 rgba(255,255,255,.95),inset 0 -2px 0 rgba(130,175,234,.22)}
+      .panel-wrap{padding-top:26px;padding-bottom:26px}
+      .panel{max-height:calc(min(610px,100dvh - 80px) - 52px)}
+    }
+    .panel-wrap{
+      background:linear-gradient(140deg,rgba(255,255,255,.94),rgba(237,246,255,.83));
+      box-shadow:inset 0 2px 0 rgba(255,255,255,.98),inset 0 -2px 0 rgba(173,202,238,.35);
+    }
+    .panel-wrap::before{
+      background:linear-gradient(140deg,rgba(255,255,255,.60),rgba(207,229,253,.18));
+      box-shadow:inset 0 2px 1px rgba(255,255,255,.95),0 8px 24px rgba(66,126,204,.07);
+    }
+    .hero-glass{
+      background:linear-gradient(115deg,rgba(255,255,255,.08),rgba(224,245,255,.22) 58%,rgba(255,255,255,.36));
+      box-shadow:inset 0 3px rgba(255,255,255,.38),inset -4px 0 rgba(255,255,255,.44),inset 0 -3px rgba(10,54,133,.11);
+    }
+    .field input{box-shadow:inset 0 2px 4px rgba(36,82,151,.045),0 4px 10px rgba(38,79,142,.025)}
+    /* FLIP handles panel translation, not the static page layout. */
+    .auth-shell.mode-sliding .hero,.auth-shell.mode-sliding .panel-wrap{will-change:transform}
+    @media(prefers-reduced-motion:reduce){
+      .auth-shell.mode-sliding .hero,.auth-shell.mode-sliding .panel-wrap{will-change:auto}
+    }
+    /* Single full-bleed glass coating: matches the blue trapezoid's clip exactly. */
+    .hero{perspective:none}
+    .hero-glass,body.signup .hero-glass{
+      inset:0;
+      border:0;
+      border-radius:0;
+      background:linear-gradient(128deg,rgba(255,255,255,.15) 0%,rgba(227,246,255,.105) 48%,rgba(180,220,255,.18) 78%,rgba(255,255,255,.22) 100%);
+      box-shadow:inset 0 1px rgba(255,255,255,.28),inset 0 -2px rgba(9,56,155,.13);
+      backdrop-filter:blur(5px) saturate(1.14);
+      -webkit-backdrop-filter:blur(5px) saturate(1.14);
+      transform:none;
+    }
+    body.signup .hero-glass{
+      background:linear-gradient(232deg,rgba(255,255,255,.15),rgba(227,246,255,.105) 48%,rgba(180,220,255,.18) 78%,rgba(255,255,255,.22));
+    }
+    .hero .brand-row,.hero .hero-copy,.hero .hero-foot{z-index:3}
+    /* Keep scrolling on signup, but never expose a scrollbar track. */
+    .panel,.panel-wrap,body.signup .panel-wrap{
+      scrollbar-width:none;
+      -ms-overflow-style:none;
+    }
+    .panel::-webkit-scrollbar,.panel-wrap::-webkit-scrollbar,
+    body.signup .panel-wrap::-webkit-scrollbar{display:none;width:0;height:0}
+    body:not(.signup):not(.forgot):not(.reset) .panel{overflow:visible;max-height:none}
+    body:not(.signup):not(.forgot):not(.reset) .panel-wrap{overflow:hidden}
+    @media(max-width:1000px){
+      body:not(.signup):not(.forgot):not(.reset) .panel-wrap{overflow:visible}
+    }
+
+    /* Final authentication finish: blue-only 3D glass, plain form surfaces. */
+    .hero-glass,body.signup .hero-glass{inset:0!important;border:0!important;border-radius:0!important;
+      background:linear-gradient(122deg,rgba(255,255,255,.22),rgba(203,235,255,.08) 43%,rgba(255,255,255,.21) 84%,rgba(255,255,255,.29))!important;
+      backdrop-filter:blur(6px) saturate(1.18);-webkit-backdrop-filter:blur(6px) saturate(1.18);
+      box-shadow:inset 0 3px rgba(255,255,255,.37),inset 0 -3px rgba(6,48,129,.17)!important}
+    .panel-wrap{background:#fff!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;box-shadow:none!important}
+    .panel-wrap::before{display:none!important}
+    .panel{scrollbar-gutter:auto!important}
+    .secure{margin-top:10px;font-size:11px;line-height:1.4}
+    .panel .sub{margin-bottom:19px}
+    .field{margin-bottom:13px}
+    .row{margin-bottom:14px}
+    .switch{margin-top:14px}
+    .panel h2{margin-bottom:10px}
+    /* Keep reminder reachable at short heights, without exposing scrollbar tracks. */
+    body:not(.signup):not(.forgot):not(.reset) .panel{overflow-y:auto;max-height:100%}
+    body:not(.signup):not(.forgot):not(.reset) .panel-wrap{overflow-y:auto}
+    .theme-toggle{position:fixed;right:clamp(16px,4vw,62px);top:clamp(14px,3vh,30px);
+      z-index:100;display:grid;place-items:center;width:91px;height:46px;padding:0;border:0;
+      background:none;cursor:pointer}
+    .theme-track{position:relative;display:flex;align-items:center;justify-content:space-between;
+      width:88px;height:40px;border-radius:24px;padding:0 12px;
+      background:linear-gradient(145deg,#d3e2ff,#f4f8ff);border:1px solid rgba(80,118,187,.22);
+      box-shadow:inset 0 2px 5px rgba(60,88,145,.15),0 5px 15px rgba(24,58,111,.16)}
+    .theme-sun,.theme-moon{z-index:1;font-size:22px;line-height:1}
+    .theme-sun{color:#ca9344}.theme-moon{color:#36488a}
+    .theme-knob{position:absolute;left:3px;top:3px;width:32px;height:32px;border-radius:50%;
+      background:linear-gradient(140deg,#fff,#e2ebfc);
+      box-shadow:0 3px 9px rgba(26,46,101,.24),inset 0 1px rgba(255,255,255,.9);
+      transition:transform .25s cubic-bezier(.22,.75,.25,1)}
+    .theme-toggle:focus-visible{outline:3px solid #4184fc;outline-offset:3px;border-radius:25px}
+    body.dark-auth{--ink:#e9effe;--muted:#a5b4ca;--line:#374761;--royal:#7eafff;--danger:#ff9da7;
+      background:radial-gradient(circle at 14% 19%,#1d3150 0%,transparent 35%),
+      radial-gradient(circle at 86% 80%,#162840 0%,transparent 32%),#0a101b;color:#ebf2ff}
+    body.dark-auth .auth-shell{background:#101a2c;border-color:#33465f;
+      box-shadow:0 35px 95px rgba(0,0,0,.55),inset 0 1px rgba(255,255,255,.12)}
+    body.dark-auth .panel-wrap{background:#101b2e!important;color:#ebf2ff}
+    body.dark-auth .panel h2{color:#f5f8ff}
+    body.dark-auth .panel .sub,body.dark-auth .switch,body.dark-auth .secure{color:#afbdd2}
+    body.dark-auth .field label{color:#dde8fa}
+    body.dark-auth .field input{background:#17263d;color:#f4f8ff;border-color:#43536e;box-shadow:inset 0 2px 5px rgba(0,0,0,.21)}
+    body.dark-auth .field input::placeholder{color:#9cacc3}
+    body.dark-auth .password-toggle{color:#bdd8ff}
+    body.dark-auth .password-toggle:hover{background:#253752}
+    body.dark-auth .row a,body.dark-auth .switch a{color:#8cbaff}
+    body.dark-auth .theme-track{background:linear-gradient(130deg,#1c2946,#303f63);border-color:#5e7196}
+    body.dark-auth .theme-knob{transform:translateX(48px);background:linear-gradient(140deg,#fafbff,#b5c8ed)}
+    body.dark-auth .theme-sun{color:#a2acc0}
+    body.dark-auth .theme-moon{color:#d5e6ff}
+    @media(max-width:1000px){.theme-toggle{top:12px;right:14px}.auth-shell{padding-top:0}}
+    @media(prefers-reduced-motion:reduce){.theme-knob{transition:none}}
+    /* Subtle continuous embossed contour, not a framed inset rectangle. */
+    .glass-bevel{position:absolute;inset:0;z-index:2;pointer-events:none;
+      filter:drop-shadow(0 1px 1px rgba(6,40,118,.36))}
+    .glass-outline{position:absolute;inset:0;width:100%;height:100%;overflow:hidden}
+    .glass-outline-signup{display:none}
+    body.signup .glass-outline-login{display:none}
+    body.signup .glass-outline-signup{display:block}
+    @media(max-width:1000px){.glass-bevel{display:none}}
+  </style>
+<style id="convosis-auth-brand-v1">.convosis-auth-logo{display:block;width:60px;height:60px;max-width:none;object-fit:contain;object-position:center;flex:0 0 60px;transform:none!important;filter:drop-shadow(0 3px 7px rgba(105,110,120,.22)) drop-shadow(0 6px 14px rgba(125,130,140,.12));}</style>
+<style id="convosis-auth-official-brand">.hero .brand{display:flex;align-items:center;justify-content:flex-start;gap:12px;max-width:100%;font-family:Manrope,Segoe UI,sans-serif;font-weight:500;letter-spacing:.095em;white-space:nowrap}.hero .convosis-auth-logo{width:52px;height:52px;flex:0 0 52px;object-fit:contain;filter:none}.hero .convosis-auth-wordmark{font-size:clamp(15px,1.55vw,21px);line-height:1.15;color:#fff;font-weight:500;letter-spacing:.105em}.hero .convosis-auth-wordmark strong{font-weight:800;letter-spacing:.015em}@media(max-width:600px){.hero .convosis-auth-logo{width:44px;height:44px;flex-basis:44px}.hero .convosis-auth-wordmark{font-size:16px;letter-spacing:.045em}}</style>
+<style id="convosis-exact-lockup">.hero .brand{display:flex;align-items:center;justify-content:flex-start;gap:0;max-width:100%;font-size:0}.hero .convosis-exact-lockup{display:block;width:min(275px,100%);height:auto;aspect-ratio:225/87;object-fit:contain;object-position:left center;filter:none;transform:none}@media(max-width:600px){.hero .convosis-exact-lockup{width:min(230px,100%)}}</style>
+</head>
+<body>
+  <button type="button" class="theme-toggle" id="theme-toggle" role="switch" aria-checked="false" aria-label="Enable dark mode" title="Toggle dark mode"><span class="theme-track"><span class="theme-sun" aria-hidden="true">☼</span><span class="theme-moon" aria-hidden="true">☾</span><span class="theme-knob" aria-hidden="true"></span></span></button>
+  <main class="auth-shell">
+    <section class="hero" aria-label="CONVOSIS CRM introduction">
+      <div class="hero-gloss" aria-hidden="true"></div>
+      <div class="hero-glass" aria-hidden="true"></div>
+      <div class="glass-bevel" aria-hidden="true">
+        <svg class="glass-outline glass-outline-login" viewBox="0 0 1000 1000" preserveAspectRatio="none" focusable="false">
+          <defs>
+            <linearGradient id="authEmbossLogin" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#ffffff" stop-opacity=".65"/>
+              <stop offset=".45" stop-color="#b7e4ff" stop-opacity=".27"/>
+              <stop offset="1" stop-color="#053baf" stop-opacity=".52"/>
+            </linearGradient>
+          </defs>
+          
+          <path d="M 1 52 Q 1 1 52 1 L 999 1 L 879 999 L 52 999 Q 1 999 1 948 Z"
+            fill="none" stroke="url(#authEmbossLogin)" stroke-linejoin="round" stroke-linecap="round" stroke-width="3" vector-effect="non-scaling-stroke"/>
+        </svg>
+        <svg class="glass-outline glass-outline-signup" viewBox="0 0 1000 1000" preserveAspectRatio="none" focusable="false">
+          <defs>
+            <linearGradient id="authEmbossSignup" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#ffffff" stop-opacity=".65"/>
+              <stop offset=".45" stop-color="#b7e4ff" stop-opacity=".27"/>
+              <stop offset="1" stop-color="#053baf" stop-opacity=".52"/>
+            </linearGradient>
+          </defs>
+          
+          <path d="M 121 1 L 948 1 Q 999 1 999 52 L 999 948 Q 999 999 948 999 L 1 999 Z"
+            fill="none" stroke="url(#authEmbossSignup)" stroke-linejoin="round" stroke-linecap="round" stroke-width="3" vector-effect="non-scaling-stroke"/>
+        </svg>
+      </div>
+      <div class="wave one" aria-hidden="true"></div>
+      <div class="wave two" aria-hidden="true"></div>
+      <div class="wave three" aria-hidden="true"></div>
+
+      <div class="brand-row">
+        <div class="brand" aria-label="CONVOSIS"><img class="convosis-exact-lockup" src="data:image/webp;base64,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" alt="CONVOSIS" width="225" height="87" /></div>
+      </div>
+
+      <div class="hero-copy">
+        <span class="kicker">Customer intelligence workspace</span>
+        <h1>Turn every relationship into momentum.</h1>
+        <p>Bring leads, conversations, opportunities, automation and customer context into one focused revenue workspace built for decisive teams.</p>
+      </div>
+
+      <div class="hero-foot">
+        <span>Secure database-backed accounts</span>
+        <span>Role-aware CRM access</span>
+        <span>Persistent cloud workspace</span>
+      </div>
+    </section>
+
+    <section class="panel-wrap">
+      <div class="panel">
+        <span class="eyebrow signin-only">Welcome back</span>
+        <span class="eyebrow signup-only">Create your workspace access</span>
+        <span class="eyebrow forgot-only">Account recovery</span>
+        <span class="eyebrow reset-only">Secure your account</span>
+
+        <h2 class="signin-only">Sign in</h2>
+        <h2 class="signup-only">Create account</h2>
+        <h2 class="forgot-only">Reset password</h2>
+        <h2 class="reset-only">Choose a new password</h2>
+
+        <p class="sub signin-only">Continue to your private CONVOSIS CRM workspace using your username, email, or phone number.</p>
+        <p class="sub signup-only">The first account for a new organization becomes its administrator and receives 10 demo Leads, Contacts, Accounts, and Deals. Invited teammates join the existing private workspace.</p>
+        <p class="sub forgot-only">Enter your username, email, or phone number. If the account exists, reset instructions will be sent to its registered channels.</p>
+        <p class="sub reset-only">Use a new password with at least 8 characters.</p>
+
+        <div class="error" id="auth-error" role="alert"></div>
+
+        <form id="auth-form" method="post" action="/api/auth/login">
+          <div class="field signup-only">
+            <label for="name">Full name</label>
+            <input id="name" name="name" autocomplete="name" placeholder="Your full name" />
+          </div>
+          <div class="field signup-only" id="organization-create-field">
+            <label for="organization-name">Organization name</label>
+            <input id="organization-name" name="organization_name" autocomplete="organization" minlength="2" maxlength="160" placeholder="Your company or organization" />
+          </div>
+          <div class="field signup-only">
+            <label for="username">Username</label>
+            <input id="username" name="username" autocomplete="username" minlength="3" maxlength="40" placeholder="your.username" />
+          </div>
+          <div class="field signup-only">
+            <label for="signup-email">Email address</label>
+            <input id="signup-email" name="email" type="email" autocomplete="email" placeholder="you@company.com" />
+          </div>
+          <div class="field signup-only">
+            <label for="phone">Phone number <span style="font-weight:500;color:#68758d">(optional)</span></label>
+            <input id="phone" name="phone" type="tel" autocomplete="tel" placeholder="+91XXXXXXXXXX" />
+          </div>
+
+          <div class="field signin-only forgot-only">
+            <label for="identifier">Username, email, or phone number</label>
+            <input id="identifier" name="identifier" autocomplete="username" required placeholder="name, you@company.com, or phone" />
+          </div>
+
+          <div class="field signin-only signup-only reset-only">
+            <label for="password">Password</label>
+            <div class="password-control">
+              <input id="password" name="password" type="password" autocomplete="current-password" minlength="8" required placeholder="At least 8 characters" />
+              <button class="password-toggle" type="button" data-password-toggle="password" aria-label="Show password" aria-pressed="false">Show</button>
+            </div>
+          </div>
+          <div class="field signup-only reset-only">
+            <label for="confirm-password">Confirm password</label>
+            <div class="password-control">
+              <input id="confirm-password" name="confirm_password" type="password" autocomplete="new-password" minlength="8" placeholder="Repeat your password" />
+              <button class="password-toggle" type="button" data-password-toggle="confirm-password" aria-label="Show confirmation password" aria-pressed="false">Show</button>
+            </div>
+          </div>
+
+          <div class="row signin-only"><a href="/forgot-password">Forgot password?</a></div>
+          <button class="submit" type="submit" id="submit-button">
+            <span class="signin-only">Sign in to CONVOSIS CRM</span>
+            <span class="signup-only">Create my account</span>
+            <span class="forgot-only">Send reset instructions</span>
+            <span class="reset-only">Save new password</span>
+          </button>
+        </form>
+
+        <div class="switch signin-only">New to CONVOSIS CRM? <a href="/signup">Sign up</a></div>
+        <div class="switch signup-only">Already have an account? <a href="/login">Sign in</a></div>
+        <div class="switch forgot-only"><a href="/login">Back to sign in</a></div>
+        <div class="switch reset-only"><a href="/login">Back to sign in</a></div>
+        <div class="secure">Keep your password private. Use account recovery if you need to reset it.</div>
+      </div>
+    </section>
+  </main>
+
+<script>
+(() => {
+  let mode =
+    location.pathname === "/signup" ? "signup" :
+    location.pathname === "/forgot-password" ? "forgot" :
+    location.pathname === "/reset-password" ? "reset" : "signin";
+  // Theme preference is independent from the blue branding artwork and its motion.
+  const themeToggle = document.getElementById("theme-toggle");
+  try { if ((localStorage.getItem("crm-account-theme") || localStorage.getItem("convosis-auth-theme")) === "dark") document.body.classList.add("dark-auth"); } catch (_) {}
+  const syncTheme = () => {
+    const dark = document.body.classList.contains("dark-auth");
+    themeToggle.setAttribute("aria-checked", String(dark));
+    themeToggle.setAttribute("aria-label", dark ? "Enable light mode" : "Enable dark mode");
+  };
+  themeToggle.addEventListener("click", () => {
+    document.body.classList.toggle("dark-auth");
+    try { localStorage.setItem("crm-account-theme", document.body.classList.contains("dark-auth") ? "dark" : "light"); } catch (_) {}
+    syncTheme();
+  });
+  syncTheme();
+  const invitationToken = new URLSearchParams(location.search).get("invite") || "";
+  if (invitationToken) document.getElementById("organization-create-field")?.remove();
+
+  if (mode !== "signin") document.body.classList.add(mode);
+  document.title = ({
+    signin:"CONVOSIS CRM — Sign in",
+    signup:"CONVOSIS CRM — Create account",
+    forgot:"CONVOSIS CRM — Reset password",
+    reset:"CONVOSIS CRM — Choose new password"
+  })[mode];
+
+  const form = document.getElementById("auth-form");
+  let endpoint = ({
+    signin:"/api/auth/login",
+    signup:"/api/auth/signup",
+    forgot:"/api/auth/forgot-password",
+    reset:"/api/auth/reset-password"
+  })[mode];
+  form.action = endpoint;
+  form.method = "post";
+  // Hidden mode-specific fields must not block native form validation.
+  const requiredByMode = {
+    name: mode === "signup",
+    "organization-name": mode === "signup" && !invitationToken,
+    username: mode === "signup",
+    "signup-email": mode === "signup",
+    identifier: mode === "signin" || mode === "forgot",
+    password: mode === "signin" || mode === "signup" || mode === "reset",
+    "confirm-password": mode === "signup" || mode === "reset"
+  };
+  Object.entries(requiredByMode).forEach(([id, required]) => {
+    const input = document.getElementById(id);
+    if (input) input.required = required;
+  });
+  const errorBox = document.getElementById("auth-error");
+  const submit = document.getElementById("submit-button");
+  const password = document.getElementById("password");
+  if (password) password.autocomplete = mode === "signin" ? "current-password" : "new-password";
+
+  document.querySelectorAll("[data-password-toggle]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const input = document.getElementById(button.dataset.passwordToggle);
+      if (!input) return;
+      const visible = input.type === "text";
+      input.type = visible ? "password" : "text";
+      button.textContent = visible ? "Show" : "Hide";
+      button.setAttribute("aria-pressed", String(!visible));
+      button.setAttribute("aria-label", `${visible ? "Show" : "Hide"} ${input.id === "confirm-password" ? "confirmation " : ""}password`);
+    });
+  });
+
+  const showError = (message) => {
+    errorBox.textContent = message || "Something went wrong. Try again.";
+    errorBox.style.display = "block";
+  };
+
+  if (mode === "signin" || mode === "signup") {
+    fetch("/api/auth/session", {credentials:"same-origin"})
+      .then(async (r) => {
+        if (!r.ok) return;
+        if (invitationToken) {
+          const accepted = await fetch("/api/organization/invitations/accept", {
+            method: "POST",
+            credentials: "same-origin",
+            headers: {"Content-Type":"application/json"},
+            body: JSON.stringify({invitation_token: invitationToken})
+          });
+          if (!accepted.ok) {
+            const data = await accepted.json().catch(() => ({}));
+            throw new Error(data.detail?.message || data.detail || "Could not accept invitation.");
+          }
+        }
+        location.replace("/dashboard");
+      })
+      .catch((error) => { if (invitationToken && error?.message) showError(error.message); });
+  }
+
+  if (invitationToken) {
+    document.querySelectorAll('a[href="/login"],a[href="/signup"]').forEach((link) => {
+      const destination = link.getAttribute("href");
+      link.setAttribute("href", destination + "?invite=" + encodeURIComponent(invitationToken));
+    });
+  }
+
+  // Switch between authentication modes in-place so the glass panels can slide.
+  // The existing wave artwork and motion remain mounted without restarting.
+  const shell = document.querySelector(".auth-shell");
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  function switchAuthMode(nextMode) {
+    if (nextMode === mode || !["signin", "signup"].includes(nextMode)) return;
+    const previous = mode;
+    const applyMode = () => {
+      mode = nextMode;
+      document.body.classList.toggle("signup", nextMode === "signup");
+      document.body.classList.remove("forgot", "reset");
+      endpoint = nextMode === "signup" ? "/api/auth/signup" : "/api/auth/login";
+      form.action = endpoint;
+      document.title = nextMode === "signup" ? "CONVOSIS CRM — Create account" : "CONVOSIS CRM — Sign in";
+      Object.entries(requiredByMode).forEach(([id]) => {
+        const input = document.getElementById(id);
+        if (!input) return;
+        input.required = (nextMode === "signup")
+          ? ["name", "username", "signup-email", "password", "confirm-password"].includes(id)
+            || (id === "organization-name" && !invitationToken)
+          : ["identifier", "password"].includes(id);
+      });
+      if (password) password.autocomplete = nextMode === "signup" ? "new-password" : "current-password";
+      errorBox.style.display = "none";
+      errorBox.style.background = "";
+      errorBox.style.color = "";
+      errorBox.style.borderColor = "";
+      submit.disabled = false;
+    };
+    const moving = [shell.querySelector(".hero"), shell.querySelector(".panel-wrap")];
+    const before = moving.map((element) => element.getBoundingClientRect());
+    // Freeze the form's scroll position only until the mode has switched.
+    applyMode();
+    if (!reducedMotion.matches && window.innerWidth > 1000) {
+      shell.classList.add("mode-sliding");
+      const animations = moving.map((element, index) => {
+        const after = element.getBoundingClientRect();
+        const dx = before[index].left - after.left;
+        if (Math.abs(dx) < 1) return null;
+        return element.animate(
+          [{transform: `translate3d(${dx}px,0,0)`}, {transform:"translate3d(0,0,0)"}],
+          {duration:250,easing:"cubic-bezier(.22,.75,.25,1)",fill:"none"}
+        );
+      }).filter(Boolean);
+      Promise.all(animations.map((animation) => animation.finished.catch(() => {})))
+        .then(() => shell.classList.remove("mode-sliding"));
+    }
+    return previous;
+  }
+  document.querySelectorAll('a[href^="/login"],a[href^="/signup"]').forEach((link) => {
+    link.addEventListener("click", (event) => {
+      if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
+      const pathname = new URL(link.href, location.origin).pathname;
+      if (mode !== "signin" && mode !== "signup") return;
+      event.preventDefault();
+      history.pushState({}, "", link.getAttribute("href"));
+      switchAuthMode(pathname === "/signup" ? "signup" : "signin");
+    });
+  });
+  window.addEventListener("popstate", () => {
+    const newMode = location.pathname === "/signup" ? "signup" : location.pathname === "/login" ? "signin" : null;
+    if (newMode) switchAuthMode(newMode);
+    else location.reload();
+  });
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    errorBox.style.display = "none";
+    const data = new FormData(form);
+    let requestEndpoint = endpoint;
+    let payload = {};
+
+    if (mode === "signin") {
+      payload = {
+        identifier: String(data.get("identifier") || "").trim(),
+        password: String(data.get("password") || "")
+      };
+      if (!payload.identifier) return showError("Enter your username, email, or phone number.");
+    } else if (mode === "signup") {
+      payload = {
+        name: String(data.get("name") || "").trim(),
+        organization_name: String(data.get("organization_name") || "").trim(),
+        username: String(data.get("username") || "").trim(),
+        email: String(data.get("email") || "").trim(),
+        phone: String(data.get("phone") || "").trim(),
+        password: String(data.get("password") || ""),
+        invitation_token: new URLSearchParams(location.search).get("invite") || ""
+      };
+      const confirm = String(data.get("confirm_password") || "");
+      if (payload.name.length < 2) return showError("Enter your full name.");
+      if (!payload.invitation_token && payload.organization_name.length < 2) return showError("Enter an organization name (at least 2 characters).");
+      if (payload.username.length < 3) return showError("Username must contain at least 3 characters.");
+      if (!payload.email) return showError("Email address is required.");
+      if (payload.password.length < 8) return showError("Password must contain at least 8 characters.");
+      if (payload.password !== confirm) return showError("Passwords do not match.");
+      requestEndpoint = "/api/auth/signup";
+    } else if (mode === "forgot") {
+      payload = {identifier: String(data.get("identifier") || "").trim()};
+      if (!payload.identifier) return showError("Enter your username, email, or phone number.");
+      requestEndpoint = "/api/auth/forgot-password";
+    } else {
+      const token = new URLSearchParams(location.search).get("token") || "";
+      payload = {token, password: String(data.get("password") || "")};
+      const confirm = String(data.get("confirm_password") || "");
+      if (!token) return showError("This password reset link is missing its security token.");
+      if (payload.password.length < 8) return showError("Password must contain at least 8 characters.");
+      if (payload.password !== confirm) return showError("Passwords do not match.");
+      requestEndpoint = "/api/auth/reset-password";
+    }
+
+    submit.disabled = true;
+    try {
+      const response = await fetch(requestEndpoint, {
+        method: "POST",
+        credentials: "same-origin",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify(payload)
+      });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        throw new Error(typeof result.detail === "string" ? result.detail : (result.detail?.message || "Could not continue."));
+      }
+
+      if (mode === "forgot") {
+        errorBox.textContent = result.message || "If the account exists, reset instructions were sent.";
+        errorBox.style.display = "block";
+        errorBox.style.background = "#effaf4";
+        errorBox.style.color = "#18794e";
+        errorBox.style.borderColor = "#c9eed8";
+        submit.disabled = false;
+        return;
+      }
+      if (mode === "reset") {
+        location.replace("/login");
+        return;
+      }
+      if (mode === "signin" && invitationToken) {
+        const accepted = await fetch("/api/organization/invitations/accept", {
+          method: "POST",
+          credentials: "same-origin",
+          headers: {"Content-Type":"application/json"},
+          body: JSON.stringify({invitation_token: invitationToken})
+        });
+        if (!accepted.ok) {
+          const inviteResult = await accepted.json().catch(() => ({}));
+          throw new Error(inviteResult.detail?.message || inviteResult.detail || "Could not accept invitation.");
+        }
+      }
+      const requested = new URLSearchParams(location.search).get("next");
+      const destination = requested || result.redirect || "/dashboard";
+      let safeNext = "/dashboard";
+      try {
+        const parsed = new URL(destination, location.origin);
+        if (destination.startsWith("/") && parsed.origin === location.origin) {
+          safeNext = parsed.pathname + parsed.search + parsed.hash;
+        }
+      } catch (_) { /* Invalid return paths use the workspace home. */ }
+      location.replace(safeNext);
+    } catch (error) {
+      showError(error.message);
+      submit.disabled = false;
+    }
+  });
+})();
+</script>
+</body>
+</html>

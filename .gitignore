@@ -1,0 +1,57 @@
+# Python bytecode, tooling and test caches
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.pyright/
+.tox/
+.nox/
+.hypothesis/
+.pyre/
+.pytype/
+.cache/
+
+# Frontend dependencies and generated assets
+node_modules/
+.npm/
+.pnpm-store/
+.yarn/cache/
+.vite/
+.next/
+.nuxt/
+.svelte-kit/
+coverage/
+*.tsbuildinfo
+
+# Virtual environments and local databases
+.venv/
+venv/
+env/
+*.db
+*.sqlite
+*.sqlite3
+
+# Secrets and local overrides
+.env
+.env.*
+!.env.example
+
+# Build, packaging, coverage and editor output
+build/
+dist/
+release/
+*.egg-info/
+.coverage
+.coverage.*
+htmlcov/
+.idea/
+.vscode/
+*.log
+
+# OS-generated files
+.DS_Store
+Thumbs.db
+Desktop.ini
+.gstack/

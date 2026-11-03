@@ -1,0 +1,224 @@
+/* Shared CRM surfaces. Keep light mode and semantic action colors intact. */
+html[data-crm-theme="dark"] {
+  --premium-ink: #e7edf6;
+  --premium-muted: #adbbcf;
+  --premium-border: #344156;
+  --premium-surface: #192331;
+  --premium-canvas: #0e141f;
+  --premium-shadow: 0 12px 34px #0003;
+  --green: #72d6a8;
+  --green-soft: #153c32;
+  --amber: #f0c374;
+  --amber-soft: #41341f;
+  --red: #ff96a7;
+  --red-soft: #422631;
+  --blue: #acc7ff;
+  --blue-soft: #253952;
+  --border-soft: #303c4e;
+}
+html[data-crm-theme="dark"] :is(body,.app-shell,.main-area,.content-area,#app-content) {
+  background: var(--premium-canvas) !important;
+  color: var(--premium-ink) !important;
+}
+html[data-crm-theme="dark"] :is(.module-toolbar,.advanced-filter-sidebar,.advanced-filter-condition,.search-results,.deal-card,.kanban-column,.detail-summary,.detail-related-nav,.detail-main,.custom-runtime-check,.modal-head,.modal-foot,.toast,.teamspace-card) {
+  background: var(--premium-surface) !important;
+  color: var(--premium-ink) !important;
+  border-color: var(--premium-border) !important;
+}
+html[data-crm-theme="dark"] :is(.button.button-ghost,.button.button-secondary,.pagination-actions button,.view-toggle button.active) {
+  background: #293a50 !important;
+  color: #e7efff !important;
+  border-color: #465a75 !important;
+}
+html[data-crm-theme="dark"] :is(.button.button-ghost:hover,.pagination-actions button:hover,.view-toggle button:hover) { background: #344963 !important; }
+html[data-crm-theme="dark"] :is(.record-link,.data-table .primary-cell,.rule-info strong) { color: #d5e3ff !important; }
+html[data-crm-theme="dark"] :is(.badge,.pill,.status-badge) { background: #2a3548; color: #c5d2e8; border-color: #4b5d76; }
+html[data-crm-theme="dark"] :is(.status-badge.green,.status-badge.active,.status-badge.won) { background: var(--green-soft); color: var(--green); }
+html[data-crm-theme="dark"] :is(.status-badge.amber,.status-badge.progress) { background: var(--amber-soft); color: var(--amber); }
+html[data-crm-theme="dark"] :is(.status-badge.red,.status-badge.lost) { background: var(--red-soft); color: var(--red); }
+html[data-crm-theme="dark"] :is(.status-badge.blue,.status-badge.qualified) { background: var(--blue-soft); color: var(--blue); }
+html[data-crm-theme="dark"] .data-table tbody tr:hover td { background: #26364b !important; }
+html[data-crm-theme="dark"] :is(.data-table td,.data-table th,.rule-row,.pagination,.report-result-meta) { border-color: var(--premium-border) !important; }
+html[data-crm-theme="dark"] :is(.advanced-filter-condition select,.advanced-filter-condition input,select option) { background: #111b29; color: #edf3fd; }
+html[data-crm-theme="dark"] #modal-backdrop #record-form > .modal-foot { background: var(--premium-surface); border-color: var(--premium-border); }
+/* The animated light canvas is a pseudo-element above the page background. */
+html[data-crm-theme="dark"] .main-area::before,
+html[data-crm-theme="dark"] .main-area::after {
+  background: none !important;
+  animation: none !important;
+}
+html[data-crm-theme="dark"] :is(.button-danger,.button-danger:hover) {
+  background: #a62f48 !important;
+  color: #fff !important;
+  border-color: #ca526b !important;
+}
+/* Dashboard actions and persistent account/security notifications. */
+html[data-crm-theme="dark"] :is(.quick-action,.notification-popup) {
+  background: #192331 !important;
+  color: #e7edf6 !important;
+  border-color: #40516a !important;
+}
+html[data-crm-theme="dark"] :is(.quick-action:hover,.notification-popup-close:hover) { background: #293a50 !important; }
+html[data-crm-theme="dark"] .notification-popup-copy strong { color: #e7edf6 !important; }
+html[data-crm-theme="dark"] .notification-popup-copy p { color: #bbc9dd !important; }
+html[data-crm-theme="dark"] .notification-popup-icon { background: #253c5f; color: #acc7ff; }
+html[data-crm-theme="dark"] .notification-popup.is-error .notification-popup-icon { background: #422631; color: #ff96a7; }
+html[data-crm-theme="dark"] .notification-popup-close { color: #bbc9dd; }
+/* Pricing, setup directory, security guidance, and AI fallback notices. */
+html[data-crm-theme="dark"] :is(.pricing-card,.setup-home-toolbar,.security-callout) {
+  background: #192331 !important;
+  color: #e7edf6 !important;
+  border-color: #40516a !important;
+}
+html[data-crm-theme="dark"] :is(.pricing-status,.pricing-limits span,.ai-model-badge) {
+  background: #253952;
+  color: #bed4ff;
+  border-color: #456083;
+}
+html[data-crm-theme="dark"] .pricing-features li > span:first-child { color: #83baff; }
+html[data-crm-theme="dark"] .pricing-card.popular { border-color: #9ebdff; }
+html[data-crm-theme="dark"] .pricing-card.current { outline-color: #648fe5; }
+html[data-crm-theme="dark"] .pricing-popular { background: #ddbd59; color: #171b22; }
+html[data-crm-theme="dark"] .security-callout span { color: #bbc9dd; }
+html[data-crm-theme="dark"] :is(.ai-copilot-muted,.ai-fallback-note) {
+  background: #352c1d !important;
+  color: #f0d9ab !important;
+  border-color: #8d733c !important;
+}
+html[data-crm-theme="dark"] :is(.ai-copilot-muted,.ai-fallback-note) :is(p,strong) { color: #f0d9ab !important; }
+html[data-crm-theme="dark"] :is(.ai-rule-reason,.ai-rationale,.ai-task-preview,.crm-transition-action,.crm-timeline-dot,.bp-control,.bp-node,.bp-edge-label,.wf-progress span) { background: #1d2a3c; color: #e7edf6; border-color: #40516a; }
+html[data-crm-theme="dark"] :is(.detail-plain-section,.detail-tab-strip) { background: #192331 !important; color: #e7edf6; border-color: #40516a; }
+html[data-crm-theme="dark"] :is(.detail-tab.active,.crm-state-current>strong) { background: #293e5c; color: #d3e3ff; border-color: #526f97; }
+html[data-crm-theme="dark"] .crm-transition-action span { color: #acc7ff; }
+
+/* Theme regression guard. Keep these rules at the end of the shared dark theme.
+   The canvas and controls adapt, without recoloring branded/semantic cards. */
+html[data-crm-theme="dark"] {
+  --crm-focus-ring: #91b7ff;
+  --crm-icon-ink: #dbe7fa;
+}
+html[data-crm-theme="dark"] :is(.main-area, #app-content, .content-area) {
+  color: var(--premium-ink);
+}
+html[data-crm-theme="dark"] :is(.icon-button, .top-icon, .sidebar-visibility-toggle, .sidebar-close) {
+  color: var(--crm-icon-ink) !important;
+}
+html[data-crm-theme="dark"] :is(.icon-button, .top-icon, .sidebar-visibility-toggle, .sidebar-close) svg {
+  color: inherit;
+  stroke: currentColor;
+}
+html[data-crm-theme="dark"] :is(input, select, textarea, button, a):focus-visible {
+  outline: 2px solid var(--crm-focus-ring) !important;
+  outline-offset: 2px;
+}
+html[data-crm-theme="dark"] :is(input, textarea)::placeholder {
+  color: #aebed5 !important;
+  opacity: 1;
+}
+html[data-crm-theme="dark"] :is(.settings-nav, .setup-nav, .crm-account-drawer) :is(a, button):not(.active):not(:hover) {
+  color: #d8e5f7;
+}
+html[data-crm-theme="dark"] :is(.settings-nav, .setup-nav, .crm-account-drawer) :is(a, button):hover {
+  color: #ffffff;
+}
+html[data-crm-theme="dark"] :is(.settings-nav, .setup-nav) :is(a,button)[aria-current="page"] {
+  color: #ffffff;
+}
+html[data-crm-theme="dark"] :is(.modal, .dropdown-menu, [role="menu"], [role="listbox"]) {
+  color: var(--premium-ink);
+  border-color: var(--premium-border);
+}
+@media (forced-colors: active) {
+  #sidebar .primary-nav .convosis-module-icon { forced-color-adjust: auto; }
+}
+
+/* Section copy belongs to its card; only actual controls and semantic badges
+   receive their own surface. Avoid rectangular patches behind headings/rows. */
+html[data-crm-theme="dark"] :is(.settings-section-head,.rule-row) {
+  background: transparent !important;
+  color: var(--premium-ink);
+}
+html[data-crm-theme="dark"] :is(.settings-section-head h2,.settings-section-head h3) {
+  color: var(--premium-ink);
+}
+
+/* Dark-theme audit: prevent secondary rectangular patches behind form labels,
+   groups and settings content. Do not flatten cards or editable controls. */
+html[data-crm-theme="dark"] :is(
+  .settings-form > .form-grid,
+  .settings-form .form-grid > .field,
+  .settings-section .form-grid > .field,
+  .settings-section-head,
+  .advanced-filter-actions,
+  .advanced-filter-option:not(:hover),
+  .crm-address-group > h4
+) {
+  background: transparent !important;
+  background-image: none !important;
+  box-shadow: none;
+}
+html[data-crm-theme="dark"] :is(
+  .advanced-filter-actions > label select,
+  .advanced-filter-condition select,
+  .advanced-filter-condition input
+) {
+  background: #111b29 !important;
+  color: #edf3fd !important;
+  border-color: var(--premium-border) !important;
+}
+html[data-crm-theme="dark"] .advanced-filter-option:hover {
+  background: rgba(120,160,220,.12) !important;
+}
+
+
+/* Consistent contrast for neutral module chips across CRM views.
+   Status/severity badges retain their existing semantic colors. */
+html[data-crm-theme="dark"] :is(.module-badge,.module-tag,.crm-tag,.crm-chip,.zfw-module-badge,.zwa-tag) {
+  background:#294469 !important;
+  color:#f0f6ff !important;
+  border:1px solid #6689ba !important;
+}
+html[data-crm-theme="dark"] :is(.module-badge,.module-tag,.crm-tag,.crm-chip,.zfw-module-badge,.zwa-tag) :is(span,strong,small) {
+  color:inherit !important;
+}
+
+/* Roles and Blueprint have bespoke canvases, including dialogs outside main. */
+html[data-crm-theme="dark"] :is(.cr-roles,.bp-shell,.bp-wizard,.bp-studio,.bp-inspector,.bp-wizard footer,.bp-studio-footer,.bp-studio>header) {
+  background: var(--premium-surface) !important;
+  color: var(--premium-ink) !important;
+  border-color: var(--premium-border) !important;
+}
+html[data-crm-theme="dark"] :is(.cr-role-editor,.cr-create,.bp-usage,.bp-canvas-hint,.bp-edge-list>button,.bp-state-chip,.bp-start,.bp-connect-handle) {
+  background: #243247 !important;
+  color: #dbe7fa !important;
+  border-color: #526780 !important;
+}
+html[data-crm-theme="dark"] :is(.cr-panel h2,.cr-panel h3,.cr-tree-label,.cr-tab,.bp-overlay,.bp-inspector-tabs button,.bp-phase-tabs button) {
+  color: var(--premium-ink) !important;
+}
+html[data-crm-theme="dark"] :is(.cr-intro,.cr-role-count,.bp-row,.bp-checkbox,.bp-criteria p,.bp-inspector-content p,.bp-editor small,.bp-editor>label,.bp-edge-list small,.bp-controller-select small,.bp-empty-canvas,.bp-close) {
+  color: var(--premium-muted) !important;
+}
+html[data-crm-theme="dark"] :is(.cr-actions>button:not(.button),.cr-edit-action,.cr-tree-label:hover,.cr-intro a,.bp-link,.bp-text-button,.bp-tabs button.active,.bp-canvas-hint button,.setup-directory-group) {
+  color: #acc7ff !important;
+}
+html[data-crm-theme="dark"] :is(.cr-tree-toggle,.bp-control,.bp-value-control .bp-custom-value:not([hidden])) {
+  background: #111b29 !important;
+  color: #edf3fd !important;
+  border-color: #526780 !important;
+}
+html[data-crm-theme="dark"] :is(.cr-tabs,.cr-tree-children,.cr-tree-children>.cr-tree-node:before,.bp-row,.bp-inspector-tabs,.bp-phase-tabs,.bp-editor,.bp-wizard>header,.bp-studio>header) {
+  border-color: var(--premium-border);
+}
+html[data-crm-theme="dark"] .bp-canvas-scroll {
+  background-color: #111b29;
+  background-image: radial-gradient(#40516a .8px,transparent .8px);
+}
+html[data-crm-theme="dark"] :is(.bp-node.selected,.bp-node.link-source,.bp-edge-label.selected,.bp-edge-list button.active,.bp-state-chip:hover) {
+  background: #293e5c !important;
+  color: #edf3fd !important;
+  border-color: #91b7ff !important;
+}
+html[data-crm-theme="dark"] .bp-danger { color: #ff96a7; }
+
+

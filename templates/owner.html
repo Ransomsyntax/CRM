@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>CONVOSIS CRM — Owner Console</title>
+<link rel="icon" href="/static/convosis-brand.png?v=20261016-brand1" type="image/png"/>
+<script data-owner-theme-sync>
+(()=>{const key="crm-account-theme";const mq=window.matchMedia("(prefers-color-scheme: dark)");
+function apply(){let m="auto";try{m=localStorage.getItem(key)||"auto"}catch(_){}
+document.documentElement.dataset.accountTheme=m;
+document.documentElement.dataset.crmTheme=m==="auto"?(mq.matches?"dark":"light"):m;
+}
+apply();window.addEventListener("storage",e=>{if(e.key===key)apply()});
+document.addEventListener("click",e=>{const b=e.target.closest("[data-owner-mode]");if(!b)return;requestAnimationFrame(apply)},true);
+mq.addEventListener?.("change",apply);
+})();
+</script>
+<style data-owner-shared-theme>
+html[data-crm-theme="dark"]{--bg:#0e141f;--ink:#e9eef8;--muted:#a9b8ce;--line:#334358;--card:#182335;color-scheme:dark}
+html[data-crm-theme="dark"] .main{background:#0e141f}
+html[data-crm-theme="dark"] .card,html[data-crm-theme="dark"] .metric{background:var(--card);color:var(--ink)}
+html[data-crm-theme="dark"] .btn:not(.primary),html[data-crm-theme="dark"] input,html[data-crm-theme="dark"] select{background:#1c2b40;color:var(--ink);border-color:var(--line)}
+[data-owner-action="export"][hidden]{display:none!important}
+</style>
+
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+:root{--bg:#f5f8fc;--ink:#10172a;--muted:#6f7d96;--line:#dfe6f0;--card:#fff;--blue:#1454d9;--blue2:#1f7af0;--navy:#081943;--good:#16865c;--bad:#bd3a3a}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);font-family:Manrope,Segoe UI,sans-serif;color:var(--ink)}
+body{min-width:320px}.shell{min-height:100vh;display:grid;grid-template-columns:250px 1fr}.side{background:linear-gradient(180deg,#081943,#0c286d);color:#fff;padding:26px 18px;position:sticky;top:0;height:100vh}
+.brand{font-size:21px;font-weight:800;display:flex;align-items:center;gap:10px;margin-bottom:34px}.dot{width:31px;height:31px;border-radius:10px;background:linear-gradient(145deg,#45d2ff,#1769e0);box-shadow:inset 0 1px 0 #ffffff66}
+.nav{display:grid;gap:8px}.nav button{border:0;background:transparent;color:#c8d6f2;text-align:left;padding:12px 13px;border-radius:10px;font:inherit;font-weight:700;cursor:pointer}.nav button.active,.nav button:hover{background:#ffffff16;color:#fff}
+.side-foot{position:absolute;left:18px;right:18px;bottom:22px;font-size:12px;color:#a9bbdc}.main{padding:30px}.top{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;margin-bottom:24px}.top h1{font-size:31px;margin:0 0 6px;letter-spacing:-.04em}.sub{color:var(--muted);font-size:14px}.actions{display:flex;gap:10px}.btn{border:1px solid var(--line);background:#fff;padding:10px 14px;border-radius:10px;font:inherit;font-weight:700;cursor:pointer}.btn.primary{border-color:transparent;background:linear-gradient(135deg,var(--blue),var(--blue2));color:#fff}
+.grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px;margin-bottom:22px}.metric{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:0 10px 25px #263b6410}.metric b{display:block;font-size:29px;letter-spacing:-.04em;margin-top:7px}.metric span{color:var(--muted);font-size:12px;font-weight:700}
+.card{background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:0 12px 28px #263b6410;margin-bottom:20px;overflow:hidden}.card-head{padding:17px 18px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:14px}.card-head h2{font-size:16px;margin:0}.tools{display:flex;gap:9px;flex-wrap:wrap}.input,.select{height:39px;border:1px solid var(--line);border-radius:9px;padding:0 11px;background:#fff;font:inherit;outline:none}.input{min-width:240px}.input:focus,.select:focus{border-color:#6d9af1;box-shadow:0 0 0 3px #1769e019}
+.table-wrap{overflow:auto}.table{width:100%;border-collapse:collapse;min-width:900px}.table th,.table td{padding:12px 16px;border-bottom:1px solid #edf1f6;text-align:left;font-size:12px;vertical-align:middle}.table th{color:#69758c;font-size:11px;text-transform:uppercase;letter-spacing:.04em;background:#fbfcfe}.user{font-weight:800}.muted{color:var(--muted)}.pill{display:inline-flex;align-items:center;padding:5px 8px;border-radius:999px;background:#eef4ff;color:#245fc2;font-size:11px;font-weight:800}.pill.good{background:#eaf8f1;color:#13784f}.pill.bad{background:#fff0f0;color:#ad3535}
+.user-open{border:0;padding:8px 0;background:transparent;color:var(--blue);font:inherit;font-weight:800;text-align:left;cursor:pointer}.user-open:hover{text-decoration:underline}.user-open:focus-visible{outline:3px solid var(--blue2);outline-offset:3px;border-radius:3px}tr[data-user-id]{cursor:pointer}
+.plan-cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;padding:16px}.plan{border:1px solid var(--line);border-radius:14px;padding:15px}.plan h3{margin:0 0 5px}.plan strong{font-size:22px}.hidden{display:none!important}
+.drawer{position:fixed;inset:0 0 0 auto;width:min(560px,100%);background:#fff;box-shadow:-28px 0 70px #14213d2b;z-index:20;overflow:auto;padding:24px;transform:translateX(100%);transition:.2s}.drawer.open{transform:none}.drawer .close{float:right}.section{margin:22px 0}.section h3{font-size:14px}.kv{display:grid;grid-template-columns:150px 1fr;gap:9px 15px;font-size:13px}.kv div:nth-child(odd){color:var(--muted)}
+.empty{padding:30px;text-align:center;color:var(--muted)}.error{margin-bottom:16px;padding:12px;border-radius:10px;background:#fff0f0;color:#9d2929;border:1px solid #ffd5d5;display:none}
+@media(max-width:1100px){.grid{grid-template-columns:repeat(2,1fr)}.plan-cards{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:760px){.shell{grid-template-columns:1fr}.side{position:relative;height:auto}.side-foot{display:none}.main{padding:18px}.top{flex-direction:column}.grid{grid-template-columns:1fr}.plan-cards{grid-template-columns:1fr}.input{min-width:0;width:100%}.tools{width:100%}.tools>*{flex:1}}
+</style>
+<style data-owner-layout-audit>
+.main,.card,.metric,.plan,.top > * {min-width:0}
+.main :is(.btn,.input,.select) {font-size:13px;line-height:1.5}
+.main .table td {font-size:13px;line-height:1.5}
+.main .table th {font-size:12px;font-weight:700}
+.main :is(.sub,.muted) {line-height:1.6}
+.nav button {line-height:1.5}
+html[data-crm-theme="dark"] {--muted:#bbc8dc;--blue:#9fc1ff}
+html[data-crm-theme="dark"] .btn.primary {color:#fff;background:#245cb9}
+.top,.actions,.card-head {flex-wrap:wrap}
+.card-head > * {min-width:0}
+.metric b,.plan strong,.kv > div {overflow-wrap:anywhere}
+.kv {grid-template-columns:minmax(100px,150px) minmax(0,1fr)}
+html[data-crm-theme="dark"] :is(.owner-account-panel,.owner-account-panel main,.owner-account-panel section,.owner-account-panel footer) {background:var(--card);color:var(--ink);border-color:var(--line)}
+html[data-crm-theme="dark"] .owner-account-panel a {color:#bed4ff}
+html[data-crm-theme="dark"] .owner-account-panel header {background:#23344f}
+html[data-crm-theme="dark"] .owner-account-close {background:#2b3c55;color:var(--ink)}
+html[data-crm-theme="dark"] :is(.drawer,.table th) {background:var(--card);color:var(--ink);border-color:var(--line)}
+html[data-crm-theme="dark"] .table td {border-color:var(--line)}
+html[data-crm-theme="dark"] .pill {background:#253952;color:#bed4ff}
+html[data-crm-theme="dark"] .pill.good {background:#153c32;color:#72d6a8}
+html[data-crm-theme="dark"] :is(.pill.bad,.error) {background:#422631;color:#ffb4c0;border-color:#795061}
+@media(max-height:720px) and (min-width:761px) {.side{overflow-y:auto}.side-foot{position:static;margin-top:24px}}
+@media(max-width:480px) {.kv{grid-template-columns:1fr}.actions{width:100%}.metric b{font-size:25px}}
+</style>
+<style id="convosis-owner-brand-v1">.convosis-owner-logo{width:36px;height:36px;object-fit:contain;flex-shrink:0}</style>
+</head>
+<body>
+<div class="shell">
+  <aside class="side">
+    <div class="brand"><img src="/static/convosis-brand.png?v=20261016-brand1" alt="" class="convosis-owner-logo"/>CONVOSIS CRM</div>
+    <nav class="nav">
+      <button class="active" data-view="overview">Overview</button>
+      <button data-view="users">Customers</button>
+      <button data-view="logins">Login History</button>
+      <button data-view="plans">Plans & Subscriptions</button>
+      <button data-view="requests">Plan Approval Requests <span id="request-nav-count"></span></button>
+      <button data-owner-route="/settings">CRM Settings</button>
+      <button data-owner-route="/dashboard">Back to CRM</button>
+    </nav>
+    <div class="side-foot">Platform Owner Console<br/>Customer metadata & security operations</div>
+  </aside>
+  <main class="main">
+    <div class="top">
+      <div><h1 id="page-title">Owner Overview</h1><div class="sub">Accounts, authentication activity, subscriptions and platform usage.</div></div>
+      <div class="actions"><button class="btn" data-owner-action="refresh">Refresh</button><button id="owner-profile-button" class="btn" type="button" aria-expanded="false">◉ Account</button></div>
+    </div>
+    <div id="error" class="error"></div>
+
+    <section id="view-overview">
+      <div class="grid">
+        <div class="metric"><span>Total customers</span><b id="m-total">—</b></div>
+        <div class="metric"><span>Active accounts</span><b id="m-active">—</b></div>
+        <div class="metric"><span>Signed up today</span><b id="m-new">—</b></div>
+        <div class="metric"><span>Successful logins today</span><b id="m-logins">—</b></div>
+        <div class="metric"><span>Active sessions</span><b id="m-sessions">—</b></div>
+      </div>
+      <div class="card"><div class="card-head"><h2>Integration readiness</h2></div><div class="plan-cards" id="integration-readiness"></div></div>
+      <div class="card"><div class="card-head"><h2>Plans</h2></div><div class="plan-cards" id="overview-plans"></div></div>
+      <div class="card"><div class="card-head"><h2>Recent authentication activity</h2></div><div class="table-wrap"><table class="table"><thead><tr><th>User</th><th>Status</th><th>Method</th><th>Device</th><th>IP</th><th>Time</th></tr></thead><tbody id="recent-logins"></tbody></table></div></div>
+    </section>
+
+    <section id="view-users" class="hidden">
+      <div class="card">
+        <div class="card-head"><h2>Customers</h2><div class="tools"><input class="input" id="user-search" placeholder="Search name, email, username or phone"/><select class="select" id="status-filter"><option value="">All statuses</option><option>Active</option><option>Inactive</option><option>Invited</option></select><select class="select" id="plan-filter"><option value="">All plans</option></select></div></div>
+        <div class="table-wrap"><table class="table"><thead><tr><th>User</th><th>Email / phone</th><th>Plan</th><th>Status</th><th>Joined</th><th>Last login</th><th>Method</th></tr></thead><tbody id="users-body"></tbody></table></div>
+      </div>
+    </section>
+
+    <section id="view-logins" class="hidden">
+      <div class="card"><div class="card-head"><h2>Login History</h2><div class="tools"><select class="select" id="login-filter"><option value="">All attempts</option><option value="true">Successful</option><option value="false">Failed</option></select></div></div><div class="table-wrap"><table class="table"><thead><tr><th>User</th><th>Event</th><th>Status</th><th>Method</th><th>Device</th><th>IP</th><th>Time</th></tr></thead><tbody id="logins-body"></tbody></table></div></div>
+    </section>
+
+    <section id="view-requests" class="hidden">
+      <div class="card"><div class="card-head"><h2>Subscription approval requests</h2>
+        <div class="tools"><select id="requests-filter" class="select"><option value="">All requests</option><option value="Pending Approval">Pending approval</option><option value="Approved">Approved</option><option value="Rejected">Rejected</option></select></div>
+      </div><div class="table-wrap"><table class="table"><thead><tr><th>Requested by</th><th>Organization</th><th>Current plan</th><th>Requested plan</th><th>Requested at</th><th>Status</th><th>Decision</th></tr></thead><tbody id="requests-body"></tbody></table></div></div>
+    </section>
+
+    <section id="view-plans" class="hidden">
+      <div class="card"><div class="card-head"><h2>Available subscription plans</h2></div><div class="plan-cards" id="plans-body"></div></div>
+    </section>
+  </main>
+</div>
+
+<aside class="drawer" id="drawer" aria-labelledby="drawer-name" aria-hidden="true" inert>
+  <button class="btn close" data-owner-action="close">Close</button>
+  <h2 id="drawer-name">Customer</h2>
+  <div class="sub" id="drawer-email"></div>
+  <div class="section"><h3>Account</h3><div class="kv" id="drawer-account"></div></div>
+  <div class="section"><h3>Subscription</h3><div class="kv" id="drawer-subscription"></div><div style="margin-top:12px;display:flex;gap:8px"><select id="drawer-plan" class="select"></select><label>Purchased seats <input id="drawer-seats" type="number" min="1" step="1" class="select" aria-label="Purchased seats"></label><button class="btn primary" data-owner-action="plan">Change plan</button></div></div>
+  <div class="section"><h3>Security actions</h3><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" id="drawer-status-btn" data-owner-action="status">Suspend account</button><button class="btn" data-owner-action="sessions">Revoke sessions</button><button class="btn" data-owner-action="reset">Send password reset</button><button class="btn" data-owner-action="export" hidden>Export account data</button></div></div>
+  <div class="section"><h3>Recent logins</h3><div class="table-wrap"><table class="table" style="min-width:520px"><thead><tr><th>Status</th><th>Method</th><th>Device</th><th>IP</th><th>Time</th></tr></thead><tbody id="drawer-logins"></tbody></table></div></div>
+</aside>
+
+<style>.owner-account-overlay{position:fixed;inset:0;background:#13234170;z-index:45}.owner-account-panel{position:fixed;right:0;top:0;bottom:0;width:min(430px,100vw);z-index:46;background:#f8faff;box-shadow:-15px 0 45px #13234150;display:flex;flex-direction:column}.owner-account-overlay[hidden],.owner-account-panel[hidden]{display:none!important}.owner-account-panel header{background:#5265ee;color:#fff;padding:60px 25px 32px;display:grid;gap:8px}.owner-account-panel main{overflow-y:auto;padding:22px;flex:1}.owner-account-panel section{background:#fff;border:1px solid #e0e6f2;border-radius:12px;padding:20px;margin-bottom:15px;display:grid;gap:13px}.owner-account-panel a{color:#3155c9;text-decoration:none}.owner-account-panel footer{padding:20px;background:#fff;border-top:1px solid #e2e8f0;display:flex;justify-content:space-between}.owner-account-panel footer button{border:0;background:none;color:#c52939;cursor:pointer}.owner-account-close{position:absolute;right:18px;top:16px;width:36px;height:36px;background:#fff;border:0;border-radius:50%;font-size:24px;cursor:pointer}</style><div id="owner-account-overlay" class="owner-account-overlay" hidden></div><aside id="owner-account-panel" class="owner-account-panel" hidden role="dialog" aria-modal="true" aria-label="Owner account"><button class="owner-account-close" id="owner-account-close" type="button">×</button><header><strong id="owner-account-username">Platform Owner</strong><small>Administrator · Owner Console</small><small id="owner-account-userid"></small></header><main><section><h3>Current plan</h3><strong id="owner-account-plan">Enterprise</strong><a href="/subscriptions">Manage Plan →</a></section><section><h3>My Account</h3><a href="/settings/my-profile">Personal settings →</a><a href="/dashboard">Return to CRM →</a></section><section><h3>Appearance</h3><div><button class="btn" data-owner-mode="light" type="button">Day</button><button class="btn" data-owner-mode="dark" type="button">Night</button><button class="btn" data-owner-mode="auto" type="button">Auto</button></div></section></main><footer><a href="/settings/my-profile">My Account</a><button id="owner-account-logout" type="button">Sign Out</button></footer></aside><script>
+(function(){
+ const button=document.getElementById("owner-profile-button"),drawer=document.getElementById("owner-account-panel"),mask=document.getElementById("owner-account-overlay");
+ function close(){drawer.hidden=true;mask.hidden=true;button.setAttribute("aria-expanded","false");button.focus();}
+ button.addEventListener("click",async()=>{try{const r=await fetch("/api/settings/profile",{credentials:"same-origin"});if(r.ok){const p=await r.json();document.getElementById("owner-account-username").textContent=p.username||p.name||"Owner";document.getElementById("owner-account-userid").textContent=(p.public_id??p.id)?"User ID: "+(p.public_id??p.id):"";document.getElementById("owner-account-plan").textContent=p.plan_name||p.subscription?.plan_name||"Enterprise";}}catch(_){} drawer.hidden=false;mask.hidden=false;button.setAttribute("aria-expanded","true");});
+ document.getElementById("owner-account-close").addEventListener("click",close);mask.addEventListener("click",close);document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!drawer.hidden)close();});
+ document.getElementById("owner-account-logout").addEventListener("click",async()=>{await fetch("/api/auth/logout",{method:"POST",credentials:"same-origin"});location.assign("/login");});
+ document.querySelectorAll("[data-owner-mode]").forEach(b=>b.addEventListener("click",()=>{document.documentElement.dataset.accountTheme=b.dataset.ownerMode;try{localStorage.setItem("crm-account-theme",b.dataset.ownerMode)}catch(_){}}));
+})();
+</script>
+<script>
+const crmDialogService = () => import("/static/js/core/dialogs.js?v=20261027-centered-popups-v1");
+const alertDialog = async (...args) => (await crmDialogService()).alertDialog(...args);
+const confirmDialog = async (...args) => (await crmDialogService()).confirmDialog(...args);
+
+let plans=[],currentUserId=null,currentUserStatus=null;
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const fmt=v=>v?new Date(v).toLocaleString():"—";
+const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+async function api(url,opts={}){const r=await fetch(url,{credentials:"same-origin",...opts,cache:"no-store",headers:{"Content-Type":"application/json",...(opts.headers||{})}});if(r.status===401){location.href="/login";throw new Error("Sign in required")}if(r.status===403)throw new Error("Administrator access is required for the Owner Console.");const d=await r.json().catch(()=>({}));if(!r.ok)throw new Error(typeof d.detail==="string"?d.detail:(d.detail?.message||"Request failed"));return d}
+function showError(e){const b=$("#error");b.textContent=e.message||String(e);b.style.display="block"}
+function clearError(){$("#error").style.display="none"}
+function pill(ok,label){return '<span class="pill '+(ok?"good":"bad")+'">'+esc(label)+'</span>'}
+async function loadPlans(){const d=await api("/api/owner/plans");plans=d.items||[];$("#plan-filter").innerHTML='<option value="">All plans</option>'+plans.map(p=>'<option value="'+esc(p.code)+'">'+esc(p.name)+'</option>').join("");$("#drawer-plan").innerHTML=plans.map(p=>'<option value="'+esc(p.code)+'">'+esc(p.name)+'</option>').join("");$("#plans-body").innerHTML=plans.map(p=>'<div class="plan"><h3>'+esc(p.name)+'</h3><strong>'+esc(p.currency)+' '+Number(p.price_monthly).toFixed(0)+'</strong><div class="sub">/ month</div><div class="sub" style="margin-top:10px">'+(p.max_records??"Unlimited")+' records · '+(p.max_custom_modules??"Unlimited")+' custom modules</div></div>').join("")}
+async function loadOverview(){const d=await api("/api/owner/overview");$("#m-total").textContent=d.total_users;$("#m-active").textContent=d.active_users;$("#m-new").textContent=d.signed_up_today;$("#m-logins").textContent=d.logins_today;$("#m-sessions").textContent=d.active_sessions;const labels={smtp:"Email / SMTP",sms:"SMS / Twilio",ai:"Apex AI",public_url:"Public URL"};$("#integration-readiness").innerHTML=Object.entries(d.integrations||{}).map(([key,ready])=>'<div class="plan"><h3>'+esc(labels[key]||key)+'</h3>'+pill(Boolean(ready),ready?"Configured":"Needs setup")+'</div>').join("");$("#overview-plans").innerHTML=(d.plans||[]).map(p=>'<div class="plan"><h3>'+esc(p.name)+'</h3><strong>'+p.count+'</strong><div class="sub">accounts</div></div>').join("");$("#recent-logins").innerHTML=(d.recent_logins||[]).map(x=>'<tr><td><div class="user">'+esc(x.name)+'</div><div class="muted">'+esc(x.email||"")+'</div></td><td>'+pill(x.success,x.success?"Success":"Failed")+'</td><td>'+esc(x.method)+'</td><td>'+esc(x.device)+'</td><td>'+esc(x.ip_address||"—")+'</td><td>'+fmt(x.occurred_at)+'</td></tr>').join("")}
+function focusCustomer(id){const userId=Number(id);if(!Number.isSafeInteger(userId)||userId<1)return false;const button=$('#users-body tr[data-user-id="'+userId+'"] .user-open');if(!button?.getClientRects().length)return false;button.focus();return document.activeElement===button}
+async function loadUsers(){
+  const q=new URLSearchParams();
+  if($("#user-search").value.trim())q.set("search",$("#user-search").value.trim());
+  if($("#status-filter").value)q.set("status",$("#status-filter").value);
+  if($("#plan-filter").value)q.set("plan",$("#plan-filter").value);
+  const d=await api("/api/owner/users?"+q);
+  // Read focus after the response, so a late list refresh cannot steal it
+  // from a drawer or search field that the user has entered in the meantime.
+  const focusedUser=document.activeElement?.closest("#users-body .user-open")?.closest("tr[data-user-id]")?.dataset.userId;
+  $("#users-body").innerHTML=(d.items||[]).map(u=>'<tr data-user-id="'+esc(u.id)+'"><td><button type="button" class="user-open" aria-controls="drawer">'+esc(u.name)+'</button><div class="muted">@'+esc(u.username||"—")+'</div></td><td>'+esc(u.email)+'<div class="muted">'+esc(u.phone||"—")+'</div></td><td><span class="pill">'+esc(u.subscription?.plan_name||"Free")+'</span></td><td>'+pill(u.status==="Active",u.status)+'</td><td>'+fmt(u.created_at)+'</td><td>'+fmt(u.last_login_at)+'</td><td>'+esc(u.login_method)+'</td></tr>').join("");
+  if(focusedUser)focusCustomer(focusedUser);
+}
+async function loadLogins(){const v=$("#login-filter").value;const q=v?("?success="+v):"";const d=await api("/api/owner/login-history"+q);$("#logins-body").innerHTML=(d.items||[]).map(x=>'<tr><td><div class="user">'+esc(x.name)+'</div><div class="muted">'+esc(x.email||"")+'</div></td><td>'+esc(x.event)+'</td><td>'+pill(x.success,x.success?"Success":"Failed")+'</td><td>'+esc(x.method)+'</td><td>'+esc(x.device)+'</td><td>'+esc(x.ip_address||"—")+'</td><td>'+fmt(x.occurred_at)+'</td></tr>').join("")}
+async function openUser(id){currentUserId=id;const d=await api("/api/owner/users/"+id),u=d.user,s=u.subscription||{};if(currentUserId!==id)return;currentUserStatus=u.status;$('[data-owner-action="export"]').hidden=!d.can_export_crm_records;$("#drawer-name").textContent=u.name;$("#drawer-email").textContent=u.email;$("#drawer-account").innerHTML=["Username",u.username||"—","Phone",u.phone||"—","Status",u.status,"Role",u.role,"Joined",fmt(u.created_at),"Last login",fmt(u.last_login_at),"Custom modules",d.custom_modules].map((v,i)=>'<div>'+esc(v)+'</div>').join("");$("#drawer-subscription").innerHTML=["Plan",s.plan_name||"Free","Status",s.status||"—","Started",fmt(s.started_at),"Period end",fmt(s.current_period_end)].map(v=>'<div>'+esc(v)+'</div>').join("");$("#drawer-plan").value=s.plan_code||"free";$("#drawer-seats").value=s.purchased_seats||3;$("#drawer-status-btn").textContent=u.status==="Active"?"Suspend account":"Reactivate account";$("#drawer-logins").innerHTML=(d.login_history||[]).map(x=>'<tr><td>'+pill(x.success,x.success?"Success":"Failed")+'</td><td>'+esc(x.method)+'</td><td>'+esc(x.device)+'</td><td>'+esc(x.ip_address||"—")+'</td><td>'+fmt(x.occurred_at)+'</td></tr>').join("");const drawer=$("#drawer"),wasOpen=drawer.classList.contains("open");drawer.inert=false;drawer.setAttribute("aria-hidden","false");drawer.classList.add("open");if(!wasOpen)drawer.querySelector(".close").focus()}
+function closeDrawer(){const drawer=$("#drawer"),returnUserId=currentUserId;drawer.classList.remove("open");currentUserId=null;if(!focusCustomer(returnUserId))$('.nav button[data-view="users"]').focus();drawer.inert=true;drawer.setAttribute("aria-hidden","true")}
+async function savePlan(){if(!currentUserId)return;await api("/api/owner/users/"+currentUserId+"/subscription",{method:"PATCH",body:JSON.stringify({plan_code:$("#drawer-plan").value,purchased_seats:Number($("#drawer-seats").value)})});await openUser(currentUserId);await Promise.all([loadUsers(),loadOverview()])}
+async function toggleUserStatus(){if(!currentUserId)return;const next=currentUserStatus==="Active"?"Inactive":"Active";if(next==="Inactive"&&!(await confirmDialog("Suspend this account and revoke its active sessions?")))return;await api("/api/owner/users/"+currentUserId+"/status",{method:"PATCH",body:JSON.stringify({status:next})});await openUser(currentUserId);await Promise.all([loadUsers(),loadOverview()])}
+async function revokeSessions(){if(!currentUserId||!(await confirmDialog("Revoke all active sessions for this account?")))return;const d=await api("/api/owner/users/"+currentUserId+"/sessions/revoke",{method:"POST",body:"{}"});(await alertDialog(d.revoked+" session(s) revoked."));await openUser(currentUserId);await loadOverview()}
+async function sendPasswordReset(){if(!currentUserId||!(await confirmDialog("Send password reset instructions to this account?")))return;const d=await api("/api/owner/users/"+currentUserId+"/password-reset",{method:"POST",body:"{}"});(await alertDialog(d.message||"Password reset requested."))}
+function exportUser(){if(!currentUserId)return;location.href="/api/owner/users/"+currentUserId+"/export"}
+async function loadRequests(){
+ const filter=$("#requests-filter").value;
+ const data=await api("/api/owner/plan-requests"+(filter?"?status="+encodeURIComponent(filter):""));
+ $("#request-nav-count").textContent=data.pending_count?"("+data.pending_count+")":"";
+ $("#requests-body").innerHTML=(data.items||[]).map(r=>'<tr><td><strong>'+esc(r.user_name)+'</strong><div class="muted">'+esc(r.user_email)+'</div></td><td>'+esc(r.organization_id)+'</td><td>'+esc(r.from_plan)+'</td><td>'+esc(r.to_plan)+'<div class="muted">₹'+esc(r.price_monthly)+'/user/month</div></td><td>'+fmt(r.created_at)+'</td><td>'+pill(r.status==="Approved",r.status)+'</td><td>'+(r.status==="Pending Approval"?'<button class="btn" data-plan-decision="approve" data-request-id="'+esc(r.id)+'">Approve</button> <button class="btn" data-plan-decision="reject" data-request-id="'+esc(r.id)+'">Reject</button>':'—')+'</td></tr>').join("")||'<tr><td colspan="7" class="muted">No requests found.</td></tr>';
+}
+$("#requests-filter").addEventListener("change",()=>loadRequests().catch(showError));
+$("#requests-body").addEventListener("click",async event=>{
+ const button=event.target.closest("[data-plan-decision]");
+ if(!button)return;
+ const decision=button.dataset.planDecision,requestId=Number(button.dataset.requestId);
+ if(!Number.isSafeInteger(requestId)||requestId<1)return;
+ if(!(await confirmDialog((decision==="approve"?"Approve":"Reject")+" plan request #"+requestId+"?")))return;
+ button.disabled=true;
+ try{
+   await api("/api/owner/plan-requests/"+requestId+"/decision",{method:"POST",body:JSON.stringify({decision})});
+   await Promise.all([loadRequests(),loadUsers(),loadOverview()]);
+ }catch(error){button.disabled=false;showError(error)}
+});
+function view(name){$$("[id^=view-]").forEach(x=>x.classList.add("hidden"));$("#view-"+name).classList.remove("hidden");$$(".nav button[data-view]").forEach(b=>b.classList.toggle("active",b.dataset.view===name));$("#page-title").textContent={overview:"Owner Overview",users:"Customers",logins:"Login History",plans:"Plans & Subscriptions",requests:"Plan Approval Requests"}[name]||"Owner Console";if(name==="users")loadUsers().catch(showError);if(name==="logins")loadLogins().catch(showError);if(name==="requests")loadRequests().catch(showError)}
+$$(".nav button[data-view]").forEach(b=>b.addEventListener("click",()=>view(b.dataset.view)));
+$$("[data-owner-route]").forEach(b=>b.addEventListener("click",()=>{location.href=b.dataset.ownerRoute}));
+const ownerActions={refresh:refreshAll,close:closeDrawer,plan:savePlan,status:toggleUserStatus,sessions:revokeSessions,reset:sendPasswordReset,export:exportUser};
+$$("[data-owner-action]").forEach(b=>b.addEventListener("click",()=>{clearError();Promise.resolve().then(()=>ownerActions[b.dataset.ownerAction]()).catch(showError)}));
+$("#users-body").addEventListener("click",event=>{const row=event.target.closest("tr[data-user-id]");if(!row)return;const id=Number(row.dataset.userId);if(!Number.isSafeInteger(id)||id<1)return;clearError();openUser(id).catch(showError)});
+$("#drawer").addEventListener("keydown",event=>{if(event.key==="Escape"){event.preventDefault();closeDrawer()}});
+let timer;$("#user-search").addEventListener("input",()=>{clearTimeout(timer);timer=setTimeout(()=>loadUsers().catch(showError),250)});$("#status-filter").addEventListener("change",()=>loadUsers().catch(showError));$("#plan-filter").addEventListener("change",()=>loadUsers().catch(showError));$("#login-filter").addEventListener("change",()=>loadLogins().catch(showError));
+async function refreshAll(){clearError();try{await loadPlans();await Promise.all([loadOverview(),loadUsers(),loadLogins(),loadRequests()])}catch(e){showError(e)}}
+refreshAll();
+</script>
+</body>
+</html>
+
+

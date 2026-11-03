@@ -1,0 +1,481 @@
+import { confirmDialog } from "../core/dialogs.js?v=20261027-centered-popups-v1";
+import { MODULES } from "./modules.js";
+// Zoho-inspired workflow rule list and WHEN / CONDITION / ACTION wizard.
+// Existing /api/platform/workflow_rules endpoints remain the source of truth.
+const operators = [
+  ["equals", "is"], ["not_equals", "isn't"], ["contains", "contains"],
+  ["does_not_contain", "doesn't contain"], ["starts_with", "starts with"],
+  ["ends_with", "ends with"], ["greater_than", "greater than"],
+  ["less_than", "less than"], ["is_empty", "is empty"], ["is_not_empty", "is not empty"]
+];
+// Group actions by the Zoho-style instant-action categories while preserving
+// the existing backend action identifiers and stored workflow compatibility.
+const actions = [
+  ["field_update", "Field Update"],
+  ["tag", "Tags"],
+  ["email", "Email Notification"],
+  ["create_task", "Activities — Task"],
+  ["webhook_queue", "Webhook"],
+  ["function", "Function"],
+  ["audit", "Audit activity"],
+  ["notification", "Notification"]
+];
+const opts = (items, selected, escape) => items.map(([value, label]) =>
+  `<option value="${escape(value)}" ${String(selected) === String(value) ? "selected" : ""}>${escape(label)}</option>`).join("");
+const newCondition = () => ({field:"",operator:"equals",value:""});
+const draftRule = () => ({
+  name:"", description:"", module:"", event:"create_or_edit", trigger_field:"",
+  criteria_mode:"conditions", logic:"AND", conditions:[newCondition()],
+  actions:[{type:"audit",value:""}], scheduled_for:"", status:"Active"
+});
+
+export function createWorkflowRulesUI({api, esc, toast, navigate, renderRoute, state}) {
+  let draft = null;
+  let editingId = null;
+  let step = 0;
+  let rules = [];
+  let activity = [];
+  let customFunctions = [];
+  let functionPicker = false;
+  let functionSearch = "";
+  let functionConfiguration = false;
+  let functionGallery = false;
+  let declarativeEditor = null;
+  let functionEditor = false;
+  let functionEditingId = null;
+  let functionDraft = null;
+  let listQuery = "";
+  let moduleFilter = "all";
+  const selectedRuleIds = new Set();
+  const el = (root, selector) => root.querySelector(selector) || document.querySelector("[data-wf-code-portal] "+selector);
+  const els = (root, selector) => [...root.querySelectorAll(selector), ...document.querySelectorAll("[data-wf-code-portal] "+selector)];
+  const moduleOptions = () => {
+    // Restrict workflow creation to the primary CRM business modules.
+    // Do not expose administration, billing, or platform configuration resources.
+    const primary = [
+      ["leads","Leads"],["contacts","Contacts"],["accounts","Accounts"],
+      ["deals","Deals"],["tasks","Tasks"],["meetings","Meetings"],
+      ["calls","Calls"],["products","Products"],["quotes","Quotes"],
+      ["sales_orders","Sales Orders"],["purchase_orders","Purchase Orders"],
+      ["invoices","Invoices"],["vendors","Vendors"],
+      ["campaigns","Campaigns"],["cases","Cases"]
+    ];
+    const available = state.platformCatalog?.resources || {};
+    return primary.filter(([key]) => available[key] || MODULES[key]);
+  };
+  const fieldsFor = () => {
+    const catalog = state.platformCatalog?.resources?.[draft.module];
+    const fields = catalog?.fields || MODULES[draft.module]?.fields || [];
+    const map = new Map([["name","Record name"],["status","Status"],["owner_id","Owner ID"]]);
+    for (const field of fields) {
+      const key = field.key || field.name || field.api_name;
+      if (key) map.set(key, field.label || key);
+    }
+    const module = state.platformCatalog?.resources?.[draft.module];
+    if (!module && !MODULES[draft.module]) for (const key of ["website","company","email","phone","amount","stage","source"]) map.set(key, key.replaceAll("_"," "));
+    return [...map].map(([key,label]) => [key,label]);
+  };
+  const asDraft = (record) => {
+    const criteria = record.criteria;
+    return {
+      name:record.name || record.title || "",
+      description:record.description || "",
+      module:record.module || "leads",
+      event:record.event === "update" ? "edit" : record.event === "create" ? "create" : (record.event || "create_or_edit"),
+      trigger_field:record.trigger_field || "",
+      criteria_mode:criteria ? "conditions" : "all",
+      logic:criteria?.logic === "OR" ? "OR" : "AND",
+      conditions:criteria?.conditions?.length ? criteria.conditions.map(c=>({...newCondition(),...c})) : criteria?.field ? [{...newCondition(),...criteria}] : [newCondition()],
+      actions:Array.isArray(record.actions) && record.actions.length ? record.actions.map(a=>({...a})) : [{type:record.action_type || "audit",value:record.action_value || ""}],
+      scheduled_for:record.scheduled_for || "",
+      status:record.status || "Active"
+    };
+  };
+  const stepLabels = ["Rule details","WHEN","CONDITION","ACTIONS"];
+  const conditionRows = () => draft.conditions.map((item,index) => `<div class="wf-condition-row" data-condition-row="${index}"><input class="field-input wf-field-search" data-wf-field-search="${index}" aria-label="Search condition fields" placeholder="Search fields…" autocomplete="off" />
+    <span class="wf-condition-number">${index+1}</span>
+    <select class="field-select" data-wf-field="${index}" aria-label="Condition field">${opts([["","Select field"],...fieldsFor()],item.field,esc)}</select>
+    <select class="field-select" data-wf-operator="${index}" aria-label="Condition operator">${opts(operators,item.operator,esc)}</select>
+    <input class="field-input" data-wf-value="${index}" aria-label="Condition value" placeholder="Value" value="${esc(item.value ?? "")}" ${["is_empty","is_not_empty"].includes(item.operator) ? "disabled" : ""}/>
+    <button type="button" class="button button-small" data-wf-remove-condition="${index}" aria-label="Remove condition" ${draft.conditions.length === 1 ? "disabled" : ""}>−</button>
+  </div>`).join("");
+  const actionRows = () => draft.actions.map((item,index) => `<div class="wf-action-row" data-action-row="${index}">
+    <select class="field-select" data-wf-action-type="${index}">${opts(actions,item.type,esc)}</select>
+    ${item.type === "field_update" ? `<select class="field-select" data-wf-action-field="${index}">${opts([["","Select field"],...fieldsFor()],item.field || "",esc)}</select>` : ""}
+    ${item.type === "email" ? `<input class="field-input" data-wf-action-to="${index}" type="email" aria-label="Recipient email" placeholder="Approved recipient email" value="${esc(item.to || "")}"/><input class="field-input" data-wf-action-subject="${index}" aria-label="Email subject" placeholder="Email subject" value="${esc(item.subject || "")}"/>` : ""}
+    ${item.type === "function" ? `<select class="field-select" data-wf-action-value="${index}" aria-label="Custom function">${opts([["","Select active custom function"],...customFunctions.filter(fn=>fn.status === "Active" && (!Array.isArray(fn.associations?.modules) || !fn.associations.modules.length || fn.associations.modules.includes(draft.module))).map(fn=>[String(fn.id),fn.name || fn.title])],item.value ?? "",esc)}</select>` : `<input class="field-input" data-wf-action-value="${index}" placeholder="${item.type === "field_update" ? "New value" : item.type === "create_task" ? "Task subject" : "Action details (optional)"}" value="${esc(item.value ?? "")}"/>`}
+    <button class="button button-small" type="button" data-wf-remove-action="${index}" ${draft.actions.length === 1 ? "disabled" : ""}>Remove</button>
+  </div>`).join("");
+  const functionEditorDialog = () => `<div class="wf-rule-overlay" data-wf-code-portal style="position:fixed;inset:0;width:100vw;z-index:9999;padding:0;background:#080e1b">
+    <div class="wf-rule-dialog" role="dialog" aria-modal="true" aria-label="Deluge function editor" style="position:absolute;inset:0;width:100%;max-width:none;height:100%;min-height:100dvh;max-height:none;margin:0;padding:0;border-radius:0;display:flex;flex-direction:column;overflow:hidden;background:#101827;color:#e2e8f0">
+      <header style="padding:18px 24px;background:#172338;border-bottom:1px solid #334155;display:flex;align-items:center;justify-content:space-between;gap:16px">
+        <div><h2 style="color:#f8fafc;margin:0">${functionEditingId ? "Edit" : "Create"} Deluge Function</h2><p style="color:#94a3b8;margin:6px 0 0">Executable Deluge-style CRM actions · Restricted safe syntax</p></div>
+        <button type="button" class="button" data-wf-editor-close aria-label="Close editor">Close</button>
+      </header>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:16px;padding:16px 24px;background:#101827">
+        <label style="color:#cbd5e1">Function name<input class="field-input" data-wf-new-function-name maxlength="160" required value="${esc(functionDraft?.name || "")}" style="margin-top:6px;background:#1e293b;color:#f8fafc;border:1px solid #475569"/></label>
+        <label style="color:#cbd5e1">Entrypoint<input class="field-input" data-wf-new-function-entry value="${esc(functionDraft?.entrypoint || "main")}" maxlength="80" style="margin-top:6px;background:#1e293b;color:#f8fafc;border:1px solid #475569"/></label>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:9px 24px;background:#1e293b;border-top:1px solid #334155;border-bottom:1px solid #334155;color:#cbd5e1;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:13px">
+        <span>function.dg <span style="color:#64748b">· Deluge subset · Workflow enabled</span></span><span data-wf-editor-position>Ln 1, Col 1</span>
+      </div>
+      <details style="padding:8px 24px;background:#172338;color:#cbd5e1;border-bottom:1px solid #334155;font-size:12px"><summary style="cursor:pointer">Supported Deluge statements and examples</summary><pre style="white-space:pre-wrap;overflow-wrap:anywhere;margin:8px 0;color:#dbeafe;font:12px/1.6 ui-monospace,Consolas,monospace">record.put("status", "Qualified");\ncrm.addTag("Reviewed");\ncrm.createTask("Follow up");\ncrm.notify("Needs review");\ninfo "Workflow executed";\n// Values can reference $record.name\n// Maximum 20 statements; no loops or external requests.</pre></details>\n      <div style="flex:1;min-height:0;display:flex;background:#0b1220;overflow:hidden">
+        <pre aria-hidden="true" data-wf-editor-lines style="margin:0;padding:18px 12px 18px 20px;min-width:55px;overflow:hidden;text-align:right;line-height:1.6;font:14px/1.6 ui-monospace,SFMono-Regular,Consolas,monospace;color:#64748b;user-select:none;border-right:1px solid #253247">1</pre>
+        <textarea data-wf-new-function-source aria-label="Deluge source code" spellcheck="false" wrap="off" placeholder="crm.addTag(&quot;Reviewed&quot;);&#10;crm.createTask(&quot;Follow up&quot;);" style="flex:1;width:100%;height:100%;resize:none;border:0;outline:none;border-radius:0;background:#0b1220;color:#dbeafe;padding:18px 16px;line-height:1.6;font:14px/1.6 ui-monospace,SFMono-Regular,Consolas,monospace;tab-size:4;white-space:pre;overflow:auto">${esc(functionDraft?.code || 'crm.addTag("Reviewed");')}</textarea>
+      </div>
+      <footer class="wf-editor-footer" style="margin:0;padding:14px 24px;background:#172338;border-top:1px solid #334155;display:flex;justify-content:flex-end;gap:12px">
+        <button type="button" class="button" data-wf-editor-close>Cancel</button><button type="button" class="button button-primary" data-wf-editor-save>Save &amp; Activate</button>
+      </footer>
+    </div></div>`;
+  const galleryTemplates = [
+    {name:"Add Follow-up Task",description:"Create a follow-up activity for the matched record.",steps:[{type:"create_task",subject:"Follow up with CRM record"}]},
+    {name:"Add Reviewed Tag",description:"Mark the matched record as reviewed.",steps:[{type:"tag",value:"Reviewed"}]},
+    {name:"Audit Record",description:"Write an audit entry when the workflow matches.",steps:[{type:"audit"}]}
+  ];
+  const declarativeEditorDialog = () => `<div class="wf-rule-overlay"><div class="wf-rule-dialog" role="dialog" aria-modal="true" aria-label="Edit CRM function" style="max-width:720px;width:min(94vw,720px)">
+    <header><h2>Edit CRM function</h2><p>Changes to an active function affect workflows using it.</p></header>
+    <div class="form-grid" style="padding:16px">
+      <div class="field full"><label>Function name</label><input class="field-input" data-wf-declarative-name maxlength="160" value="${esc(declarativeEditor?.name || "")}"/></div>
+      <div class="field full"><label>Approved action</label><select class="field-select" data-wf-declarative-type>${opts([["audit","Audit record"],["tag","Add tag"],["create_task","Create task"]],declarativeEditor?.type || "audit",esc)}</select></div>
+      <div class="field full"><label>Tag or task subject</label><input class="field-input" data-wf-declarative-value maxlength="250" value="${esc(declarativeEditor?.value || "")}"/></div>
+    </div><footer class="wf-editor-footer"><button type="button" class="button" data-wf-declarative-cancel>Cancel</button><button type="button" class="button button-primary" data-wf-declarative-save>Save changes</button></footer>
+  </div></div>`;
+  const functionDialog = () => {
+    const eligible = customFunctions.filter(fn => {
+      const modules = fn.associations?.modules;
+      return !Array.isArray(modules) || modules.length === 0 || modules.includes(draft.module);
+    });
+    const filtered = eligible.filter(fn => String(fn.name || fn.title || "").toLowerCase().includes(functionSearch.toLowerCase()));
+    return `<div class="wf-rule-overlay" data-wf-function-overlay><div class="wf-rule-dialog" role="dialog" aria-modal="true" aria-label="Choose workflow function" style="max-width:760px;width:min(94vw,760px)">
+      <header><h2>Choose a function</h2></header>
+      <div style="padding:18px;max-height:65vh;overflow:auto">
+        ${eligible.length ? `<div class="wf-list-actions"><input class="field-input" aria-label="Search functions" data-wf-function-search placeholder="Search saved functions" value="${esc(functionSearch)}"/></div>
+          <div style="display:grid;gap:8px;margin:12px 0 22px">
+            ${filtered.map(fn=>`<label class="wf-details-card" data-wf-function-row="${esc(String(fn.id))}" style="display:flex;align-items:center;gap:12px;padding:12px;cursor:pointer">
+              <input type="radio" name="wf-function-choice" value="${esc(String(fn.id))}" ${fn.status !== "Active" ? "disabled" : ""} ${draft.actions.some(a=>a.type==="function"&&String(a.value)===String(fn.id))?"checked":""}/>
+              <span style="flex:1"><strong>${esc(fn.name || fn.title || "")}</strong><small style="display:block">${esc(fn.description || fn.status || "")}</small></span>
+              <button type="button" class="button button-small" data-wf-edit-function="${esc(String(fn.id))}">Edit</button>
+            </label>`).join("") || '<p>No matching functions.</p>'}
+          </div>` : ""}
+        <h3 style="margin:0 0 12px">Function templates</h3>
+        <div style="display:grid;gap:10px">
+          ${galleryTemplates.map((item,index)=>`<div class="wf-details-card" style="padding:14px;display:flex;align-items:center;gap:12px">
+            <div style="flex:1"><strong>${esc(item.name)}</strong><small style="display:block">${esc(item.description)}</small></div>
+            <button type="button" class="button button-primary" data-wf-gallery-create="${index}">Use</button>
+          </div>`).join("")}
+        </div>
+        <button type="button" class="button" data-wf-function-create style="margin-top:16px">+ Create custom function</button>
+      </div>
+      <footer class="wf-editor-footer"><button type="button" class="button" data-wf-close-function>Cancel</button>${eligible.some(fn=>fn.status==="Active") ? '<button type="button" class="button button-primary" data-wf-associate-function>Associate selected</button>' : ""}</footer>
+    </div></div>`;
+  };
+  const editor = () => {
+    const back = `<button class="button button-small" data-wf-back type="button">← Workflow Rules</button>`;
+    const heading = `<header class="wf-editor-heading">${back}<div><h2>${esc(draft.name || "Create New Rule")}</h2><p>@ ${esc(moduleOptions().find(([key])=>key===draft.module)?.[1] || draft.module)}</p><small>${esc(draft.description)}</small></div></header>`;
+    let body = "";
+    if (step === 0) body = `<div class="wf-details-card"><h3>${editingId ? "Edit Workflow Rule" : "Create New Rule"}</h3><div class="form-grid">
+      <div class="field"><label>Module</label><select class="field-select" data-wf-module>${opts([["","Select Module"],...moduleOptions()],draft.module,esc)}</select></div>
+      <div class="field"><label>Rule Name</label><input class="field-input" data-wf-name maxlength="160" required value="${esc(draft.name)}"/></div>
+      <div class="field full"><label>Description</label><textarea class="field-input" data-wf-description rows="2">${esc(draft.description)}</textarea></div>
+      </div></div>`;
+    if (step === 1) body = `<section class="wf-stage"><div class="wf-stage-marker">WHEN</div><div class="wf-stage-content"><h3>Execute this workflow rule based on</h3>
+      <select class="field-select" data-wf-event>${opts([["create","Create"],["create_or_edit","Create or Edit"],["edit","Edit"],["field_change","Specific field changes"]],draft.event,esc)}</select>${draft.event === "field_change" ? `<label>Field to monitor</label><select class="field-select" data-wf-trigger-field>${opts([["","Select a field"],...fieldsFor()],draft.trigger_field,esc)}</select>` : ""}
+      <p>This workflow will run ${draft.event === "create" ? "when a record is created" : draft.event === "edit" ? "when a record is edited" : "when a record is created or edited"} and its conditions are met.</p></div></section>`;
+    if (step === 2) body = `<section class="wf-stage"><div class="wf-stage-marker">CONDITION 1</div><div class="wf-stage-content"><h3>Which records should this rule apply to?</h3>
+      <div class="wf-mode"><label><input type="radio" name="wf-criteria-mode" value="conditions" ${draft.criteria_mode === "conditions" ? "checked" : ""}/> Records matching certain conditions</label>
+      <label><input type="radio" name="wf-criteria-mode" value="all" ${draft.criteria_mode === "all" ? "checked" : ""}/> All records</label></div>
+      ${draft.criteria_mode === "conditions" ? `<div class="wf-conditions"><label>Match <select class="field-select" data-wf-logic>${opts([["AND","All (AND)"],["OR","Any (OR)"]],draft.logic,esc)}</select> conditions</label>${conditionRows()}<button class="button button-small" data-wf-add-condition>+ Add condition</button></div>` : ""}
+      </div></section>`;
+    if (step === 3) body = `<section class="wf-stage"><div class="wf-stage-marker">ACTION</div><div class="wf-stage-content"><h3>Immediate actions</h3><p>Choose actions executed when the rule matches. External delivery actions are queued for configured integrations.</p>
+      ${actionRows()}<button type="button" class="button button-small" data-wf-open-function>Browse Functions</button><button class="button button-small" data-wf-add-action>+ Add action</button><div class="field"><label>Schedule execution (optional)</label><input type="datetime-local" class="field-input" data-wf-scheduled-for value="${esc((draft.scheduled_for || "").slice(0,16))}"/><small>Scheduled actions remain queued until a worker or authorized user runs them.</small></div></div></section>`;
+    if (step === 0) return `<div class="wf-rule-overlay"><div class="wf-rule-dialog" role="dialog" aria-modal="true" aria-label="Create New Rule">${body}<footer class="wf-editor-footer"><button class="button" type="button" data-wf-back-step>Cancel</button><button class="button button-primary" type="button" data-wf-next>Next</button></footer></div></div>`;
+    return `${declarativeEditor ? declarativeEditorDialog() : functionEditor ? functionEditorDialog() : functionPicker ? functionDialog() : ""}<section class="wf-editor">${heading}<div class="wf-progress">${stepLabels.map((label,i)=>`<span class="${i===step?"active":""}">${i+1}. ${label}</span>`).join("")}</div>${body}
+      <footer class="wf-editor-footer"><button class="button" data-wf-back-step type="button">${step===0?"Cancel":"Previous"}</button>
+      <button class="button button-primary" data-wf-next type="button">${step===3?"Save Rule":"Next"}</button></footer></section>`;
+  };
+  const list = () => `<section class="card settings-section wf-list"><div class="settings-section-head"><h2>Workflow Rules</h2><p>Automate CRM records based on event triggers, conditions and actions.</p></div>
+    <div class="wf-list-actions"><label class="wf-list-search"><span>Search rules</span><input class="field-input" data-wf-search placeholder="Search workflow rules" value="${esc(listQuery)}"/></label><label class="wf-list-filter"><span>Module</span><select class="field-select" data-wf-module-filter>${opts([["all","All modules"],...moduleOptions()],moduleFilter,esc)}</select></label><button class="button button-small" data-wf-delete-selected ${selectedRuleIds.size ? "" : "disabled"}>Delete selected (${selectedRuleIds.size})</button><button class="button button-primary" data-wf-create>Create Rule</button></div>
+    <div class="table-wrap"><table class="data-table"><thead><tr><th><input type="checkbox" data-wf-select-all aria-label="Select all visible workflow rules"/></th><th>Rule Name</th><th>Module</th><th>Execute On</th><th>Actions</th><th>Modified On</th><th>Status</th></tr></thead><tbody>
+    ${rules.filter(rule=>(moduleFilter === "all" || rule.module === moduleFilter) && (!listQuery || String(rule.name || rule.title || "").toLowerCase().includes(listQuery.toLowerCase()))).map(rule=>`<tr><td><input type="checkbox" data-wf-select="${rule.id}" ${selectedRuleIds.has(Number(rule.id)) ? "checked" : ""} aria-label="Select workflow rule"/></td><td><button class="wf-rule-link" data-wf-edit="${rule.id}">${esc(rule.name || rule.title)}</button></td><td>${esc(rule.module || "")}</td><td>${esc(rule.event === "create" ? "Create" : rule.event === "edit" || rule.event === "update" ? "Edit" : "Create or Edit")}</td><td>${Array.isArray(rule.actions) ? rule.actions.length : 1}</td><td>${esc(rule.updated_at || rule.created_at || "—")}</td><td><label class="wf-status"><input type="checkbox" data-wf-toggle="${rule.id}" ${rule.status === "Active" ? "checked" : ""} aria-label="Enable ${esc(rule.name || rule.title)}"/><span>${rule.status === "Active" ? "Active" : "Inactive"}</span></label><button class="button button-small" type="button" data-wf-delete="${rule.id}" aria-label="Delete ${esc(rule.name || rule.title)}">Delete</button></td></tr>`).join("") || '<tr><td colspan="7">No workflow rules have been created.</td></tr>'}
+    </tbody></table></div></section>
+    <section class="card settings-section"><h3>Execution history</h3>${activity.length ? activity.map(x=>`<div class="rule-row"><div class="rule-info"><strong>${esc(x.resource)} #${x.record_id}</strong><small>${esc(x.event)} · ${esc(x.status)} · Attempts: ${Number(x.attempts || 0)}${x.next_attempt_at ? " · Retry: "+esc(x.next_attempt_at) : ""}</small>${x.error ? `<small title="${esc(x.error)}">Error: ${esc(x.error)}</small>` : ""}</div>${x.status === "failed" ? `<button class="button button-small" data-wf-retry="${x.id}">Retry</button>` : ""}</div>`).join("") : "<p>No workflow executions yet.</p>"}</section>`;
+  async function availableCustomFunctions() {
+    const subscription = state.profile?.subscription;
+    if (subscription && !subscription.owner_unrestricted && !subscription.features?.custom_functions) return {items: []};
+    try { return await api("/api/platform/functions?limit=100"); }
+    catch (error) {
+      // Optional paid/profile-restricted actions must not hide basic workflow rules.
+      if (error.status === 403) return {items: []};
+      throw error;
+    }
+  }
+  async function view() {
+    if (draft) {
+      const functionRecords = await availableCustomFunctions();
+      customFunctions = functionRecords.items || [];
+      return editor();
+    }
+    const [records, executions, functionRecords] = await Promise.all([
+      api("/api/platform/workflow_rules?limit=100"),
+      api("/api/automation/executions?limit=100"),
+      availableCustomFunctions()
+    ]);
+    customFunctions = (functionRecords.items || []);
+    rules = records.items || [];
+    activity = executions.items || [];
+    return list();
+  }
+  async function refresh(root) {
+    document.querySelector("[data-wf-code-portal]")?.remove();
+    root.innerHTML = await view();
+    const overlay = root.querySelector("[data-wf-code-portal]");
+    if (overlay) document.body.appendChild(overlay);
+    bind(root);
+  }
+  function readCurrent(root) {
+    if (!draft) return;
+    const get = selector => el(root,selector)?.value;
+    if (step === 0) {
+      draft.module = get("[data-wf-module]") || draft.module;
+      draft.name = (get("[data-wf-name]") || "").trim();
+      draft.description = get("[data-wf-description]") || "";
+    } else if(step === 1) { draft.event = get("[data-wf-event]") || draft.event; if (draft.event === "field_change") draft.trigger_field = get("[data-wf-trigger-field]") || draft.trigger_field; }
+    else if(step === 2) {
+      draft.criteria_mode = el(root,'input[name="wf-criteria-mode"]:checked')?.value || "all";
+      draft.logic = get("[data-wf-logic]") || "AND";
+      draft.conditions = els(root,"[data-condition-row]").map(row=>({
+        field:el(row,"[data-wf-field]").value,
+        operator:el(row,"[data-wf-operator]").value,
+        value:el(row,"[data-wf-value]").value
+      }));
+    } else if (step === 3) { draft.scheduled_for = get("[data-wf-scheduled-for]") || ""; draft.actions = els(root,"[data-action-row]").map(row=>({
+      type:el(row,"[data-wf-action-type]").value,
+      field:el(row,"[data-wf-action-field]")?.value || "",
+      to:el(row,"[data-wf-action-to]")?.value || "",
+      subject:el(row,"[data-wf-action-subject]")?.value || "",
+      value:el(row,"[data-wf-action-value]").value
+    })); }
+  }
+  function validateStep() {
+    if (step === 1 && draft.event === "field_change" && !draft.trigger_field) return "Select the field to monitor.";
+    if (step === 0 && (!draft.name || !draft.module)) return "Select a module and enter a rule name.";
+    if (step === 2 && draft.criteria_mode === "conditions" && draft.conditions.some(c=>!c.field || (!["is_empty","is_not_empty"].includes(c.operator) && !String(c.value ?? "").trim()))) return "Choose a field, operator and value for each condition.";
+    if (step === 3 && draft.actions.some(a=>a.type === "field_update" && !a.field)) return "Select a target field for every field update.";
+    if (step === 3 && draft.actions.some(a=>a.type === "function" && !a.value)) return "Select an active custom function."
+    if (step === 3 && draft.actions.some(a=>a.type === "email" && (!a.to || !a.subject))) return "Email actions require an approved recipient and subject.";;
+    return "";
+  }
+  function bind(root) {
+    el(root,"[data-wf-open-function]")?.addEventListener("click",async()=>{readCurrent(root);functionPicker=true;await refresh(root);});
+    el(root,"[data-wf-close-function]")?.addEventListener("click",async()=>{functionPicker=false;await refresh(root);});
+    el(root,"[data-wf-function-search]")?.addEventListener("input",event=>{
+      functionSearch=event.target.value;
+      const query=functionSearch.toLowerCase();
+      els(root,"[data-wf-function-row]").forEach(row=>{
+        const fn=customFunctions.find(item=>String(item.id)===row.dataset.wfFunctionRow);
+        row.hidden=!String(fn?.name || fn?.title || "").toLowerCase().includes(query);
+      });
+    });
+    el(root,"[data-wf-function-create]")?.addEventListener("click",async()=>{functionPicker=false;functionEditingId=null;functionDraft=null;functionEditor=true;await refresh(root);});
+    el(root,"[data-wf-empty-gallery]")?.addEventListener("click",async()=>{functionPicker=false;functionGallery=true;await refresh(root);});
+    els(root,"[data-wf-edit-function]").forEach(button=>button.addEventListener("click",async()=>{
+      const fn=customFunctions.find(item=>String(item.id)===button.dataset.wfEditFunction);
+      if(!fn)return;
+      if(Array.isArray(fn.source) || Array.isArray(fn.source?.steps)){
+        const steps=Array.isArray(fn.source)?fn.source:fn.source.steps;
+        if(steps.length!==1 || !["audit","tag","create_task"].includes(steps[0]?.type)){
+          toast("Advanced function","Only single-action audit, tag and task functions can be edited here.","error");return;
+        }
+        declarativeEditor={id:fn.id,name:fn.name || "",type:steps[0].type,value:steps[0].value || steps[0].subject || ""};
+        functionPicker=false;await refresh(root);return;
+      }
+      functionEditingId=fn.id;
+      functionDraft={name:fn.name || "",entrypoint:fn.entrypoint || "main",code:fn.source?.code || ""};
+      functionEditor=true;functionPicker=false;await refresh(root);
+    }));
+    el(root,"[data-wf-declarative-cancel]")?.addEventListener("click",async()=>{
+      declarativeEditor=null;functionPicker=true;await refresh(root);
+    });
+    el(root,"[data-wf-declarative-save]")?.addEventListener("click",async()=>{
+      const name=el(root,"[data-wf-declarative-name]")?.value.trim();
+      const type=el(root,"[data-wf-declarative-type]")?.value;
+      const value=el(root,"[data-wf-declarative-value]")?.value.trim();
+      if(!name || (type!=="audit" && !value)){
+        toast("Complete function","Enter a name and a tag or task subject.","error");return;
+      }
+      const steps=[type==="audit"?{type:"audit"}:type==="tag"?{type:"tag",value}:{type:"create_task",subject:value}];
+      try{
+        await api("/api/platform/functions/"+declarativeEditor.id,{method:"PATCH",body:JSON.stringify({name,source:steps,status:"Active"})});
+        declarativeEditor=null;functionPicker=true;
+        toast("Function updated","Approved CRM action saved.");
+        await refresh(root);
+      }catch(error){toast("Function update failed",error.message,"error");}
+    });
+    el(root,"[data-wf-editor-close]")?.addEventListener("click",async()=>{functionEditor=false;functionPicker=true;await refresh(root);});
+    const codeInput=el(root,"[data-wf-new-function-source]");
+    if(codeInput){
+      const gutter=el(root,"[data-wf-editor-lines]");
+      const position=el(root,"[data-wf-editor-position]");
+      const updateCodeUI=()=>{
+        const text=codeInput.value;
+        const count=Math.max(1,text.split("\n").length);
+        gutter.textContent=Array.from({length:count},(_,i)=>i+1).join("\n");
+        gutter.scrollTop=codeInput.scrollTop;
+        const before=text.slice(0,codeInput.selectionStart).split("\n");
+        position.textContent="Ln "+before.length+", Col "+(before[before.length-1].length+1);
+      };
+      codeInput.addEventListener("input",updateCodeUI);
+      codeInput.addEventListener("click",updateCodeUI);
+      codeInput.addEventListener("keyup",updateCodeUI);
+      codeInput.addEventListener("scroll",()=>{gutter.scrollTop=codeInput.scrollTop;});
+      codeInput.addEventListener("keydown",event=>{
+        if(event.key==="Tab"){
+          event.preventDefault();
+          const start=codeInput.selectionStart,end=codeInput.selectionEnd;
+          codeInput.setRangeText("    ",start,end,"end");
+          updateCodeUI();
+        }
+      });
+      updateCodeUI();
+    }
+    el(root,"[data-wf-editor-save]")?.addEventListener("click",async()=>{
+      const name=el(root,"[data-wf-new-function-name]")?.value.trim();
+      const entrypoint=el(root,"[data-wf-new-function-entry]")?.value.trim();
+      const source=el(root,"[data-wf-new-function-source]")?.value || "";
+      if(!name || !/^[a-zA-Z_][a-zA-Z0-9_]*$/.test(entrypoint) || !source.trim() || new TextEncoder().encode(source).length>32768){
+        toast("Invalid function","Provide a name, valid entrypoint and source of at most 32 KiB.","error");return;
+      }
+      try{
+        await api("/api/platform/functions"+(functionEditingId?"/"+functionEditingId:""),{method:functionEditingId?"PATCH":"POST",body:JSON.stringify({
+          name,runtime:"Deluge",entrypoint,source:{code:source,language:"Deluge"},
+          input_schema:{type:"object"},associations:{modules:[draft.module]},
+          status:"Active"
+        })});
+        functionEditor=false;functionPicker=true;functionEditingId=null;functionDraft=null;
+        toast("Function activated","Deluge function is ready to associate with a workflow.");
+        await refresh(root);
+      }catch(error){toast("Function save failed",error.message,"error");}
+    });
+    el(root,"[data-wf-function-config-close]")?.addEventListener("click",async()=>{functionConfiguration=false;functionPicker=true;await refresh(root);});
+    els(root,"[data-wf-function-method]").forEach(button=>button.addEventListener("click",async()=>{
+      const method=button.dataset.wfFunctionMethod;
+      functionConfiguration=false;
+      if(method==="existing"){functionPicker=true;await refresh(root);return;}
+      if(method==="gallery"){functionGallery=true;functionPicker=false;await refresh(root);return;}
+      functionPicker=false;
+      functionEditingId=null;functionDraft=null;functionEditor=true;
+      await refresh(root);
+    }));
+    el(root,"[data-wf-gallery-close]")?.addEventListener("click",async()=>{
+      functionGallery=false;functionConfiguration=true;await refresh(root);
+    });
+    els(root,"[data-wf-gallery-create]").forEach(button=>button.addEventListener("click",async()=>{
+      const selected=galleryTemplates[Number(button.dataset.wfGalleryCreate)];
+      if(!selected || !draft.module){toast("Choose a module","Select a CRM module first.","error");return;}
+      button.disabled=true;
+      try{
+        const created=await api("/api/platform/functions",{method:"POST",body:JSON.stringify({
+          name:selected.name,runtime:"Python",entrypoint:"steps",source:selected.steps,
+          associations:{modules:[draft.module]},status:"Active"
+        })});
+        if(!created?.id)throw new Error("Function creation returned no identifier");
+        const action=draft.actions.find(item=>item.type==="function");
+        if(action)action.value=String(created.id);
+        else draft.actions.push({type:"function",value:String(created.id)});
+        functionGallery=false;functionPicker=false;functionConfiguration=false;
+        toast("Function ready",selected.name+" was created and associated.");
+        await refresh(root);
+      }catch(error){button.disabled=false;toast("Gallery function failed",error.message,"error");}
+    }));
+    el(root,"[data-wf-associate-function]")?.addEventListener("click",async()=>{
+      const selected=el(root,'input[name="wf-function-choice"]:checked')?.value;
+      if(!selected){toast("Select a function","Choose an active function to associate.","error");return;}
+      const action=draft.actions.find(a=>a.type==="function");
+      if(action)action.value=selected;else draft.actions.push({type:"function",value:selected});
+      functionPicker=false;await refresh(root);
+    });
+    els(root,"[data-wf-select]").forEach(input=>input.addEventListener("change",()=>{
+      const id=Number(input.dataset.wfSelect);
+      if(input.checked) selectedRuleIds.add(id); else selectedRuleIds.delete(id);
+      const button=el(root,"[data-wf-delete-selected]");
+      if(button){button.disabled=!selectedRuleIds.size;button.textContent="Delete selected ("+selectedRuleIds.size+")";}
+    }));
+    el(root,"[data-wf-select-all]")?.addEventListener("change",event=>{
+      els(root,"[data-wf-select]").forEach(input=>{
+        input.checked=event.target.checked;
+        const id=Number(input.dataset.wfSelect);
+        if(event.target.checked)selectedRuleIds.add(id);else selectedRuleIds.delete(id);
+      });
+      const button=el(root,"[data-wf-delete-selected]");
+      if(button){button.disabled=!selectedRuleIds.size;button.textContent="Delete selected ("+selectedRuleIds.size+")";}
+    });
+    el(root,"[data-wf-delete-selected]")?.addEventListener("click",async()=>{
+      if(!selectedRuleIds.size||!(await confirmDialog("Move selected workflow rules to the 30-day Recycle Bin?")))return;
+      try{
+        const result=await api("/api/administration/bulk-delete",{method:"POST",body:JSON.stringify({resource:"workflow_rules",ids:[...selectedRuleIds]})});
+        selectedRuleIds.clear();
+        toast("Workflows deleted",result.deleted+" rules moved to Recycle Bin.");
+        await refresh(root);
+      }catch(error){toast("Bulk delete failed",error.message,"error");}
+    });
+    els(root,"[data-wf-delete]").forEach(button=>button.addEventListener("click",async()=>{
+      if (!(await confirmDialog("Delete this workflow rule? It will remain in Recycle Bin for 30 days."))) return;
+      try {
+        await api("/api/platform/workflow_rules/"+button.dataset.wfDelete,{method:"DELETE"});
+        toast("Workflow deleted","Rule moved to the 30-day Recycle Bin.");
+        await refresh(root);
+      } catch(error){toast("Delete failed",error.message,"error");}
+    }));
+    els(root,"[data-wf-retry]").forEach(button=>button.addEventListener("click",async()=>{try{await api("/api/automation/executions/"+button.dataset.wfRetry+"/retry",{method:"POST"});toast("Workflow requeued","The worker will retry the execution.");await refresh(root);}catch(error){toast("Retry failed",error.message,"error");}}));
+    el(root,"[data-wf-search]")?.addEventListener("input",event=>{
+      listQuery=event.target.value;
+      els(root,"[data-wf-edit]").forEach(button=>{
+        const row=button.closest("tr");
+        if(row) row.hidden=!(String(button.textContent || "").toLowerCase().includes(listQuery.toLowerCase()) &&
+          (moduleFilter==="all" || rules.find(rule=>String(rule.id)===button.dataset.wfEdit)?.module===moduleFilter));
+      });
+    });
+    el(root,"[data-wf-module-filter]")?.addEventListener("change",event=>{
+      moduleFilter=event.target.value;
+      els(root,"[data-wf-edit]").forEach(button=>{
+        const row=button.closest("tr");
+        const record=rules.find(rule=>String(rule.id)===button.dataset.wfEdit);
+        if(row) row.hidden=!(record && (moduleFilter==="all" || record.module===moduleFilter) &&
+          String(record.name || record.title || "").toLowerCase().includes(listQuery.toLowerCase()));
+      });
+    });
+    els(root,"[data-wf-field-search]").forEach(input=>input.addEventListener("input",event=>{
+      const select=el(root,'[data-wf-field="'+input.dataset.wfFieldSearch+'"]');
+      const query=event.target.value.toLowerCase();
+      [...(select?.options || [])].forEach(option=>{option.hidden=!!query && !option.textContent.toLowerCase().includes(query) && option.value!==select.value;});
+    }));
+    el(root,"[data-wf-create]")?.addEventListener("click",async()=>{draft=draftRule();editingId=null;step=0;await refresh(root);});
+    els(root,"[data-wf-edit]").forEach(b=>b.addEventListener("click",async()=>{const found=rules.find(r=>String(r.id)===b.dataset.wfEdit);if(!found)return;draft=asDraft(found);editingId=found.id;step=0;await refresh(root);}));
+    els(root,"[data-wf-toggle]").forEach(b=>b.addEventListener("change",async()=>{try{await api("/api/platform/workflow_rules/"+b.dataset.wfToggle,{method:"PATCH",body:JSON.stringify({status:b.checked?"Active":"Inactive"})});toast("Workflow updated","Rule status saved.");await refresh(root);}catch(error){toast("Workflow update failed",error.message,"error");b.checked=!b.checked;}}));
+    el(root,"[data-wf-back]")?.addEventListener("click",async()=>{draft=null;editingId=null;step=0;await refresh(root);});
+    el(root,"[data-wf-back-step]")?.addEventListener("click",async()=>{readCurrent(root);if(step===0){draft=null;editingId=null;}else step--;await refresh(root);});
+    el(root,"[data-wf-next]")?.addEventListener("click",async()=>{
+      readCurrent(root);const error=validateStep();if(error){toast("Complete the rule",error,"error");return;}
+      if(step<3){step++;await refresh(root);return;}
+      const payload={name:draft.name,description:draft.description,module:draft.module,
+        event:draft.event,trigger_field:draft.event==="field_change"?draft.trigger_field:"",scheduled_for:draft.scheduled_for || null,status:draft.status,
+        criteria:draft.criteria_mode==="all"?null:{logic:draft.logic,conditions:draft.conditions},
+        actions:draft.actions};
+      try{
+        await api("/api/platform/workflow_rules"+(editingId?"/"+editingId:""),{method:editingId?"PATCH":"POST",body:JSON.stringify(payload)});
+        draft=null;editingId=null;step=0;toast("Workflow saved","The rule is ready to evaluate CRM records.");await refresh(root);
+      }catch(e){toast("Could not save workflow",e.message,"error");}
+    });
+    el(root,"[data-wf-event]")?.addEventListener("change",async event=>{draft.event=event.target.value;await refresh(root);});
+    el(root,"[data-wf-module]")?.addEventListener("change",e=>{draft.module=e.target.value;});
+    els(root,'input[name="wf-criteria-mode"]').forEach(b=>b.addEventListener("change",async()=>{readCurrent(root);await refresh(root);}));
+    el(root,"[data-wf-add-condition]")?.addEventListener("click",async()=>{readCurrent(root);draft.conditions.push(newCondition());await refresh(root);});
+    els(root,"[data-wf-remove-condition]").forEach(b=>b.addEventListener("click",async()=>{readCurrent(root);draft.conditions.splice(Number(b.dataset.wfRemoveCondition),1);await refresh(root);}));
+    els(root,"[data-wf-operator]").forEach(b=>b.addEventListener("change",e=>{el(root,'[data-wf-value="'+e.target.dataset.wfOperator+'"]').disabled=["is_empty","is_not_empty"].includes(e.target.value);}));
+    el(root,"[data-wf-add-action]")?.addEventListener("click",async()=>{readCurrent(root);draft.actions.push({type:"audit",value:""});await refresh(root);});
+    els(root,"[data-wf-remove-action]").forEach(b=>b.addEventListener("click",async()=>{readCurrent(root);draft.actions.splice(Number(b.dataset.wfRemoveAction),1);await refresh(root);}));
+    els(root,"[data-wf-action-type]").forEach(b=>b.addEventListener("change",async()=>{readCurrent(root);await refresh(root);}));
+  }
+  return {view,bind};
+}
+

@@ -1,0 +1,997 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#005beb" />
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="CONVOSIS CRM" />
+  <meta name="description" content="CONVOSIS CRM — a focused workspace for customer relationships and revenue." />
+  <title>CONVOSIS CRM</title>
+  <link rel="icon" href="/static/convosis-brand.png?v=20261016-brand1" type="image/png" />
+  <link rel="icon" href="/static/icons/icon-192.png" type="image/png" sizes="192x192" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/css/tokens.css?v=20261008-convosis-ui-v2" />
+  <link rel="stylesheet" href="/static/css/app.css?v=20261028-detail-grid-v1" />
+  <link rel="stylesheet" href="/static/css/account.css?v=20261008-convosis-ui-v2" />
+  <link rel="stylesheet" href="/static/css/module-icons.css?v=20261028-teamspace-icon-size-v1" />
+  <script defer src="/static/js/module-icons.js?v=20261015-lineart-v2"></script>
+  <script defer src="/static/js/features/webforms-designer.js?v=20261027-centered-popups-v1"></script>
+  <script defer src="/static/js/features/webforms-dashboard.js?v=20261027-centered-popups-v1"></script>
+  <style data-remove-notification-icon>#notifications-button,.notification-menu,.top-icon.notification-trigger{display:none!important}
+/* Keep upgrade at the end of the scrollable sidebar and remove admin navigation. */
+#sidebar .primary-nav{display:flex;flex-direction:column;min-height:100%}
+#sidebar #sidebar-upgrade-plan{margin-top:auto}
+#sidebar #sidebar-upgrade-plan[hidden],#upgrade-plan-button[hidden]{display:none!important}
+/* Compact navigation actions: search → Apex AI → Settings → Profile. */
+.topbar-actions .crm-top-tool{width:38px;height:38px;flex:0 0 38px;display:inline-flex;align-items:center;justify-content:center;border-radius:10px;color:var(--text-muted,#65738f);text-decoration:none;border:1px solid transparent;background:transparent;padding:0;cursor:pointer;transition:background-color .16s,color .16s}
+.topbar-actions .crm-top-tool svg{display:block;width:23px;height:23px}
+.topbar-actions .crm-top-tool:hover,.topbar-actions .crm-top-tool:focus-visible{background:rgba(75,119,192,.1);color:#4481e2;outline-offset:2px}
+html[data-crm-theme="dark"] .topbar-actions .crm-top-tool{color:#bdc9df}
+html[data-crm-theme="dark"] .topbar-actions .crm-top-tool:hover{color:#9abfff;background:#28334a}
+@media(max-width:700px){.topbar-actions .crm-top-tool{width:32px;height:36px;flex-basis:32px}.topbar-actions .crm-top-tool svg{width:21px;height:21px}}
+</style>
+<style id="crm-dark-theme-v4">
+html[data-crm-theme="dark"]{color-scheme:dark;--bg:#0d1117;--surface:#171b22;--surface-soft:#1c222b;--surface-indigo:#22293a;--text:#e9edf4;--text-soft:#adb9c9;--text-faint:#8391a5;--border:#303946;--border-strong:#3e4859;--indigo:#7889ff;--indigo-dark:#6278ed;--blue:#86a8ff;--blue-soft:#26344d;--shadow-sm:0 2px 8px #0003;--shadow-md:0 12px 30px #0005}
+html[data-crm-theme="dark"] body,html[data-crm-theme="dark"] .main-area,html[data-crm-theme="dark"] .content-area,html[data-crm-theme="dark"] .setup-page-shell,html[data-crm-theme="dark"] .setup-workspace{background:#0d1117!important;color:#e9edf4!important}
+html[data-crm-theme="dark"] .topbar,html[data-crm-theme="dark"] .card,html[data-crm-theme="dark"] .settings-section,html[data-crm-theme="dark"] .settings-content,html[data-crm-theme="dark"] .setup-toolbar,html[data-crm-theme="dark"] .setup-nav,html[data-crm-theme="dark"] .settings-nav,html[data-crm-theme="dark"] .table-card,html[data-crm-theme="dark"] .setup-landing-card{background:#171b22!important;color:#e9edf4!important;border-color:#303946!important}
+html[data-crm-theme="dark"] :is(h1,h2,h3,h4,p,label,strong,small,.subheading,.page-title,.breadcrumbs,.setup-card-title){color:inherit}
+html[data-crm-theme="dark"] :is(input,select,textarea,.field-input,.field-select,.global-search,.global-search input,.toolbar-search,.toolbar-search input){background:#202731!important;color:#e9edf4!important;border-color:#3b4655!important}
+html[data-crm-theme="dark"] :is(.data-table,.data-table td,.data-table th,.table-wrap,.settings-content .card){background:#171b22!important;color:#e9edf4!important;border-color:#303946!important}
+html[data-crm-theme="dark"] :is(.button-ghost,.button:not(.button-primary),.icon-button){background:#232b36;color:#e9edf4;border-color:#3d4858}
+html[data-crm-theme="dark"] a{color:#9bb3ff}
+html[data-crm-theme="dark"] .crm-account-drawer{background:#12161d!important;color:#e9edf4!important}
+html[data-crm-theme="dark"] .crm-account-identity{background:#252b39!important}
+html[data-crm-theme="dark"] .crm-account-card,html[data-crm-theme="dark"] .crm-account-footer{background:#1c222b!important;border-color:#343d4a!important;color:#e9edf4!important}
+html[data-crm-theme="dark"] .crm-account-card h3,html[data-crm-theme="dark"] .crm-account-card strong{color:#edf1fa!important}
+html[data-crm-theme="dark"] .crm-account-card a{color:#b1c6ff!important}
+html[data-crm-theme="dark"] .crm-account-modes button{background:#252d39!important;border-color:#3c4757!important;color:#dbe3ef!important}
+html[data-crm-theme="dark"] .crm-account-modes button.active{background:#5667e9!important;color:#fff!important}
+html[data-crm-theme="dark"] .crm-account-x{background:#313a47!important;color:#fff}
+.crm-account-drawer{transition:transform .2s ease;background:#f5f7fb}
+.crm-account-card{box-shadow:none!important}
+.crm-account-identity{background:#4356bf!important}
+.crm-account-card a{font-weight:550}
+.crm-account-modes button{transition:background .15s,color .15s}
+</style><style id="crm-theme-coverage-v5">
+/* Consistent page-level dark theme across every route, report, detail, and form. */
+html[data-crm-theme="dark"],html[data-crm-theme="dark"] body,html[data-crm-theme="dark"] #app,html[data-crm-theme="dark"] .app-shell,html[data-crm-theme="dark"] .main-area,html[data-crm-theme="dark"] #app-content,html[data-crm-theme="dark"] .content-area{background:#0e141f!important;color:#e7edf6!important;min-height:100%}
+html[data-crm-theme="dark"] .main-area{min-height:100vh!important}
+html[data-crm-theme="dark"] :is(.crm-fullpage-form-host,.crm-fullpage-form,.crm-form-page,.form-page,.record-detail,.detail-page,.table-card,.table-wrap,.card,.filter-bar,.filters-bar,.module-filters,.toolbar,.crm-page-toolbar,.related-list,.related-panel,.related-content,.form-section,.form-grid,.modal,.modal-body){background-color:#192331!important;color:#e5ebf5!important;border-color:#334156!important}
+html[data-crm-theme="dark"] :is(.data-table,.data-table thead,.data-table tbody,.data-table tr,.data-table td,.data-table th,.table tbody,.table tr,.table td,.table th){background:#17212e!important;color:#e6edf7!important;border-color:#334156!important}
+html[data-crm-theme="dark"] :is(.data-table tr:hover,.table tr:hover){background:#26364b!important}
+html[data-crm-theme="dark"] :is(.field,.field label,label,.field-label,.form-label,.form-section h3,.page-heading h1,.page-heading h2,.record-detail h2,.detail-page h2,.module-page h1,.card h2,.card strong){color:#e6edf7!important}
+html[data-crm-theme="dark"] :is(input:not([type="checkbox"]):not([type="radio"]):not([type="search"]):not([placeholder^="Search" i]):not([aria-label^="Search" i]),select,textarea,.field-input,.field-select,.form-control){background:#111b29!important;color:#edf3fd!important;border:1px solid #40506a!important;box-shadow:none!important}
+html[data-crm-theme="dark"] :is(input,select,textarea)::placeholder{color:#9daec8!important;opacity:1}
+html[data-crm-theme="dark"] :is(.button-ghost,.button-secondary,.button:not(.button-primary):not(.button-danger),button[data-filter],.pagination button){background:#253348!important;color:#e8effb!important;border-color:#43546e!important}
+html[data-crm-theme="dark"] :is(.button-primary,.btn-primary){background:#2868d9!important;color:#fff!important}
+html[data-crm-theme="dark"] :is(.badge,.pill,.status-badge){border-color:#63708a}
+html[data-crm-theme="dark"] :is(.subheading,.description,.muted,.text-muted,.field-hint,.helper-text,.record-count){color:#b4c1d6!important}
+html[data-crm-theme="dark"] a:not(.button){color:#acc7ff}
+html[data-crm-theme="dark"] .crm-account-drawer{background:#141c27!important}
+html[data-crm-theme="dark"] .crm-account-card{background:#1d2939!important}
+html[data-crm-theme="light"] .main-area,html[data-crm-theme="light"] #app-content,html[data-crm-theme="light"] .content-area{background:#f5f7fb;min-height:100vh}
+/* Page canvas only: preserve existing card/control surfaces and card border colors. */
+html[data-crm-theme="dark"] :is(.page-heading,.module-page,.module-view,.module-content,.settings-content,.setup-workspace,.setup-directory,.setup-page-shell):not(.card):not(.table-card):not(.settings-section):not(.modal) {
+  background-color:#0e141f!important;
+  background-image:none!important;
+  box-shadow:none;
+}
+</style>
+<link rel="stylesheet" href="/static/css/not-found.css?v=20261027-404-v1" />
+<link rel="stylesheet" href="/static/css/dark-theme.css?v=20261027-ui-audit-v1" />
+<link rel="stylesheet" href="/static/css/sidebar-collapse.css?v=20261015-logo-geometry-v3" />
+<link rel="stylesheet" href="/static/css/ui-polish.css?v=20261029-loading-v1" />
+<link rel="stylesheet" href="/static/css/company-settings-tabs.css?v=20261016-company-tabs-v1">
+<link rel="stylesheet" href="/static/css/visual-refinement.css?v=20261027-ui-audit-v1" />
+<link rel="stylesheet" href="/static/css/fluid-motion.css?v=20261027-motion-v1" />
+<link rel="stylesheet" href="/static/css/compact-loading.css?v=20261029-loading-logo-v2" />
+<style id="convosis-brand-v1">#sidebar .brand-mark{background:transparent!important;box-shadow:none!important;overflow:visible!important;border:0!important}#sidebar .brand-mark i,#sidebar .brand-mark b{display:none!important}#sidebar .brand-mark img{max-width:100%;max-height:100%}</style>
+<style id="crm-header-searchless-layout">
+/* Keep search DOM hooks for legacy scripts without displaying the removed control. */
+.topbar #global-search-wrap{display:none!important}
+.topbar{display:flex;align-items:center;gap:16px}
+.topbar .breadcrumbs{flex:1 1 auto;min-width:0}
+.topbar .topbar-actions{display:flex;align-items:center;justify-content:flex-end;gap:12px;margin-left:auto;flex:0 1 auto;min-width:0}
+.topbar .topbar-actions > *{flex-shrink:0}
+@media(max-width:760px){.topbar{gap:8px}.topbar .topbar-actions{gap:6px}}
+</style>
+<style id="crm-header-brand-placement">
+/* Compact top-left branding based on the Books reference. */
+.topbar .crm-header-brand{display:flex;align-items:center;gap:12px;flex:0 0 auto;min-width:0;margin-right:22px}
+.crm-header-menu{display:grid;place-items:center;width:36px;height:36px;border:1px solid #cbd8ef;background:transparent;border-radius:8px;cursor:pointer;font-size:19px;color:#25456f;flex-shrink:0}
+.crm-header-menu:hover{background:#eaf2ff}
+.crm-header-home{display:flex;align-items:center;gap:5px;min-width:0;text-decoration:none!important;color:#193251!important;white-space:nowrap}
+.crm-header-home img{height:30px;width:30px;object-fit:contain;flex:none}
+.crm-header-wordmark{font-size:12px;font-weight:750;letter-spacing:.07em}
+.crm-header-home strong{font-size:16px;font-weight:750;margin-left:9px}
+.topbar .breadcrumbs{flex:1;min-width:0}
+#sidebar .brand-lockup .brand{visibility:hidden;pointer-events:none}
+#sidebar .brand-lockup{min-height:49px}
+html[data-crm-theme="dark"] .crm-header-home,html[data-crm-theme="dark"] .crm-header-menu{color:#e8effc}
+html[data-crm-theme="dark"] .crm-header-menu{border-color:#465574}
+@media(max-width:1050px){.topbar .crm-header-brand{margin-right:10px;gap:7px}.crm-header-wordmark{display:none}.topbar .breadcrumbs{display:none}}
+@media(max-width:700px){.crm-header-home strong{font-size:14px;margin-left:3px}.crm-header-home img{width:25px;height:25px}.crm-header-menu{width:32px;height:32px}.topbar .crm-header-brand{margin-right:auto}.topbar .menu-toggle{display:none!important}}
+</style>
+
+<style id="crm-sidebar-brand-restoration">
+/* Restore branding to the top of the left navigation, not the main header. */
+.topbar .crm-header-brand{display:none!important}
+#sidebar .brand-lockup{display:flex!important;align-items:center!important;min-height:72px!important;padding:12px 10px 16px!important;gap:8px!important}
+#sidebar .brand-lockup .brand{display:flex!important;visibility:visible!important;pointer-events:auto!important;align-items:center!important;gap:9px!important;min-width:0!important;text-decoration:none!important}
+#sidebar .brand-lockup .brand-mark{width:39px!important;height:39px!important;flex:0 0 39px!important}
+#sidebar .brand-lockup .brand-name{display:block!important;white-space:normal!important;line-height:1.18!important;font-size:17px!important;font-weight:700!important;max-width:116px!important}
+#sidebar .sidebar-visibility-toggle{margin-left:auto!important;flex-shrink:0!important}
+.crm-sidebar-collapsed #sidebar .brand-lockup{justify-content:center!important;padding:12px 4px!important}
+.crm-sidebar-collapsed #sidebar .brand-lockup .brand-name{display:none!important}
+@media(max-width:700px){#sidebar .brand-lockup{min-height:66px!important}}
+</style>
+
+<style id="crm-final-sidebar-brand">
+.topbar .crm-header-brand{display:none!important}
+#sidebar .brand-lockup{display:flex!important;align-items:center!important;gap:8px!important;min-height:70px!important;padding:10px 8px 15px!important}
+#sidebar .brand-lockup .brand{display:flex!important;visibility:visible!important;pointer-events:auto!important;align-items:center!important;gap:8px!important;flex:1 1 auto!important;min-width:0!important;text-decoration:none!important}
+#sidebar .brand-lockup .brand-mark{width:36px!important;height:36px!important;flex:0 0 36px!important}
+#sidebar .brand-lockup .brand-name{display:block!important;font-size:17px!important;line-height:1.2!important;font-weight:700!important;white-space:normal!important;color:#fff!important}
+#sidebar .sidebar-visibility-toggle{flex:0 0 auto!important;margin-left:auto!important}
+.crm-sidebar-collapsed #sidebar .brand-lockup .brand-name{display:none!important}
+@media(max-width:700px){#sidebar .brand-lockup{padding:10px 7px 12px!important}}
+</style>
+
+<style id="crm-hover-sidebar-v1">
+@media(min-width:1001px){
+#sidebar .brand-lockup .brand-name{white-space:nowrap!important;font-size:17px!important;overflow:visible!important;text-overflow:clip!important;flex:0 1 auto!important}
+#sidebar .brand-lockup .brand-mark{width:30px!important;min-width:30px!important;height:30px!important;min-height:30px!important;flex:0 0 30px!important}
+#sidebar .brand-lockup .brand{gap:5px!important}
+#sidebar .sidebar-visibility-toggle{display:inline-flex!important;opacity:1!important;pointer-events:auto!important;width:27px!important;min-width:27px!important;height:27px!important;flex:0 0 27px!important;padding:3px!important}
+.crm-sidebar-collapsed #sidebar .brand-lockup .brand{display:flex!important;visibility:visible!important;pointer-events:auto!important}
+.crm-sidebar-collapsed #sidebar .brand-lockup .brand-mark{width:38px!important;height:38px!important;min-width:38px!important;min-height:38px!important;flex-basis:38px!important;opacity:1!important}
+.crm-sidebar-collapsed #sidebar .sidebar-visibility-toggle{display:none!important;pointer-events:none!important}
+.crm-sidebar-collapsed.crm-sidebar-peek{--sidebar-width:76px!important}
+.crm-sidebar-collapsed.crm-sidebar-peek #sidebar{position:fixed!important;top:0!important;left:0!important;width:258px!important;max-width:258px!important;min-width:258px!important;height:100vh!important;z-index:10050!important;box-shadow:8px 0 22px #091e3c40!important;padding:20px 14px!important}
+.crm-sidebar-collapsed.crm-sidebar-peek #sidebar .brand-lockup{justify-content:space-between!important;padding:10px 8px 15px!important}
+.crm-sidebar-collapsed.crm-sidebar-peek #sidebar .brand-lockup .brand{width:auto!important;height:auto!important;flex:1!important;justify-content:flex-start!important;gap:5px!important}
+.crm-sidebar-collapsed.crm-sidebar-peek #sidebar .brand-name{display:block!important;white-space:nowrap!important;font-size:17px!important}
+.crm-sidebar-collapsed.crm-sidebar-peek #sidebar .sidebar-visibility-toggle{display:inline-flex!important;position:static!important;opacity:1!important;pointer-events:auto!important;transform:none!important;width:27px!important;height:27px!important;min-width:27px!important}
+.crm-sidebar-collapsed.crm-sidebar-peek #sidebar .nav-label{font-size:11px!important;line-height:normal!important;height:auto!important;padding:0 8px!important;margin:8px 0!important}
+.crm-sidebar-collapsed.crm-sidebar-peek #sidebar .expanded-nav a[data-route]{width:auto!important;height:auto!important;min-height:46px!important;justify-content:flex-start!important;gap:12px!important;font-size:14px!important;padding:9px 12px!important;margin:0!important;overflow:visible!important}
+.crm-sidebar-collapsed.crm-sidebar-peek #sidebar .expanded-nav a[data-route] .convosis-module-icon{flex:0 0 22px!important}
+.crm-sidebar-collapsed.crm-sidebar-peek #sidebar .nav-count{display:inline-flex!important}
+}
+</style>
+<style id="crm-sidebar-collapse-fix-v2">
+@media(min-width:1001px){
+#sidebar .brand-lockup{width:100%!important;display:flex!important;flex-wrap:nowrap!important;gap:3px!important;padding:10px 5px 15px!important}
+#sidebar .brand-lockup .brand{flex:1 1 auto!important;width:auto!important;min-width:0!important;display:flex!important;gap:4px!important;overflow:visible!important}
+#sidebar .brand-lockup .brand-mark{width:27px!important;min-width:27px!important;height:27px!important;min-height:27px!important;flex:0 0 27px!important}
+#sidebar .brand-lockup .brand-name{font-size:15px!important;font-weight:700!important;white-space:nowrap!important;overflow:visible!important;line-height:1.2!important;letter-spacing:-.5px!important}
+#sidebar #sidebar-visibility-toggle{display:flex!important;position:static!important;transform:none!important;flex:0 0 20px!important;width:20px!important;min-width:20px!important;height:20px!important;min-height:20px!important;padding:2px!important;margin-left:auto!important;border-radius:5px!important;font-size:11px!important;opacity:.8!important}
+#sidebar #sidebar-visibility-toggle>span{font-size:11px!important;line-height:1!important}
+html.crm-sidebar-collapsed:not(.crm-sidebar-peek) #sidebar{width:65px!important;min-width:65px!important;max-width:65px!important;flex-basis:65px!important;padding:16px 7px!important}
+html.crm-sidebar-collapsed:not(.crm-sidebar-peek) #sidebar .brand-lockup{justify-content:center!important;min-height:40px!important;padding:0 0 14px!important}
+html.crm-sidebar-collapsed:not(.crm-sidebar-peek) #sidebar .brand-lockup .brand{display:flex!important;flex:0 0 38px!important;width:38px!important;height:38px!important;justify-content:center!important;pointer-events:auto!important}
+html.crm-sidebar-collapsed:not(.crm-sidebar-peek) #sidebar .brand-mark{width:38px!important;height:38px!important;flex:0 0 38px!important;opacity:1!important}
+html.crm-sidebar-collapsed:not(.crm-sidebar-peek) #sidebar .brand-name,html.crm-sidebar-collapsed #sidebar #sidebar-visibility-toggle{display:none!important}
+html.crm-sidebar-collapsed.crm-sidebar-peek #sidebar{position:fixed!important;left:0!important;top:0!important;width:258px!important;min-width:258px!important;max-width:258px!important;z-index:10050!important;height:100vh!important}
+html.crm-sidebar-collapsed.crm-sidebar-peek #sidebar .brand-name{display:block!important;white-space:nowrap!important}
+html.crm-sidebar-collapsed.crm-sidebar-peek #sidebar #sidebar-visibility-toggle{display:flex!important}
+html.crm-sidebar-collapsed.crm-sidebar-peek #sidebar .expanded-nav a[data-route]{width:auto!important;height:auto!important;font-size:14px!important;justify-content:flex-start!important;padding:9px 12px!important}
+html.crm-sidebar-collapsed.crm-sidebar-peek #sidebar .nav-label{font-size:11px!important;line-height:normal!important;height:auto!important}
+html.crm-sidebar-collapsed.crm-sidebar-peek #sidebar .nav-count{display:inline-flex!important}
+}
+</style>
+<style id="crm-sidebar-smooth-persistent">
+@media(min-width:1001px){
+#sidebar{transition:width .32s cubic-bezier(.22,1,.36,1),min-width .32s cubic-bezier(.22,1,.36,1),max-width .32s cubic-bezier(.22,1,.36,1),flex-basis .32s cubic-bezier(.22,1,.36,1),box-shadow .28s ease!important;will-change:width}
+#sidebar .brand-lockup{overflow:visible!important}
+#sidebar .brand-lockup .brand-mark{display:flex!important;visibility:visible!important;opacity:1!important;overflow:visible!important;flex-shrink:0!important}
+#sidebar .brand-lockup .brand-mark img{display:block!important;width:100%!important;height:100%!important;object-fit:contain!important;opacity:1!important;visibility:visible!important}
+#sidebar .brand-lockup .brand-name{white-space:nowrap!important;transition:opacity .18s ease!important}
+html.crm-sidebar-collapsed:not(.crm-sidebar-peek) #sidebar .brand-lockup .brand{display:flex!important;opacity:1!important;visibility:visible!important;pointer-events:auto!important}
+html.crm-sidebar-collapsed:not(.crm-sidebar-peek) #sidebar .brand-mark{display:flex!important;opacity:1!important;visibility:visible!important;width:38px!important;height:38px!important;min-width:38px!important;min-height:38px!important}
+html.crm-sidebar-collapsed:not(.crm-sidebar-peek) #sidebar .brand-mark img{opacity:1!important;visibility:visible!important}
+html.crm-sidebar-collapsed.crm-sidebar-peek #sidebar{width:258px!important;min-width:258px!important;max-width:258px!important;transform:none!important;transition:width .32s cubic-bezier(.22,1,.36,1),min-width .32s cubic-bezier(.22,1,.36,1),max-width .32s cubic-bezier(.22,1,.36,1),box-shadow .28s ease!important}
+html.crm-sidebar-collapsed.crm-sidebar-peek #sidebar .brand-mark{display:flex!important;visibility:visible!important;opacity:1!important}
+}
+@media(prefers-reduced-motion:reduce){#sidebar,#sidebar .brand-name{transition:none!important}}
+</style>
+<style id="crm-sidebar-fluid-transition">
+@media(min-width:1001px) and (prefers-reduced-motion:no-preference){
+#sidebar{transition:width 560ms cubic-bezier(.16,1,.3,1),min-width 560ms cubic-bezier(.16,1,.3,1),max-width 560ms cubic-bezier(.16,1,.3,1),flex-basis 560ms cubic-bezier(.16,1,.3,1),padding 560ms cubic-bezier(.16,1,.3,1)!important}
+#sidebar .brand-name,#sidebar .nav-label,#sidebar .primary-nav a{transition:opacity 280ms ease,background-color 250ms ease,color 250ms ease!important}
+.main-area{transition:width 560ms cubic-bezier(.16,1,.3,1)!important}
+}
+</style>
+<style id="crm-sidebar-desktop-width-alignment">
+/* Keep the desktop workspace aligned with the navigation in every state. */
+@media (min-width:1001px) {
+  html:not(.crm-sidebar-collapsed) { --sidebar-width:236px!important; }
+  html:not(.crm-sidebar-collapsed) #sidebar {
+    width:236px!important;min-width:236px!important;max-width:236px!important;
+    padding-left:12px!important;padding-right:12px!important;
+  }
+  html.crm-sidebar-collapsed { --sidebar-width:65px!important; }
+  html.crm-sidebar-collapsed:not(.crm-sidebar-peek) #sidebar {
+    width:65px!important;min-width:65px!important;max-width:65px!important;
+  }
+  html.crm-sidebar-collapsed.crm-sidebar-peek { --sidebar-width:236px!important; }
+  html.crm-sidebar-collapsed.crm-sidebar-peek #sidebar {
+    width:236px!important;min-width:236px!important;max-width:236px!important;
+    padding-left:12px!important;padding-right:12px!important;
+    z-index:100!important;
+  }
+  html.crm-sidebar-collapsed.crm-sidebar-peek #sidebar .expanded-nav a[data-route] {
+    gap:9px!important;padding-left:10px!important;padding-right:10px!important;
+  }
+  /* Compact type scale for the 236px navigation, without affecting page text. */
+  html #sidebar .primary-nav a,
+  html #sidebar .expanded-nav a[data-route] {
+    font-size:12px!important;
+    letter-spacing:-.15px!important;
+    line-height:1.35!important;
+  }
+  html #sidebar .nav-label,
+  html #sidebar .nav-label-settings {
+    font-size:10px!important;
+    letter-spacing:.65px!important;
+    line-height:1.4!important;
+  }
+  html #sidebar .ts-workspace-control,
+  html #sidebar .ts-workspace-control button,
+  html #sidebar .ts-workspace-control [data-ts-current] {
+    font-size:12px!important;
+  }
+  html.crm-sidebar-collapsed.crm-sidebar-peek #sidebar .expanded-nav a[data-route] {
+    font-size:12px!important;
+  }
+  html.crm-sidebar-collapsed.crm-sidebar-peek #sidebar .brand-name {
+    font-size:15px!important;
+  }
+  html .main-area {
+    margin-left:var(--sidebar-width)!important;
+    width:calc(100% - var(--sidebar-width))!important;
+    min-width:0!important;
+    transition:margin-left 560ms cubic-bezier(.16,1,.3,1),width 560ms cubic-bezier(.16,1,.3,1)!important;
+  }
+}
+@media (min-width:1001px) and (prefers-reduced-motion:reduce) {
+  html .main-area {transition:none!important;}
+}
+</style>
+<style id="crm-custom-brand-image">
+@media(min-width:1001px) {
+  #sidebar .brand-lockup {min-height:66px!important;padding:3px 4px 12px!important;align-items:center!important}
+  #sidebar .brand {min-width:0!important;max-width:calc(100% - 24px)!important}
+  #sidebar .crm-full-brand-image {display:block!important;width:185px!important;max-width:100%!important;height:66px!important;object-fit:contain!important;object-position:left center!important;flex:0 1 auto!important}
+  html:not(.crm-sidebar-collapsed) #sidebar .brand-mark,
+  html:not(.crm-sidebar-collapsed) #sidebar .brand-name,
+  html.crm-sidebar-peek #sidebar .brand-mark,
+  html.crm-sidebar-peek #sidebar .brand-name {display:none!important}
+  html.crm-sidebar-collapsed:not(.crm-sidebar-peek) #sidebar .crm-full-brand-image {display:none!important}
+  html.crm-sidebar-collapsed.crm-sidebar-peek #sidebar .crm-full-brand-image {display:block!important}
+}
+@media(max-width:1000px) {
+  #sidebar .crm-full-brand-image {display:block;width:180px;max-width:100%;height:65px;object-fit:contain}
+  #sidebar .brand-mark,#sidebar .brand-name {display:none!important}
+}
+</style>
+<style id="crm-brand-suffix-style">
+@media(min-width:1001px){
+  #sidebar .brand {gap:3px!important;align-items:center!important}
+  #sidebar .crm-full-brand-image {width:152px!important;flex:0 1 152px!important;height:60px!important}
+  #sidebar .crm-brand-suffix {display:inline-block!important;flex:0 0 auto!important;font:700 12px/1.1 Manrope,"Segoe UI",sans-serif!important;letter-spacing:.15px!important;color:#f6f9ff!important;white-space:nowrap!important}
+  html.crm-sidebar-collapsed:not(.crm-sidebar-peek) #sidebar .crm-brand-suffix {display:none!important}
+}
+@media(max-width:1000px){
+  #sidebar .brand {display:flex!important;align-items:center!important;gap:3px!important}
+  #sidebar .crm-full-brand-image {width:152px!important;max-width:calc(100% - 35px)!important}
+  #sidebar .crm-brand-suffix {display:inline-block!important;font:700 12px/1.1 Manrope,"Segoe UI",sans-serif!important;color:#f6f9ff!important;white-space:nowrap!important}
+}
+</style>
+<style id="crm-brand-final-alignment">
+/* Balanced wordmark, CRM suffix and control at compact desktop width. */
+@media (min-width:1001px) {
+  #sidebar .brand-lockup {
+    min-height:54px!important;
+    padding:0 2px 8px!important;
+    align-items:center!important;
+    gap:4px!important;
+  }
+  #sidebar .brand {
+    display:flex!important;align-items:center!important;justify-content:flex-start!important;
+    gap:5px!important;min-width:0!important;max-width:calc(100% - 26px)!important;
+    overflow:visible!important;margin-top:-5px!important;
+  }
+  #sidebar .crm-full-brand-image {
+    display:block!important;width:145px!important;max-width:145px!important;
+    flex:0 1 145px!important;height:46px!important;
+    object-fit:contain!important;object-position:left center!important;
+  }
+  #sidebar .crm-brand-suffix {
+    display:inline-flex!important;align-items:center!important;
+    flex:0 0 auto!important;margin:0!important;
+    font:800 12px/1 Manrope,"Segoe UI",sans-serif!important;
+    letter-spacing:.02em!important;color:#fff!important;white-space:nowrap!important;
+  }
+  #sidebar #sidebar-visibility-toggle {
+    flex:0 0 20px!important;width:20px!important;min-width:20px!important;
+    margin-left:auto!important;
+  }
+  html.crm-sidebar-collapsed:not(.crm-sidebar-peek) #sidebar .crm-full-brand-image,
+  html.crm-sidebar-collapsed:not(.crm-sidebar-peek) #sidebar .crm-brand-suffix {
+    display:none!important;
+  }
+  html.crm-sidebar-collapsed.crm-sidebar-peek #sidebar .crm-full-brand-image {display:block!important;}
+  html.crm-sidebar-collapsed.crm-sidebar-peek #sidebar .crm-brand-suffix {display:inline-flex!important;}
+  html.crm-sidebar-collapsed:not(.crm-sidebar-peek) #sidebar .brand {margin-top:0!important;}
+}
+@media(max-width:1000px){
+  #sidebar .brand-lockup {min-height:52px!important;padding:2px 6px 9px!important;align-items:center!important;}
+  #sidebar .brand {display:flex!important;align-items:center!important;gap:5px!important;margin-top:-3px!important;}
+  #sidebar .crm-full-brand-image {width:145px!important;max-width:calc(100% - 38px)!important;height:46px!important;object-fit:contain!important;}
+  #sidebar .crm-brand-suffix {display:inline-flex!important;font:800 12px/1 Manrope,"Segoe UI",sans-serif!important;color:#fff!important;white-space:nowrap!important;}
+}
+</style>
+<style id="crm-brand-single-source-v2">
+/* One identity across desktop, hover-peek and mobile. No legacy brand nodes. */
+#sidebar .brand-lockup .brand-mark,
+#sidebar .brand-lockup .brand-name {display:none!important;}
+@media(min-width:1001px){
+  #sidebar .brand-lockup {padding-top:0!important;padding-bottom:8px!important;min-height:53px!important;}
+  #sidebar .brand {display:flex!important;align-items:center!important;gap:5px!important;overflow:hidden!important;max-width:calc(100% - 24px)!important;margin-top:-5px!important;}
+  #sidebar .crm-full-brand-image {display:block!important;width:145px!important;max-width:145px!important;min-width:0!important;flex:0 1 145px!important;height:46px!important;object-fit:contain!important;object-position:left center!important;}
+  #sidebar .crm-brand-suffix {display:inline-flex!important;flex:0 0 auto!important;font:800 12px/1 Manrope,"Segoe UI",sans-serif!important;color:#fff!important;letter-spacing:.02em!important;}
+  html.crm-sidebar-collapsed:not(.crm-sidebar-peek) #sidebar .brand-lockup .brand {
+    display:block!important;width:38px!important;max-width:38px!important;min-width:38px!important;height:40px!important;
+    overflow:hidden!important;margin:0 auto!important;flex:0 0 38px!important;
+  }
+  html.crm-sidebar-collapsed:not(.crm-sidebar-peek) #sidebar .crm-full-brand-image {
+    display:block!important;width:145px!important;max-width:none!important;min-width:145px!important;
+    height:40px!important;object-fit:fill!important;object-position:left center!important;
+  }
+  html.crm-sidebar-collapsed:not(.crm-sidebar-peek) #sidebar .crm-brand-suffix {display:none!important;}
+  html.crm-sidebar-collapsed.crm-sidebar-peek #sidebar .brand {
+    display:flex!important;width:auto!important;max-width:calc(100% - 24px)!important;overflow:hidden!important;
+  }
+}
+@media(max-width:1000px){
+  #sidebar .brand {display:flex!important;align-items:center!important;gap:5px!important;overflow:hidden!important;}
+  #sidebar .crm-full-brand-image {display:block!important;width:145px!important;max-width:calc(100% - 40px)!important;height:46px!important;object-fit:contain!important;}
+  #sidebar .crm-brand-suffix {display:inline-flex!important;font:800 12px/1 Manrope,"Segoe UI",sans-serif!important;color:#fff!important;}
+}
+</style>
+<style id="crm-brand-spacing-control-v3">
+@media(min-width:1001px){
+  /* Keep the wordmark compact; the PNG includes transparent horizontal padding. */
+  #sidebar .brand-lockup {
+    position:relative!important;
+    min-height:79px!important;
+    padding:0 4px 26px!important;
+    align-items:flex-start!important;
+  }
+  #sidebar .brand {
+    display:flex!important;align-items:center!important;
+    justify-content:flex-start!important;gap:0!important;
+    max-width:100%!important;width:auto!important;
+    margin-top:-3px!important;
+    overflow:visible!important;
+  }
+  #sidebar .crm-full-brand-image {
+    width:145px!important;max-width:145px!important;
+    flex:0 0 145px!important;
+  }
+  #sidebar .crm-brand-suffix {
+    position:relative!important;
+    left:-10px!important;
+    margin:0!important;
+  }
+  /* Separate the collapse control from the brand's baseline. */
+  #sidebar #sidebar-visibility-toggle {
+    position:absolute!important;top:47px!important;right:7px!important;
+    left:auto!important;transform:none!important;
+    margin:0!important;
+    width:21px!important;min-width:21px!important;height:21px!important;
+    z-index:3!important;
+  }
+  html.crm-sidebar-collapsed:not(.crm-sidebar-peek) #sidebar .brand-lockup {
+    min-height:49px!important;padding:0 0 10px!important;
+  }
+  html.crm-sidebar-collapsed:not(.crm-sidebar-peek) #sidebar .brand {
+    overflow:hidden!important;margin:0 auto!important;
+  }
+  html.crm-sidebar-collapsed.crm-sidebar-peek #sidebar .brand-lockup {
+    min-height:79px!important;padding:0 4px 26px!important;
+  }
+}
+@media(max-width:1000px){
+  #sidebar .brand {gap:0!important;}
+  #sidebar .crm-brand-suffix {position:relative!important;left:-8px!important;}
+}
+</style>
+<style id="crm-brand-tight-gap-v4">
+@media(min-width:1001px){
+  #sidebar .crm-brand-suffix {left:-27px!important;}
+}
+@media(max-width:1000px){
+  #sidebar .crm-brand-suffix {left:-24px!important;}
+}
+</style>
+<style id="crm-brand-baseline-align-v5">
+@media(min-width:1001px){
+  #sidebar .brand {align-items:center!important;}
+  #sidebar .crm-brand-suffix {
+    top:2px!important;
+    transform:translateY(0)!important;
+    vertical-align:middle!important;
+  }
+}
+@media(max-width:1000px){
+  #sidebar .crm-brand-suffix {top:2px!important;transform:none!important;}
+}
+</style>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar" aria-label="Primary navigation" tabindex="-1">
+      <div class="brand-lockup">
+        <a class="brand" href="/" aria-label="CONVOSIS CRM home">
+          <img class="crm-full-brand-image" src="data:image/png;base64,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" alt="CONVOSIS CRM" />
+          <span class="crm-brand-suffix" aria-hidden="true">CRM</span>
+        </a>
+        <button class="icon-button sidebar-close" id="sidebar-close" aria-label="Close navigation">×</button>
+        <button class="icon-button sidebar-visibility-toggle" id="sidebar-visibility-toggle" type="button" aria-controls="sidebar" aria-expanded="true" aria-label="Hide menu" title="Hide menu"><span aria-hidden="true">◧</span></button>
+      </div>
+
+      <nav class="primary-nav expanded-nav" aria-label="Primary navigation">
+        <span class="nav-label nav-label-settings">Workspace</span>
+        <a class="active" href="/dashboard" data-route="dashboard">Dashboard</a>
+
+        <a href="/leads" data-route="leads">Leads</a>
+        <a href="/contacts" data-route="contacts">Contacts</a>
+        <a href="/accounts" data-route="accounts">Accounts</a>
+        <a href="/deals" data-route="deals">Deals</a>
+
+        <span class="nav-label nav-label-settings">Activities</span>
+        <a href="/activities/tasks" data-route="activities">Tasks</a>
+        <a href="/activities/meetings" data-route="activities">Meetings</a>
+        <a href="/activities/calls" data-route="activities">Calls</a>
+
+        <span class="nav-label nav-label-settings">Sales &amp; Inventory</span>
+        <a href="/products" data-route="products">Products</a>
+        <a href="/price_books" data-route="price_books">Price Books</a>
+        <a href="/vendors" data-route="vendors">Vendors</a>
+        <a href="/quotes" data-route="quotes">Quotes</a>
+        <a href="/sales_orders" data-route="sales_orders">Sales Orders</a>
+        <a href="/purchase_orders" data-route="purchase_orders">Purchase Orders</a>
+        <a href="/invoices" data-route="invoices">Invoices</a>
+
+        <span class="nav-label nav-label-settings">Customer &amp; Marketing</span>
+        <a href="/campaigns" data-route="campaigns">Campaigns</a>
+        <a href="/cases" data-route="cases">Cases</a>
+        <a href="/solutions" data-route="solutions">Solutions</a>
+        <a href="/documents" data-route="documents">Documents</a>
+
+        <span class="nav-label nav-label-settings">Analytics</span>
+        <a href="/forecasts" data-route="forecasts">Forecasts</a>
+        <a href="/reports" data-route="reports">Reports</a>
+
+        <a href="/subscriptions" data-route="subscriptions" id="sidebar-upgrade-plan" hidden aria-hidden="true">Upgrade plan</a>
+      </nav>
+
+      <div class="sidebar-footer" hidden>
+        <div class="help-card">
+          <span class="help-icon"></span>
+          <div><strong>Need a hand?</strong><small>Visit the help center</small></div>
+          <span class="arrow">↗</span>
+        </div>
+        <div class="user-mini">
+          <button class="avatar avatar-indigo profile-photo-trigger" id="sidebar-avatar-button" type="button" title="Open profile settings" aria-label="Open profile settings"></button>
+          <input id="profile-photo-input" type="file" accept="image/png,image/jpeg,image/webp" hidden aria-label="Choose profile picture" />
+          <div class="user-mini-copy"><strong>Account</strong><small class="user-mini-role">CRM user</small><small class="user-mini-plan">Free</small></div>
+          <div class="user-mini-actions">
+            <button class="icon-button" id="profile-shortcut" aria-label="Open profile">•••</button>
+            <button class="sidebar-signout" id="logout-button" type="button">Sign out</button>
+          </div>
+        </div>
+      </div>
+    </aside>
+    <div class="sidebar-resizer" id="sidebar-resizer" role="separator" aria-orientation="vertical" aria-label="Resize sidebar" tabindex="0"></div>
+
+    <button class="drawer-backdrop" id="drawer-backdrop" type="button" aria-label="Close navigation" hidden></button>
+
+    <main class="main-area">
+      <header class="topbar">
+        <div class="crm-header-brand"><button class="crm-header-menu" id="crm-header-menu" type="button" aria-label="Toggle navigation menu" title="Toggle navigation menu"><span aria-hidden="true">☰</span></button><a class="crm-header-home" href="/dashboard" aria-label="CONVOSIS CRM dashboard"><img src="/static/convosis-brand.png?v=20261016-brand1" alt="" /><span class="crm-header-wordmark">CONVOSIS</span><strong>CRM</strong></a></div>
+        <button class="icon-button menu-toggle" id="menu-toggle" aria-label="Open navigation" aria-controls="sidebar" aria-expanded="false" hidden>☰</button>
+        <div class="breadcrumbs" id="breadcrumbs"><strong>Loading workspace</strong></div>
+        <div class="topbar-actions">
+          <a class="upgrade-plan-button" id="upgrade-plan-button" hidden aria-hidden="true" href="/subscriptions" aria-label="Upgrade plan"><span aria-hidden="true">✦</span> Upgrade</a>
+          <a class="button button-ghost owner-console-access" id="owner-console-button" href="https://yashcrm-production.up.railway.app/owner" hidden>Owner Console</a>
+          <div class="global-search" id="global-search-wrap" hidden aria-hidden="true" style="display:none!important">
+            <button type="button" id="global-search-submit" aria-label="Search records" title="Search records">⌕</button>
+            <input id="global-search" type="search" placeholder="Search anything..." aria-label="Search anything" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="search-results" autocomplete="off" />
+            <kbd></kbd>
+            <div class="search-results" id="search-results" role="listbox" aria-label="Search results"></div>
+          </div>
+          <button type="button" class="crm-top-tool" id="apex-top-link" data-module-ai-open aria-label="Open APEX AI for this module" title="APEX AI">
+            <svg viewBox="0 0 24 24" role="img" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"><path d="M12 2.5 14.6 9.4 21.5 12l-6.9 2.6L12 21.5l-2.6-6.9L2.5 12l6.9-2.6L12 2.5Z"/><circle cx="12" cy="12" r="1.7"/></svg>
+          </button>
+          <a href="/setup" class="crm-top-tool" id="settings-top-link" aria-label="Settings and Setup" title="Settings &amp; Setup">
+            <svg viewBox="0 0 24 24" role="img" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"><path d="M10 2.5h4l.7 2.3 1.6.9 2.4-.5 2 3.5-1.7 1.8v3l1.7 1.8-2 3.5-2.4-.5-1.6.9-.7 2.3h-4l-.7-2.3-1.6-.9-2.4.5-2-3.5L5 13.5v-3L3.3 8.7l2-3.5 2.4.5 1.6-.9L10 2.5Z"/><circle cx="12" cy="12" r="3.4" stroke="#198dfa" stroke-width="2"/></svg>
+          </a>
+          <button class="top-profile" id="top-profile" aria-label="Open account panel" aria-expanded="false">
+            <span class="avatar avatar-indigo"></span>
+            <span class="top-profile-copy"><strong>Administrator</strong><small>Administrator</small></span>
+            <span class="chevron"></span>
+          </button>
+        </div>
+      </header>
+
+      <div class="content-area" id="app-content" tabindex="-1">
+        <div class="crm-compact-loading" role="status" aria-label="Loading page"><div class="yash-radial-loader" aria-hidden="true"><span class="yash-loader-spokes"><i style="--i:0"></i><i style="--i:1"></i><i style="--i:2"></i><i style="--i:3"></i><i style="--i:4"></i><i style="--i:5"></i><i style="--i:6"></i><i style="--i:7"></i><i style="--i:8"></i><i style="--i:9"></i><i style="--i:10"></i><i style="--i:11"></i></span><img class="uploaded-loader-logo" src="/static/convosis-brand.png?v=20261016-brand1" alt="" /></div><span class="crm-visually-hidden">Loading</span></div>
+      </div>
+    </main>
+  </div>
+
+<style>
+.crm-account-mask{position:fixed;inset:0;background:#17243e77;z-index:11000}.crm-account-drawer{position:fixed;inset:0 0 0 auto;width:min(430px,100vw);z-index:11001;background:#f7f9fe;box-shadow:-8px 0 40px #16243b55;display:flex;flex-direction:column;color:#243550}.crm-account-mask[hidden],.crm-account-drawer[hidden]{display:none!important}.crm-account-identity{background:#5262e9;color:white;padding:55px 26px 30px;display:flex;gap:16px;align-items:center}.crm-account-identity .avatar{width:65px;height:65px;flex-shrink:0;background-position:center;background-size:cover}.crm-account-identity span:last-child{display:grid;gap:6px}.crm-account-identity small{color:#e4eaff}.crm-account-identity strong{font-size:18px}.crm-account-x{position:absolute;right:17px;top:16px;border:0;border-radius:50%;background:white;font-size:23px;width:37px;height:37px;cursor:pointer}.crm-account-scroll{overflow:auto;flex:1;overscroll-behavior:contain;padding:20px}.crm-account-card{background:white;padding:20px;border-radius:13px;border:1px solid #e2e8f6;margin-bottom:15px;display:grid;gap:14px}.crm-account-card h3{font-size:15px;margin:0}.crm-account-card a{color:#2c466a;text-decoration:none}.crm-account-card a:hover{color:#4262ef}.crm-account-modes{display:flex;gap:6px}.crm-account-modes button{flex:1;background:#f2f5ff;border:1px solid #dce4f7;padding:10px;border-radius:18px;cursor:pointer}.crm-account-modes button.active{background:#5064f2;color:white}.crm-account-footer{padding:18px 25px;border-top:1px solid #dfe6f4;display:flex;justify-content:space-between;background:white}.crm-account-footer button{border:0;background:none;color:#c42938;cursor:pointer}
+</style><div id="crm-account-mask" class="crm-account-mask" hidden></div><aside id="crm-account-drawer" class="crm-account-drawer" hidden role="dialog" aria-label="Account panel" aria-modal="true" tabindex="-1"><button type="button" id="crm-account-close" class="crm-account-x" aria-label="Close">×</button><header class="crm-account-identity"><a href="/settings/my-profile" data-account-link aria-label="Open your profile"><span class="avatar avatar-indigo" id="crm-account-avatar"></span></a><span><strong id="crm-account-name">Account</strong><small id="crm-account-role">CRM user</small><small id="crm-account-id"></small></span></header><div class="crm-account-scroll"><section class="crm-account-card"><h3>Current plan</h3><strong id="crm-account-plan">Free</strong><a href="/subscriptions" data-account-link>Manage plan →</a></section><section class="crm-account-card"><h3>Mode</h3><div class="crm-account-modes"><button data-account-mode="light" type="button">☀ Day</button><button data-account-mode="dark" type="button">☾ Night</button><button data-account-mode="auto" type="button">▣ Auto</button></div><small>Theme preference applies to this browser.</small></section><section class="crm-account-card"><h3>My Account</h3><a href="/settings/my-profile" data-account-link>Personal settings →</a><a href="/setup" data-account-link>Settings & Setup →</a><a href="/owner" id="crm-account-owner" data-account-link hidden>Owner Console →</a></section><section class="crm-account-card"><h3>Need Help?</h3><a href="/setup" data-account-link>Resources →</a></section></div><footer class="crm-account-footer"><a href="/settings/my-profile" data-account-link>My Account</a><button id="crm-account-signout" type="button">Sign Out</button></footer></aside>
+  <div class="modal-backdrop" id="modal-backdrop" hidden>
+    <section class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <div class="modal-head"><div><span class="eyebrow" id="modal-eyebrow">Create</span><h2 id="modal-title">New record</h2></div><button class="icon-button modal-close" id="modal-close" aria-label="Close">×</button></div>
+      <form id="record-form"><div class="modal-body" id="modal-body"></div><div class="modal-foot"><button type="button" class="button button-ghost" id="modal-cancel">Cancel</button><button type="submit" class="button button-primary" id="modal-submit">Save record</button></div></form>
+    </section>
+  </div>
+
+  <div class="modal-backdrop" id="confirm-backdrop" hidden>
+    <section class="modal modal-small" role="dialog" aria-modal="true" aria-labelledby="confirm-title">
+      <div class="modal-head"><div><span class="eyebrow">Confirm action</span><h2 id="confirm-title">Are you sure?</h2></div><button class="icon-button modal-close" id="confirm-close" aria-label="Close">×</button></div>
+      <div class="modal-body"><p id="confirm-copy" class="modal-copy"></p></div>
+      <div class="modal-foot"><button type="button" class="button button-ghost" id="confirm-cancel">Cancel</button><button type="button" class="button button-danger" id="confirm-action">Continue</button></div>
+    </section>
+  </div>
+
+  <div class="notification-popup-region" id="notification-popup-region" aria-live="polite" aria-atomic="false"></div>
+  <div class="toast-region" id="toast-region" aria-live="polite" aria-atomic="true"></div>
+<style id="crm-theme-overrides">
+:root[data-crm-theme="dark"]{color-scheme:dark;--bg:#101622;--surface:#192335;--card:#1c283b;--border:#34445c;--text:#e6edf8;--muted:#9aabc3}
+html[data-crm-theme="dark"] body,html[data-crm-theme="dark"] .main-area,html[data-crm-theme="dark"] .content-area,html[data-crm-theme="dark"] .setup-page-shell{background:#101622!important;color:#e6edf8!important}
+html[data-crm-theme="dark"] .topbar,html[data-crm-theme="dark"] .card,html[data-crm-theme="dark"] .settings-content,html[data-crm-theme="dark"] .settings-section,html[data-crm-theme="dark"] .table-card{background:#1c283b!important;color:#e6edf8!important;border-color:#34445c!important}
+html[data-crm-theme="dark"] .card h1,html[data-crm-theme="dark"] .card h2,html[data-crm-theme="dark"] .page-heading h1,html[data-crm-theme="dark"] .page-heading h2{color:#e6edf8!important}
+html[data-crm-theme="dark"] .data-table td,html[data-crm-theme="dark"] .data-table th,html[data-crm-theme="dark"] input,html[data-crm-theme="dark"] select{background-color:#1c283b;color:#e6edf8;border-color:#34445c}
+html[data-crm-theme="dark"] .crm-account-drawer{background:#121a29;color:#e7edf8}
+html[data-crm-theme="dark"] .crm-account-card,html[data-crm-theme="dark"] .crm-account-footer{background:#202d42;color:#e7edf8;border-color:#364962}
+html[data-crm-theme="dark"] .crm-account-card a{color:#afc6ff}
+html[data-crm-theme="dark"] .crm-account-modes button{background:#34445c;color:#e7edf8;border-color:#526480}
+html[data-crm-theme="dark"] .crm-account-modes button.active{background:#5368f0;color:white}
+html[data-crm-theme="light"]{color-scheme:light}
+</style>
+<script data-account-theme-controller>
+(()=>{const key="crm-account-theme";const mq=window.matchMedia("(prefers-color-scheme: dark)");
+function apply(mode){const chosen=["light","dark","auto"].includes(mode)?mode:"auto";const resolved=chosen==="auto"?(mq.matches?"dark":"light"):chosen;document.documentElement.dataset.crmTheme=resolved;document.documentElement.dataset.accountTheme=chosen;document.querySelectorAll("[data-account-mode]").forEach(b=>{b.classList.toggle("active",b.dataset.accountMode===chosen);b.setAttribute("aria-pressed",String(b.dataset.accountMode===chosen));});}
+let mode;try{mode=localStorage.getItem(key)||"auto"}catch(_){mode="auto"}apply(mode);
+document.addEventListener("click",e=>{const button=e.target.closest("[data-account-mode]");if(!button)return;e.preventDefault();e.stopImmediatePropagation();mode=button.dataset.accountMode;try{localStorage.setItem(key,mode)}catch(_){}apply(mode);},true);
+mq.addEventListener?.("change",()=>{if(mode==="auto")apply(mode)});
+})();
+</script>  <script data-account-drawer-bootstrap>
+  (() => {
+    const trigger = document.getElementById("top-profile");
+    const drawer = document.getElementById("crm-account-drawer");
+    const overlay = document.getElementById("crm-account-mask");
+    if (!trigger || !drawer || !overlay) return;
+    const close = () => {
+      drawer.hidden = true;
+      overlay.hidden = true;
+      drawer.setAttribute("aria-hidden", "true");
+      trigger.setAttribute("aria-expanded", "false");
+      document.body.style.removeProperty("overflow");
+      trigger.focus();
+    };
+    const open = () => {
+      const avatar = trigger.querySelector(".avatar");
+      const targetAvatar = document.getElementById("crm-account-avatar");
+      if (avatar && targetAvatar) {
+        targetAvatar.textContent = avatar.textContent;
+        targetAvatar.style.backgroundImage = avatar.style.backgroundImage;
+      }
+      const username = trigger.querySelector(".top-profile-copy strong")?.textContent || "Account";
+      const role = trigger.querySelector(".top-profile-copy small")?.textContent || "CRM user";
+      document.getElementById("crm-account-name").textContent = username;
+      document.getElementById("crm-account-role").textContent = role;
+      fetch("/api/settings/profile", {credentials:"same-origin",cache:"no-store"}).then(r=>r.ok?r.json():null).then(profile=>{
+        if (!profile) return;
+        const ownerLink=document.getElementById("crm-account-owner");
+        if(ownerLink) ownerLink.hidden=profile.owner_console_access !== true;
+        const plan=document.getElementById("crm-account-plan");
+        if(plan) plan.textContent=profile.plan_name||profile.subscription?.plan_name||"Free";
+        const userId=document.getElementById("crm-account-id");
+        if(userId) userId.textContent=(profile.public_id??profile.id)?"User ID: "+(profile.public_id??profile.id):"";
+        const name=document.getElementById("crm-account-name");
+        if(name) name.textContent=profile.username||profile.name||username;
+      }).catch(()=>{const ownerLink=document.getElementById("crm-account-owner");if(ownerLink)ownerLink.hidden=true;});
+      drawer.hidden = false;
+      overlay.hidden = false;
+      drawer.setAttribute("aria-hidden", "false");
+      trigger.setAttribute("aria-expanded", "true");
+      document.body.style.overflow = "hidden";
+      drawer.focus();
+    };
+    // Capture-phase handler works even when the SPA event initializer fails.
+    // Stop propagation to avoid a second handler immediately closing the drawer.
+    trigger.addEventListener("click", event => {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      if (drawer.hidden) open(); else close();
+    }, true);
+    document.getElementById("crm-account-close")?.addEventListener("click", event => {
+      event.stopImmediatePropagation(); close();
+    }, true);
+    overlay.addEventListener("click", event => { event.stopImmediatePropagation(); close(); }, true);
+    document.addEventListener("keydown", event => {
+      if (drawer.hidden) return;
+      if (event.key === "Escape") { event.preventDefault(); close(); return; }
+      if (event.key !== "Tab") return;
+      const controls = [...drawer.querySelectorAll('button:not([disabled]), a[href], select, input, textarea, [tabindex="0"]')]
+        .filter(node => !node.hidden && node.getClientRects().length);
+      const first = controls[0], last = controls[controls.length - 1];
+      if (!first) { event.preventDefault(); drawer.focus(); return; }
+      if (event.shiftKey && (document.activeElement === first || document.activeElement === drawer)) {
+        event.preventDefault(); last.focus();
+      } else if (!event.shiftKey && (document.activeElement === last || document.activeElement === drawer)) {
+        event.preventDefault(); first.focus();
+      }
+    }, true);
+  })();
+  </script>
+  <link rel="stylesheet" href="/static/css/module-ai.css?v=20261029-cross-module-ai-v6">
+  <script type="module" src="/static/js/app.js?v=20261029-loading-logo-v2"></script>
+  <script data-session-identity-bootstrap>
+    (() => {
+      const ownerButton = document.getElementById("owner-console-button");
+      const topProfile = document.getElementById("top-profile");
+      if (ownerButton) ownerButton.hidden = true;
+      if (topProfile) topProfile.hidden = false;
+
+      fetch("/api/settings/profile", { credentials: "same-origin", cache: "no-store" })
+        .then((response) => {
+          if (!response.ok) throw new Error("Unable to load session profile");
+          return response.json();
+        })
+        .then((profile) => {
+          const username = String(profile.username || profile.name || "Account").trim() || "Account";
+          const role = String(profile.role || "CRM user").trim() || "CRM user";
+          const owner = profile.owner_console_access === true;
+
+          document.querySelectorAll(".user-mini strong").forEach((node) => { node.textContent = username; });
+          document.querySelectorAll(".user-mini-role").forEach((node) => { node.textContent = role; });
+          document.querySelectorAll(".user-mini-plan").forEach((node) => { node.textContent = profile.plan_name || profile.subscription?.plan_name || "Free"; });
+
+          if (ownerButton) ownerButton.hidden = !owner;
+          if (topProfile) topProfile.hidden = false;
+
+          document.querySelectorAll(".top-profile-copy strong").forEach((node) => { node.textContent = username; });
+          document.querySelectorAll(".top-profile-copy small").forEach((node) => { node.textContent = role; });
+        })
+        .catch(() => {
+          if (ownerButton) ownerButton.hidden = true;
+          if (topProfile) topProfile.hidden = false;
+        });
+    })();
+  </script>
+  <script>
+    (() => {
+      const syncSidebarRoute = () => {
+        const currentPath = window.location.pathname.replace(/\/$/, "") || "/dashboard";
+        const links = [...document.querySelectorAll(".expanded-nav a")];
+        let match = links
+          .filter((link) => {
+            const href = new URL(link.href, window.location.origin).pathname.replace(/\/$/, "") || "/dashboard";
+            return currentPath === href || currentPath.startsWith(`${href}/`);
+          })
+          .sort((first, second) => second.getAttribute("href").length - first.getAttribute("href").length)[0];
+        if (currentPath.startsWith("/settings/")) match = links.find((link) => link.getAttribute("href") === "/settings/general");
+        if (currentPath.startsWith("/setup/")) match = links.find((link) => link.getAttribute("href") === "/setup/company_details");
+        links.forEach((link) => link.classList.toggle("active", link === match));
+      };
+
+      const sidebarElement = document.querySelector("#sidebar");
+      const drawerBackdrop = document.querySelector("#drawer-backdrop");
+      const globalSearch = document.querySelector("#global-search");
+      const searchResults = document.querySelector("#search-results");
+      new MutationObserver(() => {
+        globalSearch.setAttribute("aria-expanded", String(searchResults.classList.contains("open")));
+        searchResults.querySelectorAll(".search-result").forEach((result) => result.setAttribute("role", "option"));
+      }).observe(searchResults, { attributes: true, attributeFilter: ["class"], childList: true });
+      const visibilityToggle = document.querySelector("#sidebar-visibility-toggle");
+      const setCollapsed = (collapsed) => {
+        document.body.classList.toggle("crm-sidebar-collapsed", collapsed);
+        visibilityToggle.setAttribute("aria-expanded", String(!collapsed));
+        visibilityToggle.setAttribute("aria-label", collapsed ? "Show menu" : "Hide menu");
+        visibilityToggle.title = collapsed ? "Show menu" : "Hide menu";
+        visibilityToggle.querySelector("span").textContent = collapsed ? "☰" : "◧";
+        document.querySelectorAll("#sidebar .expanded-nav a").forEach(link => {
+          if (!link.dataset.sidebarTitle) link.dataset.sidebarTitle = link.textContent.trim();
+          link.title = collapsed ? link.dataset.sidebarTitle : "";
+        });
+        try { localStorage.setItem("convosis-sidebar-collapsed", collapsed ? "1" : "0"); } catch (_) {}
+      };
+      visibilityToggle.addEventListener("click", () => setCollapsed(!document.body.classList.contains("crm-sidebar-collapsed")));
+      try { setCollapsed(localStorage.getItem("convosis-sidebar-collapsed") === "1"); } catch (_) { setCollapsed(false); }
+      const syncDrawer = () => {
+        const isOpen = sidebarElement.classList.contains("open") && window.matchMedia("(max-width: 1000px)").matches;
+        drawerBackdrop.hidden = !isOpen;
+        document.body.classList.toggle("nav-open", isOpen);
+        document.querySelector("#menu-toggle").setAttribute("aria-expanded", String(isOpen));
+      };
+
+      [document.querySelector("#menu-toggle"), document.querySelector("#sidebar-close")].forEach((control) => {
+        control.addEventListener("click", () => requestAnimationFrame(syncDrawer));
+      });
+      drawerBackdrop.addEventListener("click", () => {
+        sidebarElement.classList.remove("open");
+        syncDrawer();
+      });
+      document.addEventListener("keydown", (event) => {
+        if (event.key !== "Escape" || !sidebarElement.classList.contains("open")) return;
+        sidebarElement.classList.remove("open");
+        syncDrawer();
+        document.querySelector("#menu-toggle").focus();
+      });
+
+      const arrangeDashboard = () => {
+        const grid = document.querySelector(".dashboard-grid");
+        if (!grid) return;
+
+        const columns = grid.querySelectorAll(":scope > .dashboard-column");
+        if (columns.length !== 2) return;
+
+        const cards = [...grid.querySelectorAll(":scope > .dashboard-column > .card")];
+        const findCard = (title) => cards.find((card) => card.querySelector("h2")?.textContent.trim() === title);
+        const placement = [
+          [columns[0], ["Pipeline overview", "Lead funnel"]],
+          [columns[1], ["Recent activity", "Quick actions"]]
+        ];
+
+        placement.forEach(([column, titles]) => {
+          const currentTitles = [...column.querySelectorAll(":scope > .card h2")].map((heading) => heading.textContent.trim());
+          if (currentTitles.join("|") === titles.join("|")) return;
+          titles.forEach((title) => {
+            const card = findCard(title);
+            if (card) column.append(card);
+          });
+        });
+      };
+
+      let queued = false;
+      const queueArrangement = () => {
+        if (queued) return;
+        queued = true;
+        requestAnimationFrame(() => {
+          queued = false;
+          arrangeDashboard();
+        });
+      };
+
+      arrangeDashboard();
+      syncSidebarRoute();
+      new MutationObserver(() => {
+        queueArrangement();
+        syncSidebarRoute();
+        syncDrawer();
+      }).observe(document.querySelector("#app-content"), {
+        childList: true,
+        subtree: true
+      });
+
+      const desktop = window.matchMedia("(min-width: 1001px)");
+      desktop.addEventListener("change", syncDrawer);
+      document.documentElement.style.setProperty("--sidebar-width", desktop.matches ? "236px" : "");
+      try { localStorage.removeItem("yash-crm-sidebar-width"); } catch (_) { /* Storage is optional. */ }
+      desktop.addEventListener("change", () => {
+        document.documentElement.style.setProperty("--sidebar-width", desktop.matches ? "236px" : "");
+      });
+
+    })();
+  </script>
+
+  <script data-sidebar-resize-controller>
+    (() => {
+      const root = document.documentElement;
+      const resizer = document.getElementById("sidebar-resizer");
+      const minWidth = 240;
+      const maxWidth = 440;
+      const storageKey = "yashcrm-sidebar-width";
+
+      const clamp = (value) => Math.min(maxWidth, Math.max(minWidth, value));
+      const applyWidth = (value, persist = false) => {
+        const width = clamp(Number(value) || 300);
+        root.style.setProperty("--sidebar-width", width + "px");
+        if (persist) {
+          try { localStorage.setItem(storageKey, String(width)); } catch {}
+        }
+      };
+
+      try {
+        const saved = Number(localStorage.getItem(storageKey));
+        if (saved) applyWidth(saved);
+      } catch {}
+
+      if (!resizer) return;
+
+      let active = false;
+      let startX = 0;
+      let startWidth = 0;
+
+      const endResize = () => {
+        if (!active) return;
+        active = false;
+        document.body.classList.remove("is-resizing-sidebar");
+        try { resizer.releasePointerCapture?.(resizer._pointerId); } catch {}
+      };
+
+      resizer.addEventListener("pointerdown", (event) => {
+        if (window.innerWidth <= 1000 || event.button !== 0) return;
+        active = true;
+        startX = event.clientX;
+        startWidth = parseFloat(getComputedStyle(root).getPropertyValue("--sidebar-width")) || 300;
+        resizer._pointerId = event.pointerId;
+        resizer.setPointerCapture?.(event.pointerId);
+        document.body.classList.add("is-resizing-sidebar");
+        event.preventDefault();
+      });
+
+      resizer.addEventListener("pointermove", (event) => {
+        if (!active) return;
+        applyWidth(startWidth + (event.clientX - startX));
+      });
+
+      resizer.addEventListener("pointerup", (event) => {
+        if (!active) return;
+        const finalWidth = parseFloat(getComputedStyle(root).getPropertyValue("--sidebar-width")) || 300;
+        applyWidth(finalWidth, true);
+        endResize();
+        event.preventDefault();
+      });
+
+      resizer.addEventListener("pointercancel", endResize);
+      window.addEventListener("blur", endResize);
+
+      resizer.addEventListener("keydown", (event) => {
+        if (window.innerWidth <= 1000) return;
+        const current = parseFloat(getComputedStyle(root).getPropertyValue("--sidebar-width")) || 300;
+        if (event.key === "ArrowLeft") {
+          applyWidth(current - 12, true);
+          event.preventDefault();
+        } else if (event.key === "ArrowRight") {
+          applyWidth(current + 12, true);
+          event.preventDefault();
+        } else if (event.key === "Home") {
+          applyWidth(minWidth, true);
+          event.preventDefault();
+        } else if (event.key === "End") {
+          applyWidth(maxWidth, true);
+          event.preventDefault();
+        }
+      });
+    })();
+  </script>
+
+
+  <script data-crm-date-picker-global>
+    (() => {
+      // New empty date fields receive today's LOCAL date; populated fields are unchanged.
+      const todayLocal = () => {
+        const now = new Date();
+        const yyyy = now.getFullYear();
+        const mm = String(now.getMonth() + 1).padStart(2, "0");
+        const dd = String(now.getDate()).padStart(2, "0");
+        return yyyy + "-" + mm + "-" + dd;
+      };
+      const initDate = (input) => {
+        if (!(input instanceof HTMLInputElement) || input.type !== "date") return;
+        if (!input.hasAttribute("data-crm-date-initialized")) {
+          input.setAttribute("data-crm-date-initialized", "");
+          if (!input.value && !input.defaultValue && !input.disabled && !input.readOnly && !input.closest(".module-toolbar, .filter-bar, .filters-bar, .advanced-filter-sidebar, .crm-date-range-filter") && !input.hasAttribute("data-deal-filter") && !input.hasAttribute("data-filter-search") && !input.hasAttribute("data-no-default-date") && input.closest("form, .crm-fullpage-form, .form-page, .form-section")) {
+            const today = todayLocal();
+            if ((!input.min || today >= input.min) && (!input.max || today <= input.max)) {
+              input.value = today;
+            }
+          }
+        }
+      };
+      const initDatesIn = (node) => {
+        if (!(node instanceof Element)) return;
+        if (node.matches('input[type="date"]')) initDate(node);
+        node.querySelectorAll('input[type="date"]').forEach(initDate);
+      };
+      const openCalendar = (input) => {
+        if (!input || input.disabled || input.readOnly) return;
+        if (typeof input.showPicker === "function") {
+          try { input.showPicker(); } catch (_) { /* Browser provides normal native fallback. */ }
+        }
+      };
+      // Delegated events also cover date inputs created after client-side navigation.
+      document.addEventListener("click", (event) => {
+        const target = event.target;
+        if (!(target instanceof Element)) return;
+        const input = target.closest('input[type="date"]');
+        if (input) {
+          initDate(input);
+          openCalendar(input);
+        }
+      });
+      // No layout changes: click on the field's label/padded area opens its calendar.
+      document.addEventListener("click", (event) => {
+        const target = event.target;
+        if (!(target instanceof Element) || target.closest('input[type="date"]')) return;
+        const label = target.closest("label");
+        if (!label) return;
+        const input = label.querySelector('input[type="date"]');
+        if (input && !target.closest("button,a,select,textarea")) openCalendar(input);
+      });
+      const start = () => {
+        initDatesIn(document.body);
+        new MutationObserver((changes) => {
+          for (const change of changes) {
+            if (change.type === "childList") {
+              change.addedNodes.forEach(initDatesIn);
+            }
+          }
+        }).observe(document.body, { childList:true, subtree:true });
+      };
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", start, { once:true });
+      } else {
+        start();
+      }
+    })();
+  </script>
+
+<script>
+document.getElementById("crm-header-menu")?.addEventListener("click",()=>{
+  const desktopToggle=document.getElementById("sidebar-visibility-toggle");
+  const mobileToggle=document.getElementById("menu-toggle");
+  if(window.matchMedia("(max-width: 700px)").matches&&mobileToggle)mobileToggle.click();
+  else if(desktopToggle)desktopToggle.click();
+});
+</script>
+
+
+<script id="crm-sidebar-persistent-controller">
+(()=>{
+ const sidebar=document.getElementById("sidebar"),toggle=document.getElementById("sidebar-visibility-toggle"),brand=sidebar?.querySelector(".brand"),root=document.documentElement;
+ if(!sidebar||!toggle||!brand)return;
+ const desktop=()=>matchMedia("(min-width:1001px)").matches;
+ const collapsed=()=>root.classList.contains("crm-sidebar-collapsed");
+ const peek=()=>{if(desktop()&&collapsed())root.classList.add("crm-sidebar-peek");};
+ const unpeek=()=>root.classList.remove("crm-sidebar-peek");
+ toggle.addEventListener("click",e=>{
+  if(!desktop())return;
+  e.preventDefault();e.stopImmediatePropagation();
+  // The button always restores the compact sidebar.
+  root.classList.add("crm-sidebar-collapsed");
+  unpeek();
+  toggle.setAttribute("aria-expanded","false");
+ },true);
+ sidebar.addEventListener("pointerenter",peek);
+ sidebar.addEventListener("pointerleave",()=>{if(collapsed())unpeek();});
+ brand.addEventListener("click",e=>{
+  if(!desktop()||!collapsed())return;
+  e.preventDefault();e.stopImmediatePropagation();
+  root.classList.remove("crm-sidebar-collapsed");unpeek();
+  toggle.setAttribute("aria-expanded","true");
+ },true);
+})();
+</script>
+</body>
+</html>
+
+
+
+
+

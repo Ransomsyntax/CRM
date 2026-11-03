@@ -1,0 +1,13 @@
+{
+  "name": "yash-crm-frontend",
+  "private": true,
+  "type": "module",
+  "version": "0.2.1",
+  "scripts": {
+    "test:frontend": "node tests/route_loading_dom.mjs && node tests/qa_reports_dom.mjs && node tests/apex_assistant_dom.mjs && node tests/module_ai_dom.mjs && node tests/dialogs_dom.mjs && node tests/form_refinement_dom.mjs && node tests/plan_access_ui.mjs && node tests/qa_quote_totals.mjs && node tests/quote_addresses_dom.mjs && node tests/theme_icon_regression.mjs && node tests/ui_audit_dom.mjs && node tests/form_header_navigation_dom.mjs && node tests/report_builder_dom.mjs && node tests/app_bootstrap_dom.mjs && node tests/enterprise_runtime_dom.mjs"
+  },
+  "devDependencies": {
+    "jsdom": "30.1.3"
+  }
+}
+

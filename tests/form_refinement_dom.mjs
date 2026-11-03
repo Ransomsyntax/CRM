@@ -1,0 +1,42 @@
+import assert from 'node:assert/strict';
+import {createRequire} from 'node:module';
+const require = createRequire(import.meta.url);
+const {JSDOM} = require('jsdom');
+const dom = new JSDOM('<form><div id="modal-body"><div class="form-grid"><div class="field"><input name="quote_number" value="QT00042"></div><div class="field"><input name="quantity" type="number"></div><div class="field"><select name="product_id"><option value="">Select product</option></select></div><div class="field"><input name="name" value="Unsaved quote"></div></div></div></form>');
+for(const key of ['window','document','MutationObserver','Option','Event'])globalThis[key]=dom.window[key];
+const {installFormRefinement,fieldSize}=await import('../static/js/features/form-refinement.js');
+const products=[]; let calls=0;
+const feature=installFormRefinement({state:{platformLookups:{products}},api:async(path,options)=>{calls++;assert.equal(path,'/api/products');assert.deepEqual(JSON.parse(options.body),{name:'New product',sku:'SKU1',unit_price:12.5,category:'',stock_quantity:0,status:'Active',description:''});return{id:7,name:'New product',unit_price:12.5};}});
+const tick=()=>new Promise(resolve=>setTimeout(resolve,0));
+await tick();
+assert.equal(document.querySelector('.crm-number-row input').value,'QT00042');
+assert.equal(document.querySelector('.crm-number-row input').readOnly,true);
+assert.equal(fieldSize(document.querySelector('[name=quantity]')),'short');
+document.querySelector('.crm-product-toggle').click();
+assert.equal(document.querySelectorAll('[data-create-product]').length,1);
+document.querySelector('[data-create-product]').click();
+let panel=document.querySelector('.crm-inline-product');
+assert.equal(panel.querySelectorAll('[name]').length,0);
+panel.querySelector('[data-save-product]').click();await tick();assert.equal(calls,0);
+panel.querySelector('[data-new-name]').value='New product';panel.querySelector('[data-new-sku]').value='SKU1';panel.querySelector('[data-new-rate]').value='12.5';
+panel.querySelector('[data-save-product]').click();await tick();
+assert.equal(calls,1);assert.equal(products[0].id,7);assert.equal(document.querySelector('select').value,'7');
+assert.equal(document.querySelector('[name=name]').value,'Unsaved quote');
+// Dynamic line rows receive exactly one action each.
+const field=document.createElement('div');field.className='field';field.innerHTML='<select data-qfield="product_id"></select>';document.querySelector('.form-grid').append(field);await tick();
+assert.equal(field.querySelectorAll('.crm-product-toggle').length,1);
+feature.enhance();await tick();assert.equal(field.querySelectorAll('.crm-product-toggle').length,1);
+feature.disconnect();
+for (const [resource,number] of [['quotes','quote_number'],['invoices','invoice_number'],['sales_orders','order_number'],['purchase_orders','po_number']]) {
+  document.body.innerHTML='<form><div id="modal" data-resource="'+resource+'"><div id="modal-body"><div class="form-grid"><div class="field"><input name="name" value="Untouched subject"></div><div class="field"><textarea name="notes">Keep notes</textarea></div><div class="field"><select name="owner_id"><option value="7" selected>Owner</option></select></div><div class="field"><input name="'+number+'" value="SAVED00042"></div></div></div></div></form>';
+  const commercial=installFormRefinement({api:async()=>{},state:{}});
+  await tick();commercial.enhance();await tick();
+  const controls=[...document.querySelector('.form-grid').children].map(field=>field.querySelector('[name]')?.name);
+  assert.deepEqual(controls.slice(0,2),['owner_id',number],resource+' first row must contain Owner and its number');
+  assert.equal(document.querySelector('[name="'+number+'"]').readOnly,true);
+  assert.equal(document.querySelector('[name="'+number+'"]').value,'SAVED00042');
+  assert.equal(document.querySelector('[name=name]').value,'Untouched subject');
+  assert.equal(document.querySelector('[name=notes]').value,'Keep notes');
+  commercial.disconnect();
+}
+dom.window.close();console.log('Form refinement DOM checks passed');
